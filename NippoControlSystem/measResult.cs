@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NippoControlSystem
+{
+    public class measResult
+    {
+        //--------1---------2---------3---------4---------5---------6---------7---------8
+        //コンストラクタ
+        public measResult()
+        {
+        }
+
+        //--------1---------2---------3---------4---------5---------6---------7---------8
+        //デコンストラクタ
+        //public void Dispose()
+        ~measResult()
+        {
+        }
+
+        //--------1---------2---------3---------4---------5---------6---------7---------8
+        //プロパティ
+        DateTime m_測定日時;
+        public DateTime 測定日時
+        {
+            get { return m_測定日時; }
+            set { m_測定日時 = value; }
+        }
+        //--------1---------2---------3---------4---------5---------6---------7---------8
+        //プロパティ
+        int m_測定番号;
+        public int 測定番号
+        {
+            get { return m_測定番号; }
+            set { m_測定番号 = value; }
+        }
+        //--------1---------2---------3---------4---------5---------6---------7---------8
+        //プロパティ
+        double m_測定値;
+        public double 測定値
+        {
+            get { return m_測定値; }
+            set { m_測定値 = value; }
+        }
+        //--------1---------2---------3---------4---------5---------6---------7---------8
+        //プロパティ
+        int m_測定値Stat;
+        public int 測定値Stat
+        {
+            get { return m_測定値Stat; }
+            set { m_測定値Stat = value; }
+        }
+    }
+}

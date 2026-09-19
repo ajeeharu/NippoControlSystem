@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSetTopMenu" targetNamespace="http://tempuri.org/DataSetTopMenu.xsd" xmlns:mstns="http://tempuri.org/DataSetTopMenu.xsd" xmlns="http://tempuri.org/DataSetTopMenu.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSetTopMenu" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSetTopMenu" msprop:Generator_UserDSName="DataSetTopMenu">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="menuSub" msprop:Generator_TableClassName="menuSubDataTable" msprop:Generator_TableVarName="tablemenuSub" msprop:Generator_RowChangedName="menuSubRowChanged" msprop:Generator_TablePropName="menuSub" msprop:Generator_RowDeletingName="menuSubRowDeleting" msprop:Generator_RowChangingName="menuSubRowChanging" msprop:Generator_RowEvHandlerName="menuSubRowChangeEventHandler" msprop:Generator_RowDeletedName="menuSubRowDeleted" msprop:Generator_RowClassName="menuSubRow" msprop:Generator_UserTableName="menuSub" msprop:Generator_RowEvArgName="menuSubRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="MainID" msdata:Caption="MainNo" msprop:Generator_ColumnVarNameInTable="columnMainID" msprop:Generator_ColumnPropNameInRow="MainID" msprop:Generator_ColumnPropNameInTable="MainIDColumn" msprop:Generator_UserColumnName="MainID" type="xs:int" />
+              <xs:element name="SubID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnSubID" msprop:Generator_ColumnPropNameInRow="SubID" msprop:Generator_ColumnPropNameInTable="SubIDColumn" msprop:Generator_UserColumnName="SubID" type="xs:int" />
+              <xs:element name="SubTitle" msdata:Caption="SubNo" msprop:Generator_ColumnVarNameInTable="columnSubTitle" msprop:Generator_ColumnPropNameInRow="SubTitle" msprop:Generator_ColumnPropNameInTable="SubTitleColumn" msprop:Generator_UserColumnName="SubTitle" type="xs:string" />
+              <xs:element name="Folder" msprop:Generator_ColumnVarNameInTable="columnFolder" msprop:Generator_ColumnPropNameInRow="Folder" msprop:Generator_ColumnPropNameInTable="FolderColumn" msprop:Generator_UserColumnName="Folder" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="menuMain" msprop:Generator_TableClassName="menuMainDataTable" msprop:Generator_TableVarName="tablemenuMain" msprop:Generator_RowChangedName="menuMainRowChanged" msprop:Generator_TablePropName="menuMain" msprop:Generator_RowDeletingName="menuMainRowDeleting" msprop:Generator_RowChangingName="menuMainRowChanging" msprop:Generator_RowEvHandlerName="menuMainRowChangeEventHandler" msprop:Generator_RowDeletedName="menuMainRowDeleted" msprop:Generator_RowClassName="menuMainRow" msprop:Generator_UserTableName="menuMain" msprop:Generator_RowEvArgName="menuMainRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="MainID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:Caption="MainNo" msprop:Generator_ColumnVarNameInTable="columnMainID" msprop:Generator_ColumnPropNameInRow="MainID" msprop:Generator_ColumnPropNameInTable="MainIDColumn" msprop:Generator_UserColumnName="MainID" type="xs:int" />
+              <xs:element name="Title" msdata:Caption="SubNoAll" msprop:Generator_ColumnVarNameInTable="columnTitle" msprop:Generator_ColumnPropNameInRow="Title" msprop:Generator_ColumnPropNameInTable="TitleColumn" msprop:Generator_UserColumnName="Title" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:menuSub" />
+      <xs:field xpath="mstns:MainID" />
+      <xs:field xpath="mstns:SubID" />
+    </xs:unique>
+    <xs:unique name="menuMain_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:menuMain" />
+      <xs:field xpath="mstns:MainID" />
+    </xs:unique>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="menuMain_menuSub" msdata:parent="menuMain" msdata:child="menuSub" msdata:parentkey="MainID" msdata:childkey="MainID" msprop:Generator_UserChildTable="menuSub" msprop:Generator_ChildPropName="GetmenuSubRows" msprop:Generator_UserRelationName="menuMain_menuSub" msprop:Generator_ParentPropName="menuMainRow" msprop:Generator_RelationVarName="relationmenuMain_menuSub" msprop:Generator_UserParentTable="menuMain" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

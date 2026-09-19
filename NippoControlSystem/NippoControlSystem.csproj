@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableMSTestRunner>true</EnableMSTestRunner>
+    <OutputType>WinExe</OutputType>
+    <PlatformTarget>x86</PlatformTarget>
+    <Platforms>x86</Platforms>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <EnableTestingPlatformBuilder>false</EnableTestingPlatformBuilder>
+    <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
+    <!-- 既存の AssemblyInfo.cs を優先するため、自動生成を無効化 -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- 既存の設定に SYSLIB0051 を追加 (複数ある場合はセミコロン区切り) -->
+    <NoWarn>$(NoWarn);SYSLIB0051</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Infrastructure\NativeLibs\caio.dll" />
+    <None Remove="Infrastructure\NativeLibs\cdio.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Services\" />
+    <Folder Include="Application\Dtos\" />
+    <Folder Include="Application\Scenarios\" />
+    <Folder Include="Domain\Interfaces\" />
+    <Folder Include="Domain\Models\" />
+    <Folder Include="Domain\Services\" />
+    <Folder Include="Infrastructure\Devices\" />
+    <Folder Include="Infrastructure\Persistence\" />
+    <Folder Include="Infrastructure\Mocks\" />
+    <Folder Include="Infrastructure\NativeLibs\" />
+    <Folder Include="UI\Controls\" />
+    <Folder Include="UI\ViewModels\" />
+    <Folder Include="UI\Views\" />
+    <PackageReference Include="System.Data.OleDb" Version="9.0.0" />
+    <!-- ThirdPartyの cdio.dll caio.dll をビルド出力先へ自動コピー -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DataSetItems.designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataSetItems.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="UI\Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- ThirdParty フォルダ内の cdio.dll caio.dll をビルド出力先へ自動コピー -->
+    <None Include="Infrastructure\NativeLibs\cdio.dll">
+      <Link>cdio.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Infrastructure\NativeLibs\caio.dll">
+      <Link>caio.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="DataSetItems.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetItems.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+</Project>
