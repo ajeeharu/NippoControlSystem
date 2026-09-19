@@ -54,7 +54,7 @@
             // 
             // pictureBoxIcon
             // 
-            this.pictureBoxIcon.Image = global::NippoControlSystem.Properties.Resources.nippo3;
+            this.pictureBoxIcon.Image = global::NippoControlSystem.UI.Properties.Resources.nippo3;
             this.pictureBoxIcon.Location = new System.Drawing.Point(16, 19);
             this.pictureBoxIcon.Name = "pictureBoxIcon";
             this.pictureBoxIcon.Size = new System.Drawing.Size(48, 48);

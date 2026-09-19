@@ -51,7 +51,7 @@ namespace NippoControlSystem
             if (val > 32f) valx = 32f;
             //Image img1 = Properties.Resources.panel30;    // イメージリソース読み込み 20160801 30V→15Vに変更
             //Image img1 = Properties.Resources.panel15;    // イメージリソース読み込み 20160801 30V→15Vに変更
-            Image img1 = Properties.Resources.panel00;    // イメージリソース読み込み 20160801 30V→15Vに変更
+            Image img1 = UI.Properties.Resources.panel00;    // イメージリソース読み込み 20160801 30V→15Vに変更
             //補間方法として最近傍補間を指定する
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             g.DrawImage(img1, 0, 0, pictureBox1.Width, pictureBox1.Height); // メーターパネルを描画

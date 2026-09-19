@@ -327,7 +327,7 @@
             // 
             this.Line1.BackColor = System.Drawing.Color.Transparent;
             this.Line1.ForeColor = System.Drawing.Color.Black;
-            this.Line1.Image = global::NippoControlSystem.Properties.Resources.下向き矢印;
+            this.Line1.Image = global::NippoControlSystem.UI.Properties.Resources.arrow_down;
             this.Line1.Location = new System.Drawing.Point(240, 180);
             this.Line1.Name = "Line1";
             this.Line1.Size = new System.Drawing.Size(52, 101);

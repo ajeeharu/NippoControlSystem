@@ -484,7 +484,7 @@
             this.label_ResultOK.BackColor = System.Drawing.SystemColors.Control;
             this.label_ResultOK.Font = new System.Drawing.Font("ＭＳ Ｐゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.label_ResultOK.ForeColor = System.Drawing.Color.Black;
-            this.label_ResultOK.Image = global::NippoControlSystem.Properties.Resources.OK;
+            this.label_ResultOK.Image = global::NippoControlSystem.UI.Properties.Resources.OK;
             this.label_ResultOK.Location = new System.Drawing.Point(6, 20);
             this.label_ResultOK.Name = "label_ResultOK";
             this.label_ResultOK.Size = new System.Drawing.Size(261, 248);
@@ -494,7 +494,7 @@
             // 
             this.label_ResultNG.BackColor = System.Drawing.SystemColors.Control;
             this.label_ResultNG.ForeColor = System.Drawing.Color.Black;
-            this.label_ResultNG.Image = global::NippoControlSystem.Properties.Resources.NG;
+            this.label_ResultNG.Image = global::NippoControlSystem.UI.Properties.Resources.NG;
             this.label_ResultNG.Location = new System.Drawing.Point(6, 20);
             this.label_ResultNG.Name = "label_ResultNG";
             this.label_ResultNG.Size = new System.Drawing.Size(261, 248);
@@ -925,7 +925,7 @@
             // 
             // pictureBox8
             // 
-            this.pictureBox8.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox8.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox8.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox8.ErrorImage = null;
             this.pictureBox8.InitialImage = null;
@@ -937,7 +937,7 @@
             // 
             // pictureBox7
             // 
-            this.pictureBox7.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox7.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox7.ErrorImage = null;
             this.pictureBox7.InitialImage = null;
@@ -949,7 +949,7 @@
             // 
             // pictureBox6
             // 
-            this.pictureBox6.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox6.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox6.ErrorImage = null;
             this.pictureBox6.InitialImage = null;
@@ -961,7 +961,7 @@
             // 
             // pictureBox5
             // 
-            this.pictureBox5.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox5.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox5.ErrorImage = null;
             this.pictureBox5.InitialImage = null;
@@ -973,7 +973,7 @@
             // 
             // pictureBox4
             // 
-            this.pictureBox4.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox4.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox4.ErrorImage = null;
             this.pictureBox4.InitialImage = null;
@@ -985,7 +985,7 @@
             // 
             // pictureBox3
             // 
-            this.pictureBox3.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox3.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox3.ErrorImage = null;
             this.pictureBox3.InitialImage = null;
@@ -997,7 +997,7 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox2.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox2.ErrorImage = null;
             this.pictureBox2.InitialImage = null;
@@ -1009,7 +1009,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox1.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.ErrorImage = null;
             this.pictureBox1.InitialImage = null;

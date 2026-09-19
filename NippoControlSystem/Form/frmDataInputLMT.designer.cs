@@ -1112,7 +1112,7 @@
             // pictureBoxPage2
             // 
             this.pictureBoxPage2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxPage2.Image = global::NippoControlSystem.Properties.Resources.右向き三角矢印;
+            this.pictureBoxPage2.Image = global::NippoControlSystem.UI.Properties.Resources.right_arrow;
             this.pictureBoxPage2.Location = new System.Drawing.Point(667, 835);
             this.pictureBoxPage2.Name = "pictureBoxPage2";
             this.pictureBoxPage2.Size = new System.Drawing.Size(43, 48);
@@ -1124,7 +1124,7 @@
             // pictureBoxPage1
             // 
             this.pictureBoxPage1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxPage1.Image = global::NippoControlSystem.Properties.Resources.左向き三角矢印;
+            this.pictureBoxPage1.Image = global::NippoControlSystem.UI.Properties.Resources.left_arrow;
             this.pictureBoxPage1.Location = new System.Drawing.Point(490, 835);
             this.pictureBoxPage1.Name = "pictureBoxPage1";
             this.pictureBoxPage1.Size = new System.Drawing.Size(43, 48);

@@ -429,7 +429,7 @@
             this.label_ResultOK.BackColor = System.Drawing.SystemColors.Control;
             this.label_ResultOK.Font = new System.Drawing.Font("ＭＳ Ｐゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.label_ResultOK.ForeColor = System.Drawing.Color.Black;
-            this.label_ResultOK.Image = global::NippoControlSystem.Properties.Resources.OK;
+            this.label_ResultOK.Image = global::NippoControlSystem.UI.Properties.Resources.OK;
             this.label_ResultOK.Location = new System.Drawing.Point(6, 20);
             this.label_ResultOK.Name = "label_ResultOK";
             this.label_ResultOK.Size = new System.Drawing.Size(261, 248);
@@ -439,7 +439,7 @@
             // 
             this.label_ResultNG.BackColor = System.Drawing.SystemColors.Control;
             this.label_ResultNG.ForeColor = System.Drawing.Color.Black;
-            this.label_ResultNG.Image = global::NippoControlSystem.Properties.Resources.NG;
+            this.label_ResultNG.Image = global::NippoControlSystem.UI.Properties.Resources.NG;
             this.label_ResultNG.Location = new System.Drawing.Point(6, 20);
             this.label_ResultNG.Name = "label_ResultNG";
             this.label_ResultNG.Size = new System.Drawing.Size(261, 248);
@@ -654,7 +654,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackgroundImage = global::NippoControlSystem.Properties.Resources.panel00;
+            this.pictureBox1.BackgroundImage = global::NippoControlSystem.UI.Properties.Resources.panel00;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.ErrorImage = null;
             this.pictureBox1.InitialImage = null;
