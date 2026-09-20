@@ -25,7 +25,7 @@ namespace NippoControlSystem.UI
             Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
             //Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmOpenning());
+            Application.Run(new Views.OpeningView());
         }
     }
 }

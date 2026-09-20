@@ -45,7 +45,6 @@
     <Folder Include="Infrastructure\NativeLibs\" />
     <Folder Include="UI\Controls\" />
     <Folder Include="UI\ViewModels\" />
-    <Folder Include="UI\Views\" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.0" />
     <!-- ThirdPartyの cdio.dll caio.dll をビルド出力先へ自動コピー -->
   </ItemGroup>
