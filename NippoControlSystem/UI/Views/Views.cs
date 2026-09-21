@@ -222,13 +222,13 @@ namespace NippoControlSystem.UI.Views
             if (m_frmDataInput == null) m_frmDataInput = new DataInputView();
             if (m_frmDebug == null) m_frmDebug = new DebugView();
             if (m_frmDebugNo == null) m_frmDebugNo = new DebugNoView();
-            if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
+            //if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
             if (m_frmPinAi == null) m_frmPinAi = new PinAnalogInputView();
             if (m_frmPinAo == null) m_frmPinAo = new PinAnalogOutputView();
-            if (m_frmPinAo == null) m_frmPinAo = new PinAnalogOutputView();
+            //if (m_frmPinAo == null) m_frmPinAo = new PinAnalogOutputView();
             if (m_frmPinIO == null) m_frmPinIO = new PinInputOutput();
-            if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
-            if (m_frmPinIO == null) m_frmPinIO = new PinInputOutput();
+            //if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
+            //if (m_frmPinIO == null) m_frmPinIO = new PinInputOutput();
             if (m_frmPinName == null) m_frmPinName = new PinNameView();
             if (m_frmPort == null) m_frmPort = new PortView();
             if (m_frmResultView == null) m_frmResultView = new ResultView();

@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
+using NippoControlSystem.ApplicationService.Interfaces;
+using NippoControlSystem.ApplicationService.Services;
+using NippoControlSystem.UI.ViewModels;
+using NippoControlSystem.UI.Views;
 using System.Runtime.Versioning;
 using System.Text;
-using System.Windows.Forms;
 
 namespace NippoControlSystem.UI
 {
@@ -22,10 +25,25 @@ namespace NippoControlSystem.UI
             // 以降、Shift_JIS が利用可能になります
             //Encoding shiftJis = Encoding.GetEncoding("Shift_JIS");
             // 自動生成された高 DPI 設定を無効化し、Unaware（非対応）にする
-            Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
+            Application.SetHighDpiMode(HighDpiMode.DpiUnaware);     
             //Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Views.OpeningView());
+            Application.EnableVisualStyles();
+
+            // DI サービスコレクションの設定
+            var services = new ServiceCollection();
+
+            // サービスの登録
+            services.AddSingleton<INavigationService, NavigationService>();
+
+            // ViewModel と View の登録
+            services.AddTransient<OpeningViewModel>();
+            services.AddTransient<OpeningView>();
+
+            using var provider = services.BuildServiceProvider();
+            // OpeningView を DI 経由で取得して起動
+            var mainForm = provider.GetRequiredService<OpeningView>();
+            Application.Run(mainForm);
         }
     }
 }

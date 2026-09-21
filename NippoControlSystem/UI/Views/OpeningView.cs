@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using NippoControlSystem.UI.ViewModels;
+
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -21,9 +23,13 @@ namespace NippoControlSystem.UI.Views
         //Forms mForms = Forms.GetInstance();
         Views mForms = null;            //20170127
 
-        public OpeningView()
+        private readonly OpeningViewModel _viewModel;
+        // DIコンテナ経由で ViewModel を受け取る
+        public OpeningView(OpeningViewModel viewModel)
         {
             InitializeComponent();
+            _viewModel = viewModel;
+            _viewModel.CurrentView = this;
         }
 
         private void frmOpenning_Load(object sender, EventArgs e)
