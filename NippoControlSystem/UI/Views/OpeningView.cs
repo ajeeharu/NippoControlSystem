@@ -15,13 +15,7 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class OpeningView : Form
     {
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
-        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
-        MeasureCondition mc = MeasureCondition.GetInstance();
-        //Forms mForms = Forms.GetInstance();
-        Views mForms = null;            //20170127
+        // MVVMパターン用にリファクタリングしたコード
 
         private readonly OpeningViewModel _viewModel;
         // DIコンテナ経由で ViewModel を受け取る
@@ -31,6 +25,62 @@ namespace NippoControlSystem.UI.Views
             _viewModel = viewModel;
             _viewModel.CurrentView = this;
         }
+
+
+        //// 「検査」ボタンクリック
+        //private void button_frmMain_Click(object sender, EventArgs e)
+        //{
+        //    SyncSelectedValuesToViewModel();
+        //    _viewModel.OpenMainView();
+        //}
+
+        //// 「検査定義の編集」ボタンクリック
+        //private void button_frmSetting_Click(object sender, EventArgs e)
+        //{
+        //    SyncSelectedValuesToViewModel();
+        //    _viewModel.OpenSettingView();
+        //}
+
+        // 「この画面の編集」ボタンクリック
+        private void button_frmTopEdit_Click(object sender, EventArgs e)
+        {
+            SyncSelectedValuesToViewModel();
+            _viewModel.OpenTopEditView();
+        }
+
+        //// 「検査履歴」ボタンクリック
+        //private void buttonHistory_Click(object sender, EventArgs e)
+        //{
+        //    SyncSelectedValuesToViewModel();
+        //    _viewModel.OpenHistoryView();
+        //}
+
+        /// <summary>
+        /// View 上の ListBox 選択値を ViewModel のプロパティへ同期します
+        /// </summary>
+        private void SyncSelectedValuesToViewModel()
+        {
+            _viewModel.SelectedMainTitle = listBox_MainNo.Text?.ToString();
+            _viewModel.SelectedSubTitle = listBox_SubNo.Text?.ToString();
+            _viewModel.SelectedSubId = listBox_SubNo.SelectedValue?.ToString();
+            _viewModel.DataSetTopMenu = mc.DataSetTopMenu;
+            _viewModel.SelectedMainIndex = listBox_MainNo.SelectedIndex;
+            _viewModel.SelectedSubIndex = listBox_SubNo.SelectedIndex;
+        }
+
+
+
+        //　------　（MVVM化のためにリファクタリングする前のコード）　------
+
+
+
+        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
+        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
+        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
+        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
+        MeasureCondition mc = MeasureCondition.GetInstance();
+        //Forms mForms = Forms.GetInstance();
+        Views mForms = null;            //20170127
 
         private void frmOpenning_Load(object sender, EventArgs e)
         {
@@ -131,22 +181,22 @@ namespace NippoControlSystem.UI.Views
             this.timerInitalUpdate.Enabled = true;
         }
 
-        private void frmMain_Resize(object sender, EventArgs e)
-        {
-            // サイズ変更が行われた後で、最小化状態でなければ場合はタスクバーにアイコンを表示します。
-            ShowInTaskbar = (WindowState != FormWindowState.Minimized);
-        }
+        //private void frmMain_Resize(object sender, EventArgs e)
+        //{
+        //    // サイズ変更が行われた後で、最小化状態でなければ場合はタスクバーにアイコンを表示します。
+        //    ShowInTaskbar = (WindowState != FormWindowState.Minimized);
+        //}
 
-        //自ウィンドウをシステムトレイに入れる
-        private void HideMe()
-        {
-            // フォームの非表示
-            this.Visible = false;
-            //ウィンドウを最小化する
-            this.WindowState = FormWindowState.Minimized;
-            //タスクバーに表示しない
-            this.ShowInTaskbar = false;
-        }
+        ////自ウィンドウをシステムトレイに入れる
+        //private void HideMe()
+        //{
+        //    // フォームの非表示
+        //    this.Visible = false;
+        //    //ウィンドウを最小化する
+        //    this.WindowState = FormWindowState.Minimized;
+        //    //タスクバーに表示しない
+        //    this.ShowInTaskbar = false;
+        //}
 
         //自ウィンドウをシステムトレイにから取出し通常表示する
         private void ShowMe()
@@ -163,35 +213,35 @@ namespace NippoControlSystem.UI.Views
             this.Activate();
         }
 
-        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
-        {
-            //自ウィンドウを通常表示する
-            ShowMe();
-        }
+        //private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        //{
+        //    //自ウィンドウを通常表示する
+        //    ShowMe();
+        //}
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            //自ウィンドウを通常表示する
-            ShowMe();
-        }
+        //private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    //自ウィンドウを通常表示する
+        //    ShowMe();
+        //}
 
-        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            //notifyIcon1.Visible = false;    // アイコンをトレイから取り除く
-            mForms.allFormsClose(this);
-        }
+        //private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+        //{
+        //    //notifyIcon1.Visible = false;    // アイコンをトレイから取り除く
+        //    mForms.allFormsClose(this);
+        //}
 
-        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //if (e.CloseReason == CloseReason.UserClosing && ApplicationExit == false)
-            //{
-            //    // フォームが閉じるのをキャンセル
-            //    e.Cancel = true;
-            //    //自ウィンドウをシステムトレイに入れる
-            //    HideMe();
-            //}
-            System.Diagnostics.Debug.WriteLine("frmMain_FormClosing");
-        }
+        //private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        //{
+        //    //if (e.CloseReason == CloseReason.UserClosing && ApplicationExit == false)
+        //    //{
+        //    //    // フォームが閉じるのをキャンセル
+        //    //    e.Cancel = true;
+        //    //    //自ウィンドウをシステムトレイに入れる
+        //    //    HideMe();
+        //    //}
+        //    System.Diagnostics.Debug.WriteLine("frmMain_FormClosing");
+        //}
         private void button_Exit_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -299,26 +349,26 @@ namespace NippoControlSystem.UI.Views
             return true;
         }
 
-        private void button_frmTopEdit_Click(object sender, EventArgs e)
-        {
-            //mc.DataSetTopMenu.AcceptChanges();
-            //mc.DataSetTopMenuEdit = (DataSetTopMenu)mc.DataSetTopMenu.Copy();
-            //mc.DataSetTopMenuEdit.AcceptChanges();
-            //frmTopEdit fmTopEdit = new frmTopEdit();
-            TopEditView fmTopEdit = mForms.fmTopEdit;
-            fmTopEdit.myDataSetTopMenu = mc.DataSetTopMenu;
-            fmTopEdit.SelectedMainNo = listBox_MainNo.SelectedIndex;
-            fmTopEdit.SelectedSubNo = listBox_SubNo.SelectedIndex;
-            this.Hide();    //20160915
-            fmTopEdit.ShowDialog();
-            this.Show();
-            //mForms.ShowDialog(this, fmTopEdit);
-            //if (mc.DataSetTopMenu.GetChanges() != null)     //20161027
-            {
-                this.textBox_Filter_TextChanged(this.textBox_Filter, e);
-            }
-            //mc.DataSetTopMenuEdit.Clear();
-        }
+        //private void button_frmTopEdit_Click(object sender, EventArgs e)
+        //{
+        //    //mc.DataSetTopMenu.AcceptChanges();
+        //    //mc.DataSetTopMenuEdit = (DataSetTopMenu)mc.DataSetTopMenu.Copy();
+        //    //mc.DataSetTopMenuEdit.AcceptChanges();
+        //    //frmTopEdit fmTopEdit = new frmTopEdit();
+        //    TopEditView fmTopEdit = mForms.fmTopEdit;
+        //    fmTopEdit.myDataSetTopMenu = mc.DataSetTopMenu;
+        //    fmTopEdit.SelectedMainNo = listBox_MainNo.SelectedIndex;
+        //    fmTopEdit.SelectedSubNo = listBox_SubNo.SelectedIndex;
+        //    this.Hide();    //20160915
+        //    fmTopEdit.ShowDialog();
+        //    this.Show();
+        //    //mForms.ShowDialog(this, fmTopEdit);
+        //    //if (mc.DataSetTopMenu.GetChanges() != null)     //20161027
+        //    {
+        //        this.textBox_Filter_TextChanged(this.textBox_Filter, e);
+        //    }
+        //    //mc.DataSetTopMenuEdit.Clear();
+        //}
 
         private void button_frmMain_Click(object sender, EventArgs e)
         {

@@ -22,6 +22,8 @@ namespace NippoControlSystem.UI.ViewModels
         public string? SelectedSubTitle { get; set; }
         public string? SelectedSubId { get; set; }
         public DataSet? DataSetTopMenu { get; set; }
+        public int SelectedMainIndex { get; set; }
+        public int SelectedSubIndex { get; set; }
 
         // --- 画面遷移のコマンド/メソッド ---
 
@@ -68,6 +70,18 @@ namespace NippoControlSystem.UI.ViewModels
         public void OpenVersionView()
         {
             _navigationService.NavigateTo<VersionView>(isModal: true);
+        }
+
+        public void OpenTopEditView()
+        {
+            if (CurrentView == null) return;
+
+            _navigationService.NavigateAndHideOwner<TopEditView>(CurrentView, view =>
+            {
+                view.myDataSetTopMenu = DataSetTopMenu as DataSetTopMenu;
+                view.SelectedMainNo = SelectedMainIndex;
+                view.SelectedSubNo = SelectedSubIndex;
+            });
         }
 
         private bool ValidateAndGetFolder(out string? folder)

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Windows.Forms;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NippoControlSystem.ApplicationService.Interfaces;
 using NippoControlSystem.ApplicationService.Services;
-using NippoControlSystem.UI.ViewModels;
 using NippoControlSystem.UI.Views;
 using System.Runtime.Versioning;
 using System.Text;
@@ -37,8 +34,7 @@ namespace NippoControlSystem.UI
             services.AddSingleton<INavigationService, NavigationService>();
 
             // ViewModel と View の登録
-            services.AddTransient<OpeningViewModel>();
-            services.AddTransient<OpeningView>();
+            services.AddApplicationServices();
 
             using var provider = services.BuildServiceProvider();
             // OpeningView を DI 経由で取得して起動
