@@ -100,7 +100,7 @@ namespace NippoControlSystem
         {
             //string stBuffer = System.IO.File.ReadAllText(CheckdatFile, enc);
 
-            string stBuffer = null; //制御文字(crとか)取り除くため、一旦すべて読み込む20160914
+            string? stBuffer = null; //制御文字(crとか)取り除くため、一旦すべて読み込む20160914
 
             //System.IO.FileInfo fileInfo3 = new System.IO.FileInfo(fileName);
             System.IO.FileStream sr1 = fileInfo3.Open(System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite);   //ファイルを共有モードで開くための設定

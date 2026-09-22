@@ -31,11 +31,11 @@ namespace NippoControlSystem
         string[] m_enumStartStatString = new string[] { "停  止", "検査終了", "検査停止", "強制完全", "途中開始", "通常検査", "timeout", "中  止" }; 
 
         //Save/Restore
-        string m_MeasName = null;
+        string? m_MeasName = null;
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //メンバ変数：設定格納変数
-        static MeasureCondition m_instance = null;
+        static MeasureCondition? m_instance = null;
         static public MeasureCondition GetInstance()
         {
             if (m_instance == null)
@@ -251,7 +251,7 @@ namespace NippoControlSystem
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ DataSetTopMenu
-        DataSetTopMenu m_DataSetTopMenu = null;
+        DataSetTopMenu? m_DataSetTopMenu = null;
         public DataSetTopMenu DataSetTopMenu
         {
             get { return m_DataSetTopMenu; }
@@ -287,7 +287,7 @@ namespace NippoControlSystem
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ listInspectItemsType
-        List<string> m_listInspectItemsType = null;
+        List<string>? m_listInspectItemsType = null;
         public List<string> listInspectItemsType
         {
             get { return m_listInspectItemsType; }
@@ -413,7 +413,7 @@ namespace NippoControlSystem
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ:製造番号：以下は結果保存frmSerial.csでのみ使用
-        string m_SerialNo = null;
+        string? m_SerialNo = null;
         public string SerialNo
         {
             get { return m_SerialNo; }
@@ -422,7 +422,7 @@ namespace NippoControlSystem
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ:号機番号
-        string m_GoNo = null;
+        string? m_GoNo = null;
         public string GoNo
         {
             get { return m_GoNo; }
@@ -431,7 +431,7 @@ namespace NippoControlSystem
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ:仕様書番号
-        string m_Zuban = null;
+        string? m_Zuban = null;
         public string Zuban
         {
             get { return m_Zuban; }
@@ -440,7 +440,7 @@ namespace NippoControlSystem
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ:追番
-        string m_Edaban = null;
+        string? m_Edaban = null;
         public string Edaban
         {
             get { return m_Edaban; }

@@ -13,6 +13,10 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class VersionView : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         public VersionView()
         {
             InitializeComponent();

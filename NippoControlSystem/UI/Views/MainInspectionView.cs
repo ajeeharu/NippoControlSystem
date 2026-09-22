@@ -18,6 +18,10 @@ namespace NippoControlSystem.UI.Views
     [DesignerCategory("code")]
     public partial class MainView : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         bool lastHasError = true;   //20140410
 
         bool withError = false;      //検査結果。

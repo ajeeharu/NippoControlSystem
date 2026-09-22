@@ -8,6 +8,10 @@ namespace NippoControlSystem.UI
 {
     public static class DependencyInjection
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             // サービスの登録

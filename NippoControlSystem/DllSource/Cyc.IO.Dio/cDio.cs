@@ -17,7 +17,7 @@ namespace Cyc.IO
         private bool m_Connected = false;
         private bool m_Inited = false;
         private short[] m_DOid = null;
-        private string m_LastErrorString = null;
+        private string? m_LastErrorString = null;
         private int m_DO_Pmax = 0;
         string[] m_DeviceNameDO = null;       //{ "DIO000", "DIO001", "DIO002", "DIO003", "DIO004", "DIO005", "DIO006", "DIO007"};
         private string m_titleText = "Cyc.IO.DIO";      //タイトル

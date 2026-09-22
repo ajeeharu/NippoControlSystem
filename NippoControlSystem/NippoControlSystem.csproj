@@ -17,6 +17,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- 既存の設定に SYSLIB0051 を追加 (複数ある場合はセミコロン区切り) -->
     <NoWarn>$(NoWarn);SYSLIB0051</NoWarn>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>

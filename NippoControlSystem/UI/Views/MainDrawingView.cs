@@ -14,6 +14,9 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class MainView : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
 
         private void DrawMeter(PictureBox pictureBox1,string text, float val) // メーターを描く関数
         {

@@ -13,6 +13,10 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class PinInputOutput : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
 

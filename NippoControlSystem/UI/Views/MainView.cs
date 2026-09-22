@@ -12,6 +12,10 @@ using System.Runtime.Versioning;
 
 namespace NippoControlSystem.UI.Views
 {
+    //　------　MVVMパターン用にリファクタリングしたコード　------
+
+    //　------　MVVM化のためにリファクタリングする前のコード　------
+
     public partial class MainView : Form
     {
         Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();

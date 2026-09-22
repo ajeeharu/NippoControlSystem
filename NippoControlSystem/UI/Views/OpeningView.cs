@@ -15,7 +15,7 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class OpeningView : Form
     {
-        // MVVMパターン用にリファクタリングしたコード
+        //　------　MVVMパターン用にリファクタリングしたコード　------
 
         private readonly OpeningViewModel _viewModel;
         // DIコンテナ経由で ViewModel を受け取る
@@ -69,9 +69,7 @@ namespace NippoControlSystem.UI.Views
         }
 
 
-
-        //　------　（MVVM化のためにリファクタリングする前のコード）　------
-
+        //　------　MVVM化のためにリファクタリングする前のコード　------
 
 
         Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();

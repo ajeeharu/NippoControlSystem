@@ -14,6 +14,10 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class MainView : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         private System.Media.SoundPlayer player = null;
 
         //OK.WAVファイルを再生する

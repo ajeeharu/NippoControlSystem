@@ -182,7 +182,7 @@ static class WindowsHandles
     private static Window GetWindow(IntPtr hWnd)
     {
         int textLen = GetWindowTextLength(hWnd);
-        string windowText = null;
+        string? windowText = null;
         if (0 < textLen)
         {
             // ウィンドウのタイトルを取得する

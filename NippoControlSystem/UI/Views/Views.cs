@@ -11,6 +11,10 @@ using System.Runtime.InteropServices;
 
 namespace NippoControlSystem.UI.Views
 {
+    //　------　MVVMパターン用にリファクタリングしたコード　------
+
+    //　------　MVVM化のためにリファクタリングする前のコード　------
+
     class Views
     {
         // 現在のフォームを引数として渡して新しいフォームを開く

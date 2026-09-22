@@ -18,7 +18,7 @@ namespace NippoControlSystem
         static public string GetSerialNo(string DefaultSerialNo)
         {
             //設定のプロパティ
-            string SerialNo = null;
+            string? SerialNo = null;
             string SerialNoPath = GetSerialNoPath();
 
             if (System.IO.File.Exists(SerialNoPath))

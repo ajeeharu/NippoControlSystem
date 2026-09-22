@@ -127,7 +127,7 @@ namespace NippoControlSystem
             //タブで分割
             System.Diagnostics.Debug.WriteLine(string.Format("dataGridView_Paste pasteText={0}", pasteText));
             List<List<string>> List3 = libDataGridView.CsvToArrayList3(pasteText);
-            List<string> vals = null;
+            List<string>? vals = null;
 
             for (int iRow = 0; iRow < System.Math.Min(RowsCount, List3.Count); iRow++)
             {

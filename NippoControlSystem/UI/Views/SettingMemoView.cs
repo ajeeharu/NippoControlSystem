@@ -14,6 +14,10 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class SettingView : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         public const uint WM_LBUTTONDOWN = 0x201;
         public const uint WM_LBUTTONUP = 0x202;
         public const uint MK_LBUTTON = 0x0001;

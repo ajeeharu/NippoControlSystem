@@ -16,8 +16,8 @@ namespace NippoControlSystem
         public System.Text.Encoding enc = System.Text.Encoding.GetEncoding("Shift_JIS");
         public string Part = ".part";
         //loadListdatFileで、iDsが空欄のとき、これを使う
-        string CheckDatiDsLo = null;
-        string CheckDatiDsHi = null;
+        string? CheckDatiDsLo = null;
+        string? CheckDatiDsHi = null;
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ isCsvHeaderRead
@@ -216,8 +216,8 @@ namespace NippoControlSystem
                 //DataTable dtItem = DataSetItems.ListDat;
                 ListDat.Rows.Clear();
                 int ID = 0;
-                string fieldData = null;
-                string fieldDataNew = null;
+                string? fieldData = null;
+                string? fieldDataNew = null;
                 //bool firstLine = true;
                 //string stBuffer = null; //制御文字(crとか)取り除くため、一旦すべて読み込む20160914
 
@@ -575,8 +575,8 @@ namespace NippoControlSystem
         public string convToOldVerListdat(string ListdatFile, string OldVerListdatFile)
         {
             int ID = 0;
-            string fieldData = null;
-            string fieldDataNew = null;
+            string? fieldData = null;
+            string? fieldDataNew = null;
             string msgLine = "";
             string errmsg = "";
             int lineNo = 0;
@@ -1239,10 +1239,10 @@ namespace NippoControlSystem
             DataTable dtSubMain = DataSetTopMenu.menuSub;
             int NewMainID = -1;
 
-            string Title = null;
-            string SubTitle = null;
-            string DirectoryName = null;
-            string Folder = null;
+            string? Title = null;
+            string? SubTitle = null;
+            string? DirectoryName = null;
+            string? Folder = null;
             DataTable dtCheckDat = new DataSetItems.CheckDatDataTable();
 
             //ListBox1に結果を表示する
@@ -1460,7 +1460,7 @@ namespace NippoControlSystem
         {
             //string stBuffer = System.IO.File.ReadAllText(CheckdatFile, enc);
 
-            string stBuffer = null; //制御文字(crとか)取り除くため、一旦すべて読み込む20160914
+            string? stBuffer = null; //制御文字(crとか)取り除くため、一旦すべて読み込む20160914
 
             System.IO.FileInfo fileInfo3 = new System.IO.FileInfo(fileName);
             System.IO.FileStream sr1 = fileInfo3.Open(System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite);   //ファイルを共有モードで開くための設定
@@ -1480,7 +1480,7 @@ namespace NippoControlSystem
         /// </summary>
         public DataSetItems createDataSetItems(string ItemFolder, string MainTitle, string SubTitle)
         {
-            DataSetItems myDataSetItems = null;
+            DataSetItems? myDataSetItems = null;
 
             if (!System.IO.Directory.Exists(ItemFolder))
             {
@@ -1600,7 +1600,7 @@ namespace NippoControlSystem
             dtCheckDatRow["Volt"] = Volt;       //Volt "1"
             //20180831
             //LMT 20180723
-            string dtCheckDatFields = null;
+            string? dtCheckDatFields = null;
             int iDo_Length = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
             //12V 24V
             int mVoltIdx = (Volt == "1" ? 2 : 0); //0:12V 2:24V

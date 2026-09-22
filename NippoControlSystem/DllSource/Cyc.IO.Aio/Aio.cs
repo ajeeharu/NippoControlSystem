@@ -12,15 +12,15 @@ namespace Cyc.IO
     public class Aio
     {
         //for CONTEC Digital I/O device
-        CaioCs.Caio aio = null;
+        CaioCs.Caio? aio = null;
         private bool m_AioEmu = false;
         private bool m_Connected = false;
         private bool m_Inited = false;
         private short m_AIOid = -1;
-        private string m_LastErrorString = null;
+        private string? m_LastErrorString = null;
         private int m_AImax = 0;
         private int m_AOmax = 0;
-        string m_DeviceNameAIO = null;       //"AIO000";
+        string? m_DeviceNameAIO = null;       //"AIO000";
         //private string m_titleText = "Cyc.IO.AIO";      //タイトル
 
         Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();

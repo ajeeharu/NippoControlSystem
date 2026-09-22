@@ -58,7 +58,7 @@ namespace WindowsAPI
 
         private static System.Diagnostics.Process target_proc = null;
         private static IntPtr target_hwnd = IntPtr.Zero;
-        private static string target_caption = null;
+        private static string? target_caption = null;
 
 
         // ウィンドウを列挙するためのコールバックメソッド

@@ -14,6 +14,10 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class DataInputLimitView : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
         Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
         Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();

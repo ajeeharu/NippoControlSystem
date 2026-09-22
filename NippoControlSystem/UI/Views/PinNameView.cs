@@ -13,6 +13,10 @@ namespace NippoControlSystem.UI.Views
 {
     public partial class PinNameView : Form
     {
+        //　------　MVVMパターン用にリファクタリングしたコード　------
+
+        //　------　MVVM化のためにリファクタリングする前のコード　------
+
         MeasureCondition mc = MeasureCondition.GetInstance();
 
         public PinNameView()

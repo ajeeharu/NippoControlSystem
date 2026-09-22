@@ -12,12 +12,12 @@ namespace Cyc.IO
     public class Ai2Di
     {
         //for CONTEC Digital I/O device
-        CaioCs.Caio aio = null;
+        CaioCs.Caio? aio = null;
         private bool m_AioEmu = false;
         private bool m_Connected = false;
         private bool m_Inited = false;
         private short [] m_AIOid;
-        private string m_LastErrorString = null;
+        private string? m_LastErrorString = null;
         private int m_AI2DI_BDmax = 0;
         private int m_AI2DI_AImax = 0;
         private int m_AI2DI_DImax = 0;
@@ -39,7 +39,7 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //メンバ変数：設定格納変数
-        private static Ai2Di m_instance = null;
+        private static Ai2Di? m_instance = null;
         public static Ai2Di GetInstance()
         {
             if (m_instance == null)
