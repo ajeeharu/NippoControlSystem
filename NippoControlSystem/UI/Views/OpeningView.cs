@@ -27,33 +27,33 @@ namespace NippoControlSystem.UI.Views
         }
 
 
-        //// 「検査」ボタンクリック
-        //private void button_frmMain_Click(object sender, EventArgs e)
-        //{
-        //    SyncSelectedValuesToViewModel();
-        //    _viewModel.OpenMainView();
-        //}
+        // 「検査」ボタンクリック
+        private void button_MainView_Click(object sender, EventArgs e)
+        {
+            SyncSelectedValuesToViewModel();
+            _viewModel.OpenMainView();
+        }
 
-        //// 「検査定義の編集」ボタンクリック
-        //private void button_frmSetting_Click(object sender, EventArgs e)
-        //{
-        //    SyncSelectedValuesToViewModel();
-        //    _viewModel.OpenSettingView();
-        //}
+        // 「検査定義の編集」ボタンクリック
+        private void button_SettingView_Click(object sender, EventArgs e)
+        {
+            SyncSelectedValuesToViewModel();
+            _viewModel.OpenSettingView();
+        }
 
         // 「この画面の編集」ボタンクリック
-        private void button_frmTopEdit_Click(object sender, EventArgs e)
+        private void button_TopEditView_Click(object sender, EventArgs e)
         {
             SyncSelectedValuesToViewModel();
             _viewModel.OpenTopEditView();
         }
 
-        //// 「検査履歴」ボタンクリック
-        //private void buttonHistory_Click(object sender, EventArgs e)
-        //{
-        //    SyncSelectedValuesToViewModel();
-        //    _viewModel.OpenHistoryView();
-        //}
+        // 「検査履歴」ボタンクリック
+        private void button_HistoryView_Click(object sender, EventArgs e)
+        {
+            SyncSelectedValuesToViewModel();
+            _viewModel.OpenHistoryView();
+        }
 
         /// <summary>
         /// View 上の ListBox 選択値を ViewModel のプロパティへ同期します
@@ -270,29 +270,29 @@ namespace NippoControlSystem.UI.Views
             }
         }
 
-        private void button_frmSetting_Click(object sender, EventArgs e)
-        {
-            string MainTitle;
-            string SubTitle;
-            string Folder;
+        //private void button_frmSetting_Click(object sender, EventArgs e)
+        //{
+        //    string MainTitle;
+        //    string SubTitle;
+        //    string Folder;
 
-            if( preSetting(out MainTitle, out SubTitle, out Folder) )
-            {
-                //Debug
-                Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmSetting_Click", string.Format("listBox_MainNo.SelectedValue:{0}", listBox_MainNo.SelectedValue.ToString()));
-                Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmSetting_Click", string.Format("listBox_SubNo.SelectedValue:{0}", listBox_SubNo.SelectedValue.ToString()));
+        //    if( preSetting(out MainTitle, out SubTitle, out Folder) )
+        //    {
+        //        //Debug
+        //        Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmSetting_Click", string.Format("listBox_MainNo.SelectedValue:{0}", listBox_MainNo.SelectedValue.ToString()));
+        //        Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmSetting_Click", string.Format("listBox_SubNo.SelectedValue:{0}", listBox_SubNo.SelectedValue.ToString()));
 
-                //Show
-                SettingView fmSetting = mForms.fmSetting;
-                fmSetting.MainTitle = MainTitle;
-                fmSetting.SubTitle = SubTitle;
-                fmSetting.Folder = Folder;
+        //        //Show
+        //        SettingView fmSetting = mForms.fmSetting;
+        //        fmSetting.MainTitle = MainTitle;
+        //        fmSetting.SubTitle = SubTitle;
+        //        fmSetting.Folder = Folder;
 
-                this.Hide();
-                fmSetting.ShowDialog();
-                this.Show();
-            }
-        }
+        //        this.Hide();
+        //        fmSetting.ShowDialog();
+        //        this.Show();
+        //    }
+        //}
 
         private bool preSetting(out string MainTitle, out string SubTitle, out string Folder)
         {
@@ -370,29 +370,29 @@ namespace NippoControlSystem.UI.Views
         //    //mc.DataSetTopMenuEdit.Clear();
         //}
 
-        private void button_frmMain_Click(object sender, EventArgs e)
-        {
-            string MainTitle;
-            string SubTitle;
-            string Folder;
+        //private void button_frmMain_Click(object sender, EventArgs e)
+        //{
+        //    string MainTitle;
+        //    string SubTitle;
+        //    string Folder;
 
-            if (preSetting(out MainTitle, out SubTitle, out Folder))
-            {
-                //Debug
-                Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmMain_Click", string.Format("listBox_MainNo.SelectedValue:{0}", listBox_MainNo.SelectedValue.ToString()));
-                Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmMain_Click", string.Format("listBox_SubNo.SelectedValue:{0}", listBox_SubNo.SelectedValue.ToString()));
+        //    if (preSetting(out MainTitle, out SubTitle, out Folder))
+        //    {
+        //        //Debug
+        //        Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmMain_Click", string.Format("listBox_MainNo.SelectedValue:{0}", listBox_MainNo.SelectedValue.ToString()));
+        //        Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "button_frmMain_Click", string.Format("listBox_SubNo.SelectedValue:{0}", listBox_SubNo.SelectedValue.ToString()));
 
-                //Show
-                MainView fmMain = mForms.fmMain;
-                fmMain.MainTitle = MainTitle;
-                fmMain.SubTitle = SubTitle;
-                fmMain.Folder = Folder;
+        //        //Show
+        //        MainView fmMain = mForms.fmMain;
+        //        fmMain.MainTitle = MainTitle;
+        //        fmMain.SubTitle = SubTitle;
+        //        fmMain.Folder = Folder;
 
-                this.Hide();
-                fmMain.ShowDialog();
-                this.Show();
-            }
-        }
+        //        this.Hide();
+        //        fmMain.ShowDialog();
+        //        this.Show();
+        //    }
+        //}
 
         private void listBox_MainNo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -521,36 +521,36 @@ namespace NippoControlSystem.UI.Views
 
         }
 
-        private void buttonHistory_Click(object sender, EventArgs e)
-        {
-            string MainTitle;
-            string SubTitle;
-            string Folder;
+        //private void buttonHistory_Click(object sender, EventArgs e)
+        //{
+        //    string MainTitle;
+        //    string SubTitle;
+        //    string Folder;
 
-            if (preSetting(out MainTitle, out SubTitle, out Folder))
-            {
-                string historyFile = showOpenFileDialog(Folder);
-                if (!System.IO.File.Exists(historyFile))
-                {
-                    return;
-                }
+        //    if (preSetting(out MainTitle, out SubTitle, out Folder))
+        //    {
+        //        string historyFile = showOpenFileDialog(Folder);
+        //        if (!System.IO.File.Exists(historyFile))
+        //        {
+        //            return;
+        //        }
 
-                //Debug
-                Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "buttonHistory_Click", string.Format("listBox_MainNo.SelectedValue:{0}", listBox_MainNo.SelectedValue.ToString()));
-                Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "buttonHistory_Click", string.Format("listBox_SubNo.SelectedValue:{0}", listBox_SubNo.SelectedValue.ToString()));
+        //        //Debug
+        //        Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "buttonHistory_Click", string.Format("listBox_MainNo.SelectedValue:{0}", listBox_MainNo.SelectedValue.ToString()));
+        //        Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "buttonHistory_Click", string.Format("listBox_SubNo.SelectedValue:{0}", listBox_SubNo.SelectedValue.ToString()));
 
-                //Show
-                TestHistoryView fmHist = mForms.fmHistView;
-                fmHist.MainTitle = MainTitle;
-                fmHist.SubTitle = SubTitle;
-                fmHist.Folder = Folder;
-                fmHist.historyFile = historyFile;
+        //        //Show
+        //        TestHistoryView fmHist = mForms.fmHistView;
+        //        fmHist.MainTitle = MainTitle;
+        //        fmHist.SubTitle = SubTitle;
+        //        fmHist.Folder = Folder;
+        //        fmHist.historyFile = historyFile;
 
-                this.Hide();
-                fmHist.ShowDialog();
-                this.Show();
-            }
-        }
+        //        this.Hide();
+        //        fmHist.ShowDialog();
+        //        this.Show();
+        //    }
+        //}
 
         private string showOpenFileDialog(string InitialDirectory)
         {
@@ -600,7 +600,7 @@ namespace NippoControlSystem.UI.Views
 
         private void listBox_SubNo_DoubleClick(object sender, EventArgs e)
         {
-            button_frmMain_Click(sender, e);    //20161203
+            button_MainView_Click(sender, e);    //20161203
 
         }
 

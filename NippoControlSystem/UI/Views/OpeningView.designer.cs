@@ -150,7 +150,7 @@
             this.button_frmSetting.TabIndex = 19;
             this.button_frmSetting.Text = "検査定義の編集(&I)";
             this.button_frmSetting.UseVisualStyleBackColor = false;
-            this.button_frmSetting.Click += new System.EventHandler(this.button_frmSetting_Click);
+            this.button_frmSetting.Click += new System.EventHandler(this.button_SettingView_Click);
             // 
             // button_Exit
             // 
@@ -180,7 +180,7 @@
             this.button_frmTopEdit.TabIndex = 18;
             this.button_frmTopEdit.Text = "この画面の編集(&E)";
             this.button_frmTopEdit.UseVisualStyleBackColor = false;
-            this.button_frmTopEdit.Click += new System.EventHandler(this.button_frmTopEdit_Click);
+            this.button_frmTopEdit.Click += new System.EventHandler(this.button_TopEditView_Click);
             // 
             // button_frmMain
             // 
@@ -195,7 +195,7 @@
             this.button_frmMain.TabIndex = 17;
             this.button_frmMain.Text = "検査(&C)";
             this.button_frmMain.UseVisualStyleBackColor = false;
-            this.button_frmMain.Click += new System.EventHandler(this.button_frmMain_Click);
+            this.button_frmMain.Click += new System.EventHandler(this.button_MainView_Click);
             // 
             // Label2
             // 
@@ -310,7 +310,7 @@
             this.buttonHistory.TabIndex = 29;
             this.buttonHistory.Text = "検査履歴(&D)";
             this.buttonHistory.UseVisualStyleBackColor = false;
-            this.buttonHistory.Click += new System.EventHandler(this.buttonHistory_Click);
+            this.buttonHistory.Click += new System.EventHandler(this.button_HistoryView_Click);
             // 
             // frmOpenning
             // 

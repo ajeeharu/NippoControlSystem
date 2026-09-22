@@ -70,20 +70,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <!-- ThirdParty フォルダ内の cdio.dll caio.dll をビルド出力先へ自動コピー -->
-    <None Include="Infrastructure\NativeLibs\cdio.dll">
-      <Link>cdio.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Infrastructure\NativeLibs\caio.dll">
-      <Link>caio.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Update="DataSetItems.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSetItems.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Infrastructure/NativeLibs 内のすべての .dll をビルド時に bin の直下にコピー -->
+    <Content Include="Infrastructure\NativeLibs\*.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>%(Filename)%(Extension)</Link>
+    </Content>
   </ItemGroup>
 </Project>
