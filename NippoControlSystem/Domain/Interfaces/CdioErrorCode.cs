@@ -220,10 +220,4 @@
         DIO_ERR_DM_SEQUENCE = 21103	//	Procedure error of execution
 
     }
-    public interface ICdioNativeErrorCode
-    {
-        // 戻り値やエラー判定で enum を活用できる
-        CaioErrorCode CdioNativeInit(string deviceName, out short id);
-    }
-
 }

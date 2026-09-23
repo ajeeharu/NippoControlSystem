@@ -1,5 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.NativeLibs;
-
+﻿using NippoControlSystem.Domain.Interfaces;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -8,8 +7,8 @@ namespace Cyc.IO
 {
     public class Ai2Di
     {
+        private readonly ICaioNative _aioNative;
         //for CONTEC Digital I/O device
-        CaioNative? aio = null;
         private bool m_AioEmu = false;
         private bool m_Connected = false;
         private bool m_Inited = false;
@@ -50,7 +49,6 @@ namespace Cyc.IO
         //コンストラクタ
         public Ai2Di()
         {
-            aio = new CaioNative();
             AIO_LogLevel = Default.DIO_LogLevel;
 
             m_AI2DI_BDmax = Default.AI2DI_BDmax;    //ボード枚数
@@ -175,21 +173,21 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Init()
-        public int Init()
+        public CaioErrorCode Init()
         {
             // Initialization handling
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 for (int i = 0; i < m_AI2DI_BDmax; i++)
                 {
                     if (m_AIOid[i] != 0)
                     {
-                        aio.Exit(m_AIOid[i]);
+                        _aioNative.Exit(m_AIOid[i]);
                         m_AIOid[i] = 0;
                     }
-                    Ret = aio.Init(m_DeviceNameAI2DI[i], out m_AIOid[i]);
-                    GetErrorString("dio.Init", Ret);
+                    Ret = _aioNative.Init(m_DeviceNameAI2DI[i], out m_AIOid[i]);
+                    GetErrorString("dio.Init", (int)Ret);
                 }
             }
 
@@ -201,10 +199,10 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Exit()
-        public int Exit()
+        public CaioErrorCode Exit()
         {
             // Exit handling of device
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
 
             if (m_AioEmu == false)
             {
@@ -212,9 +210,9 @@ namespace Cyc.IO
                 {
                     if (m_AIOid[i] != 0)
                     {
-                        Ret = aio.Exit(m_AIOid[i]);
+                        Ret = _aioNative.Exit(m_AIOid[i]);
 
-                        GetErrorString("dio.Exit", Ret);
+                        GetErrorString("dio.Exit", (int)Ret);
                         m_AIOid[i] = 0;
                     }
 
@@ -233,18 +231,18 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //SetAiRangeAll()
-        public int SetAiRangeAll(int AiRange)
+        public CaioErrorCode SetAiRangeAll(int AiRange)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 for (int i = 0; i < AI2DI_BDmax; i++)
                 {
                     //入力レンジの設定
-                    Ret = aio.SetAiRangeAll(m_AIOid[i], (short)AiRange);   //AiRange = CaioConst.PM10
+                    Ret = _aioNative.SetAiRangeAll(m_AIOid[i], (short)AiRange);   //AiRange = CaioConst.PM10
                     if (Ret != 0)
                     {
-                        GetErrorString("aio.SetAiRangeAll", Ret);
+                        GetErrorString("aio.SetAiRangeAll", (int)Ret);
                     }
                 }
             }
@@ -257,9 +255,9 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //SingleAiEx()
-        public int SingleAiEx(int AiChannel, out float AiData)
+        public CaioErrorCode SingleAiEx(int AiChannel, out float AiData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             AiData = 0f;
             if (m_AioEmu == false)
             {
@@ -268,10 +266,10 @@ namespace Cyc.IO
                     int iUnit = AiChannel / AI2DI_AImax;
                     int iChannel = Default.AI2DI_DeviceChannel[AiChannel % AI2DI_AImax];
                     //入力レンジの設定
-                    Ret = aio.SingleAiEx(m_AIOid[iUnit], (short)iChannel, out AiData);
+                    Ret = _aioNative.SingleAiEx(m_AIOid[iUnit], (short)iChannel, out AiData);
                     if (Ret != 0)
                     {
-                        GetErrorString("aio.SingleAiEx", Ret);
+                        GetErrorString("aio.SingleAiEx", (int)Ret);
                     }
                     if (AiData < Default.AI2DI_VoltMin)
                     {
@@ -284,7 +282,7 @@ namespace Cyc.IO
                 }
                 else
                 {
-                    Ret = 1;    //AiChannel Over
+                    Ret = (CaioErrorCode)1;    //AiChannel Over
                 }
             }
             else
@@ -296,12 +294,12 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //MultiAi()
-        public int MultiAiEx(float[] AiData)
+        public CaioErrorCode MultiAiEx(float[] AiData)
         {
             int AiChannels = AiData.Length;
             int startChannel = 0;
             float[] AiBuf = new float[m_AI2DI_AImax];
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             float ScanData;
             if (m_AioEmu == false)
             {
@@ -309,11 +307,11 @@ namespace Cyc.IO
                 {
                     //入力レンジの設定
                     int readAiChannels = (AiChannels <= m_AI2DI_AImax ? AiChannels : m_AI2DI_AImax);
-                    Ret = aio.MultiAiEx(m_AIOid[i], (short)readAiChannels, AiBuf);
+                    Ret = _aioNative.MultiAiEx(m_AIOid[i], (short)readAiChannels, AiBuf);
                     AiChannels -= readAiChannels;
                     if (Ret != 0)
                     {
-                        GetErrorString("aio.MultiAi", Ret);
+                        GetErrorString("aio.MultiAi", (int)Ret);
                         break;
                     }
                     for (int j = 0; j < readAiChannels; j++)
@@ -348,10 +346,10 @@ namespace Cyc.IO
         //NippoAIO_SW()：Nippo仕様のAOのSWをコントロールする
         //iPointNo = 0 ～ 7 ポイント番号
         //iStat = OPEN、LOW、HIGH
-        public int NippoAIO_SW(int iPointNo, int iStat)
+        public ERR_STAT NippoAIO_SW(int iPointNo, int iStat)
         {
             int iPointNo2 = iPointNo;
-            int dioErr = 0;
+            CaioErrorCode dioErr = 0;
             ERR_STAT thisStat = ERR_STAT.NO_ERROR;
             if (iPointNo >= 0 && iPointNo < (m_AI2DI_BDmax * m_AI2DI_DOmax))
             {
@@ -366,7 +364,7 @@ namespace Cyc.IO
             {
                 thisStat = ERR_STAT.POINT_NO_OVER;
             }
-            return (int)thisStat;
+            return thisStat;
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //NippoAIO_SW()：Nippo仕様のAOのSWをコントロールする
@@ -397,18 +395,18 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //InputDiBit()
-        public int InputDiBit(int DiBitNo, out int DiData)
+        public CaioErrorCode InputDiBit(int DiBitNo, out int DiData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             short sDiData;
             if (m_AioEmu == false)
             {
                 //デジタル入力
-                Ret = aio.InputDiBit(m_AIOid[DiBitNo / AI2DI_BDmax], (short)(DiBitNo % AI2DI_BDmax), out sDiData);
+                Ret = _aioNative.InputDiBit(m_AIOid[DiBitNo / AI2DI_BDmax], (short)(DiBitNo % AI2DI_BDmax), out sDiData);
                 DiData = sDiData == 0 ? 1 : 0;
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.InputDiBit", Ret);
+                    GetErrorString("aio.InputDiBit", (int)Ret);
                 }
             }
             else
@@ -422,18 +420,18 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutputDoBit()
-        public int OutputDoBit(int DoBitNo, int DoData)
+        public CaioErrorCode OutputDoBit(int DoBitNo, int DoData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 //デジタル出力
-                Ret = aio.OutputDoBit(m_AIOid[DoBitNo / AI2DI_BDmax], (short)(DoBitNo % AI2DI_BDmax), (short)DoData);
+                Ret = _aioNative.OutputDoBit(m_AIOid[DoBitNo / AI2DI_BDmax], (short)(DoBitNo % AI2DI_BDmax), (short)DoData);
                 m_OutputDoBitEcho[DoBitNo] = DoData;
 
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.OutputDoBit", Ret);
+                    GetErrorString("aio.OutputDoBit", (int)Ret);
                 }
             }
             else
@@ -468,9 +466,9 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //InputDiBit()
-        public int InputDiByte(int DiBitNo, out int DiData)
+        public CaioErrorCode InputDiByte(int DiBitNo, out int DiData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             DiData = 0;
             short sDiData;
             if (m_AioEmu == false)
@@ -478,11 +476,11 @@ namespace Cyc.IO
                 for (int i = 0; i < AI2DI_BDmax; i++)
                 {
                     //デジタル入力
-                    Ret = aio.InputDiByte(m_AIOid[i], (short)DiBitNo, out sDiData);
+                    Ret = _aioNative.InputDiByte(m_AIOid[i], (short)DiBitNo, out sDiData);
                     DiData = sDiData;
                     if (Ret != 0)
                     {
-                        GetErrorString("aio.InputDiByte", Ret);
+                        GetErrorString("aio.InputDiByte", (int)Ret);
                     }
                 }
             }
@@ -495,18 +493,18 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutputDoByte()
-        public int OutputDoByte(int DoBitNo, int DoData)
+        public CaioErrorCode OutputDoByte(int DoBitNo, int DoData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 for (int i = 0; i < AI2DI_BDmax; i++)
                 {
                     //デジタル出力
-                    Ret = aio.OutputDoByte(m_AIOid[i], (short)DoBitNo, (short)DoData);
+                    Ret = _aioNative.OutputDoByte(m_AIOid[i], (short)DoBitNo, (short)DoData);
                     if (Ret != 0)
                     {
-                        GetErrorString("aio.OutputDoByte", Ret);
+                        GetErrorString("aio.OutputDoByte", (int)Ret);
                     }
                 }
             }
@@ -530,7 +528,7 @@ namespace Cyc.IO
                 else
                 {
                     string ErrorString;
-                    aio.GetErrorString(Ret, out ErrorString);
+                    _aioNative.GetErrorString(Ret, out ErrorString);
                     m_LastErrorString = "デジタル出力モジュールでエラーが発生しました。処理を終了します。" + "\n" + funcName + " : " + System.Convert.ToString(Ret) + " : " + ErrorString;
                 }
             }

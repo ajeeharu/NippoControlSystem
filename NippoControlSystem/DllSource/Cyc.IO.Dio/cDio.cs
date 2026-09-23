@@ -1,4 +1,5 @@
-﻿using NippoControlSystem.Infrastructure.NativeLibs;
+﻿using NippoControlSystem.Domain.Interfaces;
+using NippoControlSystem.Infrastructure.NativeLibs;
 using System.Data;
 
 #pragma warning disable
@@ -272,11 +273,11 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Init()
-        public int Init()
+        public CdioErrorCode Init()
         {
             // Initialization handling
-            int Ret = 0;
-            int returnValue = 0;
+            CdioErrorCode Ret = 0;
+            CdioErrorCode returnValue = 0;
             if (m_cDioEmu == 0)
             {
                 //for (int i = 0; i < m_DeviceNameDI.Length; i++)
@@ -301,7 +302,7 @@ namespace Cyc.IO
                         m_DOid[i] = 0;
                     }
                     Ret = dio.Init(m_DeviceNameDO[i], out m_DOid[i]);
-                    GetErrorString("dio.Init", Ret);
+                    GetErrorString("dio.Init", (int)Ret);
                     if (Ret != 0)
                     {
                         returnValue = Ret;
@@ -316,11 +317,11 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Exit()
-        public int Exit()
+        public CdioErrorCode Exit()
         {
             // Exit handling of device
-            int Ret = 0;
-            int returnValue = 0;
+            CdioErrorCode Ret = 0;
+            CdioErrorCode returnValue = 0;
             byte[] oData = new byte[m_DO_Pmax / 8];
             short[] PortNo = new short[m_DO_Pmax / 8];
 
@@ -361,7 +362,7 @@ namespace Cyc.IO
                         {
                             returnValue = Ret;
                         }
-                        GetErrorString("dio.Exit", Ret);
+                        GetErrorString("dio.Exit", (int)Ret);
                     }
                     //m_DIid = null;
                 }
@@ -379,9 +380,9 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutBit()
-        public int OutBit(int iUnit, int iBitNo, int iData)
+        public CdioErrorCode OutBit(int iUnit, int iBitNo, int iData)
         {
-            int Ret;
+            CdioErrorCode Ret;
             if (m_cDioEmu == 0)
             {
                 //short shortBitNo = (short)(iBitNo - m_DImax[iUnit]);   //各Unitの入力分を引く
@@ -395,7 +396,7 @@ namespace Cyc.IO
                 //-----------------------------
                 // Error process
                 //-----------------------------
-                GetErrorString("dio.OutBit", Ret);
+                GetErrorString("dio.OutBit", (int)Ret);
             }
             else
             {
@@ -407,9 +408,9 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutBit()
-        public int EchoBackBit(int iUnit, int iBitNo, out int oData)
+        public CdioErrorCode EchoBackBit(int iUnit, int iBitNo, out int oData)
         {
-            int Ret;
+            CdioErrorCode Ret;
             if (m_cDioEmu == 0)
             {
                 //short shortBitNo = (short)(iBitNo - m_DImax[iUnit]);   //各Unitの入力分を引く
@@ -424,7 +425,7 @@ namespace Cyc.IO
                 //-----------------------------
                 // Error process
                 //-----------------------------
-                GetErrorString("dio.OutBit", Ret);
+                GetErrorString("dio.EchoBackBit", (int)Ret);
             }
             else
             {
@@ -437,15 +438,15 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutBit()
-        public int OutBit(string DevTitle, int oData)
+        public CdioErrorCode OutBit(string DevTitle, int oData)
         {
             if (m_cDioEmu != 0) return 0;
-            int ReturnValue = 0;
+            CdioErrorCode ReturnValue = 0;
             if (dicDeviceItem.ContainsKey(DevTitle))
             {
                 int DeviceNo = dicDeviceItem[DevTitle].DevNo;
                 int UnitNo = dicDeviceItem[DevTitle].UnitNo;
-                int errcode = OutBit(UnitNo, DeviceNo, oData);
+                CdioErrorCode errcode = OutBit(UnitNo, DeviceNo, oData);
                 ReturnValue = errcode;
             }
             else
@@ -457,9 +458,9 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutMultiBit()
-        public int OutMultiBit(int iUnit, int iBitNo, int[] iData)
+        public CdioErrorCode OutMultiBit(int iUnit, int iBitNo, int[] iData)
         {
-            int Ret;
+            CdioErrorCode Ret;
             if (m_cDioEmu == 0)
             {
                 short[] shortPortNo = new short[iData.Length];
@@ -479,7 +480,7 @@ namespace Cyc.IO
                 //-----------------------------
                 // Error process
                 //-----------------------------
-                GetErrorString("dio.OutMultiBit", Ret);
+                GetErrorString("dio.OutMultiBit", (int)Ret);
             }
             else
             {
@@ -597,9 +598,9 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //DioEchoBackMultiBit  ()
-        public int EchoBackMultiBit(int iUnit, int iBitNo, int[] oData)
+        public CdioErrorCode EchoBackMultiBit(int iUnit, int iBitNo, int[] oData)
         {
-            int Ret;
+            CdioErrorCode Ret;
             if (m_cDioEmu == 0)
             {
                 short[] shortPortNo = new short[oData.Length];
@@ -625,7 +626,7 @@ namespace Cyc.IO
                 //-----------------------------
                 // Error process
                 //-----------------------------
-                GetErrorString("dio.EchoBackMultiBit", Ret);
+                GetErrorString("dio.EchoBackMultiBit", (int)Ret);
             }
             else
             {

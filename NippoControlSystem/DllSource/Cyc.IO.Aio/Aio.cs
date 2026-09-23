@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.NativeLibs;
+﻿using NippoControlSystem.Domain.Interfaces;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -8,7 +8,7 @@ namespace Cyc.IO
     public class Aio
     {
         //for CONTEC Digital I/O device
-        CaioNative? aio = null;
+        private readonly ICaioNative _aioNative;
         private bool m_AioEmu = false;
         private bool m_Connected = false;
         private bool m_Inited = false;
@@ -38,7 +38,6 @@ namespace Cyc.IO
         //コンストラクタ
         public Aio()
         {
-            aio = new CaioNative();
             AIO_LogLevel = Default.DIO_LogLevel;
 
             m_AImax = Default.AImax;
@@ -139,19 +138,19 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Init()
-        public int Init()
+        public CaioErrorCode Init()
         {
             // Initialization handling
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 if (m_AIOid != 0)
                 {
-                    aio.Exit(m_AIOid);
+                    _aioNative.Exit(m_AIOid);
                     m_AIOid = 0;
                 }
-                Ret = aio.Init(m_DeviceNameAIO, out m_AIOid);
-                GetErrorString("dio.Init", Ret);
+                Ret = _aioNative.Init(m_DeviceNameAIO, out m_AIOid);
+                GetErrorString("dio.Init", (int)Ret);
             }
 
             else
@@ -162,18 +161,18 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Exit()
-        public int Exit()
+        public CaioErrorCode Exit()
         {
             // Exit handling of device
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
 
             if (m_AioEmu == false)
             {
                 if (m_AIOid != 0)
                 {
-                    Ret = aio.Exit(m_AIOid);
+                    Ret = _aioNative.Exit(m_AIOid);
 
-                    GetErrorString("dio.Exit", Ret);
+                    GetErrorString("dio.Exit", (int)Ret);
                     m_AIOid = 0;
                 }
 
@@ -191,16 +190,16 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //SetAiRangeAll()
-        public int SetAiRangeAll(int AiRange)
+        public CaioErrorCode SetAiRangeAll(int AiRange)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 //入力レンジの設定
-                Ret = aio.SetAiRangeAll(m_AIOid, (short)AiRange);   //AiRange = CaioConst.PM10
+                Ret = _aioNative.SetAiRangeAll(m_AIOid, (short)AiRange);   //AiRange = CaioConst.PM10
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.SetAiRangeAll", Ret);
+                    GetErrorString("aio.SetAiRangeAll", (int)Ret);
                 }
             }
             else
@@ -212,16 +211,16 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //SingleAiEx()
-        public int SingleAiEx(int AiChannel, out float AiData)
+        public CaioErrorCode SingleAiEx(int AiChannel, out float AiData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 //入力レンジの設定
-                Ret = aio.SingleAiEx(m_AIOid, (short)AiChannel, out AiData);
+                Ret = _aioNative.SingleAiEx(m_AIOid, (short)AiChannel, out AiData);
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.SingleAiEx", Ret);
+                    GetErrorString("aio.SingleAiEx", (int)Ret);
                 }
                 AiData = (AiData * Default.AiCalib_A[AiChannel] + Default.AiCalib_B[AiChannel]) * Default.AiMulti;
             }
@@ -234,17 +233,17 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //MultiAi()
-        public int MultiAi(float[] AiData)
+        public CaioErrorCode MultiAi(float[] AiData)
         {
             short AiChannels = (short)AiData.Length;
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 //入力レンジの設定
-                Ret = aio.MultiAiEx(m_AIOid, AiChannels, AiData);
+                Ret = _aioNative.MultiAiEx(m_AIOid, AiChannels, AiData);
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.MultiAi", Ret);
+                    GetErrorString("aio.MultiAi", (int)Ret);
                 }
                 for (int i = 0; i < AiChannels; i++)
                 {
@@ -264,18 +263,18 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //SingleAoEx()
-        public int SingleAoEx(int AiChannel, float AoData)
+        public CaioErrorCode SingleAoEx(int AiChannel, float AoData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             double AoDataCalib;
             if (m_AioEmu == false)
             {
                 //アナログ出力
                 AoDataCalib = (AoData * AoData * Default.AoCalib_A[AiChannel] + AoData * Default.AoCalib_B[AiChannel] + Default.AoCalib_C[AiChannel]) / Default.AoDiv;
-                Ret = aio.SingleAoEx(m_AIOid, (short)AiChannel, (float)AoDataCalib);
+                Ret = _aioNative.SingleAoEx(m_AIOid, (short)AiChannel, (float)AoDataCalib);
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.SingleAoEx", Ret);
+                    GetErrorString("aio.SingleAoEx", (int)Ret);
                 }
             }
             else
@@ -287,7 +286,7 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //MultiAoEx()
-        public int MultiAoEx(float[] AoData)
+        public CaioErrorCode MultiAoEx(float[] AoData)
         {
             short AoMaxChannels = (short)AoData.Length;
             float[] AoDataCalib = new float[AoData.Length];
@@ -295,14 +294,14 @@ namespace Cyc.IO
             {
                 AoDataCalib[i] = (AoData[i] * AoData[i] * Default.AoCalib_A[i] + AoData[i] * Default.AoCalib_B[i] + Default.AoCalib_C[i]) / Default.AoDiv;
             }
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 //アナログ出力
-                Ret = aio.MultiAoEx(m_AIOid, AoMaxChannels, AoDataCalib);
+                Ret = _aioNative.MultiAoEx(m_AIOid, AoMaxChannels, AoDataCalib);
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.MultiAoEx", Ret);
+                    GetErrorString("aio.MultiAoEx", (int)Ret);
                 }
             }
             else
@@ -317,7 +316,7 @@ namespace Cyc.IO
         public int getGreenSw()
         {
             int Value = 0;
-            int Ret = InputDiBit(0, out Value);
+            CaioErrorCode Ret = InputDiBit(0, out Value);
             if (Ret != 0) Value = 0;
             return Value;
         }
@@ -326,24 +325,24 @@ namespace Cyc.IO
         public int getRedSw()
         {
             int Value = 0;
-            int Ret = InputDiBit(1, out Value);
+            CaioErrorCode Ret = InputDiBit(1, out Value);
             if (Ret != 0) Value = 0;
             return Value;
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //InputDiBit()
-        public int InputDiBit(int DiBitNo, out int DiData)
+        public CaioErrorCode InputDiBit(int DiBitNo, out int DiData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             short sDiData;
             if (m_AioEmu == false)
             {
                 //デジタル入力
-                Ret = aio.InputDiBit(m_AIOid, (short)DiBitNo, out sDiData);
+                Ret = _aioNative.InputDiBit(m_AIOid, (short)DiBitNo, out sDiData);
                 DiData = sDiData == 0 ? 1 : 0;
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.InputDiBit", Ret);
+                    GetErrorString("aio.InputDiBit", (int)Ret);
                 }
             }
             else
@@ -355,61 +354,61 @@ namespace Cyc.IO
         int PowerVoltEchoBackData = 0;
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Power12()
-        public int setPowerVolt(int DoData)
+        public CaioErrorCode setPowerVolt(int DoData)
         {
             PowerVoltEchoBackData = DoData;
             return OutputDoBit(0, DoData);  //ON=24V,  OFF=12V
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //EchoBackPowerV()
-        public int EchoBackPowerVolt()
+        public CaioErrorCode EchoBackPowerVolt()
         {
-            return PowerVoltEchoBackData;  //ON=24V,  OFF=12V
+            return (CaioErrorCode)PowerVoltEchoBackData;  //ON=24V,  OFF=12V
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Power12()
-        public int SetPower12V()
+        public CaioErrorCode SetPower12V()
         {
             return setPowerVolt(0);  //ON=24V,  OFF=12V
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Power12()
-        public int SetPower24V()
+        public CaioErrorCode SetPower24V()
         {
             return setPowerVolt(1);  //ON=24V,  OFF=12V
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //GreenLamp()
-        public int setGreenLamp(int DoData)
+        public CaioErrorCode setGreenLamp(int DoData)
         {
             return OutputDoBit(1, (short)(DoData == 0 ? 1 : 0));
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //RedLamp()
-        public int setRedLamp(int DoData)
+        public CaioErrorCode setRedLamp(int DoData)
         {
             return OutputDoBit(2, (short)(DoData == 0 ? 1 : 0));
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //InspctLamp()
-        public int setInspctLamp(int DoData)
+        public CaioErrorCode setInspctLamp(int DoData)
         {
             return OutputDoBit(3, (short)(DoData == 0 ? 1 : 0));
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutputDoBit()
-        public int OutputDoBit(int DoBitNo, int DoData)
+        public CaioErrorCode OutputDoBit(int DoBitNo, int DoData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 //デジタル出力
-                Ret = aio.OutputDoBit(m_AIOid, (short)DoBitNo, (short)DoData);
+                Ret = _aioNative.OutputDoBit(m_AIOid, (short)DoBitNo, (short)DoData);
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.OutputDoBit", Ret);
+                    GetErrorString("aio.OutputDoBit", (int)Ret);
                 }
             }
             else
@@ -421,18 +420,18 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //InputDiBit()
-        public int InputDiByte(int DiBitNo, out int DiData)
+        public CaioErrorCode InputDiByte(int DiBitNo, out int DiData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             short sDiData;
             if (m_AioEmu == false)
             {
                 //デジタル入力
-                Ret = aio.InputDiByte(m_AIOid, (short)DiBitNo, out sDiData);
+                Ret = _aioNative.InputDiByte(m_AIOid, (short)DiBitNo, out sDiData);
                 DiData = sDiData;
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.InputDiByte", Ret);
+                    GetErrorString("aio.InputDiByte", (int)Ret);
                 }
             }
             else
@@ -444,16 +443,16 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutputDoByte()
-        public int OutputDoByte(int DoBitNo, int DoData)
+        public CaioErrorCode OutputDoByte(int DoBitNo, int DoData)
         {
-            int Ret = 0;
+            CaioErrorCode Ret = 0;
             if (m_AioEmu == false)
             {
                 //デジタル出力
-                Ret = aio.OutputDoByte(m_AIOid, (short)DoBitNo, (short)DoData);
+                Ret = _aioNative.OutputDoByte(m_AIOid, (short)DoBitNo, (short)DoData);
                 if (Ret != 0)
                 {
-                    GetErrorString("aio.OutputDoByte", Ret);
+                    GetErrorString("aio.OutputDoByte", (int)Ret);
                 }
             }
             else
@@ -476,7 +475,7 @@ namespace Cyc.IO
                 else
                 {
                     string ErrorString;
-                    aio.GetErrorString(Ret, out ErrorString);
+                    _aioNative.GetErrorString(Ret, out ErrorString);
                     m_LastErrorString = "デジタル出力モジュールでエラーが発生しました。処理を終了します。" + "\n" + funcName + " : " + System.Convert.ToString(Ret) + " : " + ErrorString;
                 }
             }

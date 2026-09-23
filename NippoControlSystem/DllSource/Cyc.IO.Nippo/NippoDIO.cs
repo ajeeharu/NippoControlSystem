@@ -134,13 +134,13 @@ namespace Cyc.IO
         //NippoDIO_OUT()：Nippo仕様のIOボードへ出力する
         //iPointNo = 0 ～ 256 ポイント番号
         //iStat = OPEN、LOW、HIGH
-        public int NippoDIO_OUT(int iPointNo, IO_STAT iStat)
+        public ERR_STAT NippoDIO_OUT(int iPointNo, IO_STAT iStat)
         {
             int iUnit = -1;
             int iBitNo = -1;
             int iPointNo2 = iPointNo * NUM_DO_BIT_OF_POINT;
             int[] oData = new int[NUM_DO_BIT_OF_POINT];
-            int dioErr = (int)CdioErrorCode.DIO_ERR_SUCCESS;
+            CdioErrorCode dioErr = CdioErrorCode.DIO_ERR_SUCCESS;
             ERR_STAT thisStat = ERR_STAT.NO_ERROR;
             if (iPointNo >= 0 && iPointNo < MAX_POINT)
             {
@@ -224,11 +224,11 @@ namespace Cyc.IO
                     }
                 }
 
-                return (int)thisStat;
+                return thisStat;
             }
             else
             {
-                return (int)ERR_STAT.POINT_NO_OVER;
+                return ERR_STAT.POINT_NO_OVER;
             }
         }
 
@@ -242,7 +242,7 @@ namespace Cyc.IO
             int iBitNo = -1;
             int iPointNo2 = iPointNo * NUM_DO_BIT_OF_POINT;
             int[] iData = new int[NUM_DO_BIT_OF_POINT];
-            int dioErr = (int)CdioErrorCode.DIO_ERR_SUCCESS;
+            CdioErrorCode dioErr = CdioErrorCode.DIO_ERR_SUCCESS;
             int iOutSwData = 0;
             int iInSwData = 0;
             ERR_STAT thisStat = ERR_STAT.NO_ERROR;
@@ -258,7 +258,7 @@ namespace Cyc.IO
                 //
                 dioErr = dio.EchoBackMultiBit(iUnit, iBitNo, iData);
                 //dioErr2 = dio.EchoBackBit(DO_SW_UNITNO , iPointNo % 32, out iSwData);ボード１枚時の調整用
-                if (dioErr == (int)CdioErrorCode.DIO_ERR_SUCCESS)
+                if (dioErr == CdioErrorCode.DIO_ERR_SUCCESS)
                 {
 
                     if (iOutSwData == 0 && iInSwData == 0)      //iHi入力リレー、iDh入力リレー共にOFF

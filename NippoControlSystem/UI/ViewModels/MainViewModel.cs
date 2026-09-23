@@ -1,10 +1,8 @@
-﻿using System;
+﻿using NippoControlSystem.Domain.Interfaces;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
 //using NippoControlSystem.Services;
 
 namespace NippoControlSystem.UI.ViewModels
@@ -184,16 +182,16 @@ namespace NippoControlSystem.UI.ViewModels
             IsButtonsEnabled = true;
 
             // ボード初期化
-            int iRetDio = _dio.Init();
+            CdioErrorCode iRetDio = _dio.Init();
             if (iRetDio != 0) GuideText = "DIOボードの初期化エラー";
 
-            int iRetAio = _aio.Init();
+            CaioErrorCode iRetAio = _aio.Init();
             if (iRetAio != 0) GuideText = "AIOボードの初期化エラー";
 
             _aio.setInspctLamp(0);
             _aio.setGreenLamp(0);
 
-            int iRetAi2Di = _ai2di.Init();
+            CaioErrorCode iRetAi2Di = _ai2di.Init();
             if (iRetAi2Di != 0) GuideText = "AIボードの初期化エラー";
 
             // 電圧設定

@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
+using NippoControlSystem.Domain.Interfaces;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Runtime.Versioning;
 
 #pragma warning disable
@@ -125,7 +121,7 @@ namespace NippoControlSystem.UI.Views
                 // ArrangedElementCollection.Count は Windows でのみサポートされる API のため実行時ガードを追加
                 if (OperatingSystem.IsWindows())
                 {
-                    if (dv.Rows.Count > 0)  dv.CurrentCell = dv[0, m_CurrentTNo];
+                    if (dv.Rows.Count > 0) dv.CurrentCell = dv[0, m_CurrentTNo];
                 }
             }
         }
@@ -137,7 +133,8 @@ namespace NippoControlSystem.UI.Views
             Console.WriteLine(System.Configuration.ConfigurationManager.AppSettings["loc_frmMain"]);
             Views.DesktopLocation((Form)this, System.Configuration.ConfigurationManager.AppSettings["loc_frmMain"]);
 
-            int iRet = 0;
+            CdioErrorCode idRet = 0;
+            CaioErrorCode iaRet = 0;
             //Form.Loadを一回だけ実行する記述、
             //http://d.hatena.ne.jp/Kazzz/20070913/p4
             //Form.Load イベント:フォームが初めて表示される直前に発生します。 
@@ -183,7 +180,7 @@ namespace NippoControlSystem.UI.Views
             //タイムアウト時間更新20170809
             ToolStripMenuItem menu = (ToolStripMenuItem)タイムアウト時間ToolStripMenuItem; //タイムアウト時間ToolStripMenuItem
             menu.Text = string.Format("タイムアウト {0}分", this.AutoTimeOut);
-            
+
             this.textBox_Guide.Text = "";   //メッセージクリア
             //ボタンを元に戻す
             button_Enable(true);
@@ -192,32 +189,32 @@ namespace NippoControlSystem.UI.Views
             textBox_Guide.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
 
             //IO
-            iRet = dio.Init();
-       #if !DEVICE_DEBUG
-            if (iRet != 0)
+            idRet = dio.Init();
+#if !DEVICE_DEBUG
+            if (idRet != 0)
             {
                 this.textBox_Guide.DataBindings.Clear();        //20170112
                 this.textBox_Guide.Text = "DIOボードの初期化エラー";
             }
-        #endif
-            iRet = aio.Init();
-        #if !DEVICE_DEBUG
-            if (iRet != 0)
+#endif
+            iaRet = aio.Init();
+#if !DEVICE_DEBUG
+            if (iaRet != 0)
             {
                 this.textBox_Guide.DataBindings.Clear();
                 this.textBox_Guide.Text = "AIOボードの初期化エラー";
             }
-        #endif
+#endif
             aio.setInspctLamp(0);   //LED_OFF
             aio.setGreenLamp(0);
-            iRet = ai2di.Init();    //20180801
-        #if !DEVICE_DEBUG
-            if (iRet != 0)
+            iaRet = ai2di.Init();    //20180801
+#if !DEVICE_DEBUG
+            if (iaRet != 0)
             {
                 this.textBox_Guide.DataBindings.Clear();
                 this.textBox_Guide.Text = "AIボードの初期化エラー";
             }
-        #endif
+#endif
 
             //VOLT
             PowerVolt = myDataSetItems.CheckDat.Rows[0]["Volt"].ToString();
@@ -350,7 +347,7 @@ namespace NippoControlSystem.UI.Views
                 //    return;
                 //}
                 //検査を開始する
-                stopButtonClick = false; 
+                stopButtonClick = false;
                 inspect_Run(0, MeasureCondition.enumInspectStat.Stat_NormalStart);
             }
             else
@@ -483,8 +480,8 @@ namespace NippoControlSystem.UI.Views
             this.timerReadSw.Enabled = true;    //timerReadSw再開
             if (fmDebug.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                int iRetDio = dio.Init();
-                int iRetAio = aio.Init();
+                CdioErrorCode iRetDio = dio.Init();
+                CaioErrorCode iRetAio = aio.Init();
 
                 //if (iRetDio != 0 || iRetAio != 0)
                 //{
@@ -540,7 +537,7 @@ namespace NippoControlSystem.UI.Views
         {
             //float[] AiDataInput = new float[8];
             float work;
-            int ret = aio.MultiAi(AiDataInput);
+            CaioErrorCode ret = aio.MultiAi(AiDataInput);
             //AiDataAve = new float[10,8];
             for (int i = 0; i < (Default.AiAveTimes - 1); i++)
             {
@@ -725,7 +722,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)    //OFFしたら、GreenSwitchStat(ON中)をリセットする 20170126
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)　
+                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -836,7 +833,7 @@ namespace NippoControlSystem.UI.Views
             for (int i = 0; i < menu.DropDown.Items.Count; i++)
             {
                 ToolStripMenuItem subMenu = (ToolStripMenuItem)menu.DropDown.Items[i];
-                if ((i+1) == this.AutoTimeOut)
+                if ((i + 1) == this.AutoTimeOut)
                 {
                     subMenu.Checked = true;
                 }
@@ -857,7 +854,7 @@ namespace NippoControlSystem.UI.Views
                 if (sender.Equals(subMenu))
                 {
                     this.AutoTimeOut = (i + 1);
-                    menu.Text = string.Format("タイムアウト {0}分", this.AutoTimeOut); 
+                    menu.Text = string.Format("タイムアウト {0}分", this.AutoTimeOut);
                 }
             }
         }

@@ -183,9 +183,4 @@
         AIOECU_SRC_STOP = 385,          //Ai, Ao, Cnt, Tmソフトウェア停止信号
 
     }
-    public interface ICaioNativeErrorCode
-    {
-        // 戻り値やエラー判定で enum を活用できる
-        CaioErrorCode CaioNativeInit(string deviceName, out short id);
-    }
 }

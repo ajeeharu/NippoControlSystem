@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Data;
-using System.Drawing;
-using Cyc.IO;
+﻿using NippoControlSystem.Domain.Interfaces;
 using System.ComponentModel;
+using System.Data;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -71,11 +64,11 @@ namespace NippoControlSystem.UI.Views
             //LMT
             int iDo_Length = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
             string dtCheckDatFields;
-            int idx24 = (PowerVolt == "1"? 2:0);
+            int idx24 = (PowerVolt == "1" ? 2 : 0);
             for (int i = 0; i < iDo_Length; i++)
             {
-                CheckDatLMTHi[i] = Default.CheckDatLMT[idx24+0][i];
-                CheckDatLMTLo[i] = Default.CheckDatLMT[idx24+1][i];
+                CheckDatLMTHi[i] = Default.CheckDatLMT[idx24 + 0][i];
+                CheckDatLMTLo[i] = Default.CheckDatLMT[idx24 + 1][i];
 
                 dtCheckDatFields = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
                 //CheckDatLMTHi[i] = float.Parse(myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString());    //iOP-HiLMT～iTo-HiLMT
@@ -84,7 +77,7 @@ namespace NippoControlSystem.UI.Views
                 //CheckDatLMTLo[i] = float.Parse(myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString());    //iOP-LoLMT～iTo-LoLMT
                 float.TryParse(myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString(), out CheckDatLMTLo[i]); //20180911 nullに備える20180911-3
             }
-            int idxiDs = ((int)Cyc.IO.NippoDIO.IO_STAT.iDs-(int)Cyc.IO.NippoDIO.IO_STAT.iOP);
+            int idxiDs = ((int)Cyc.IO.NippoDIO.IO_STAT.iDs - (int)Cyc.IO.NippoDIO.IO_STAT.iOP);
             {
                 CheckDatiDsHi = CheckDatLMTHi[idxiDs];   //各Step毎のiDs-HiLMT、iDs-LoLMTが空欄に備えて、初期値を保存しておく
                 CheckDatiDsLo = CheckDatLMTLo[idxiDs];
@@ -164,7 +157,7 @@ namespace NippoControlSystem.UI.Views
                 DataRow dtListDatResultRow = dtListDatResult.Rows[TNo];
                 //this.textBox_Guide.Text = dtListDatResultRow["Guide"].ToString();
                 //this.textBox_Guide.Text = dtListDatROW["Guide"].ToString();     //20170112
-                richTextConvert(this.textBox_Guide,  dtListDatROW["Guide"].ToString());     //20180831
+                richTextConvert(this.textBox_Guide, dtListDatROW["Guide"].ToString());     //20180831
                 string InsType = dtListDatResultRow["Type"].ToString();
                 this.textBox_InspectType.Text = getInspectType(dtListDatROW["Type"].ToString());
 
@@ -231,11 +224,11 @@ namespace NippoControlSystem.UI.Views
                         //次のステップへ
                     }
                     else if (this.timeOutStopwatch.ElapsedMilliseconds >= (this.AutoTimeOut * 60000))    //20170619 時間経過で強制NG
-                        {
-                            //loopEnd = RedSwitch;
-                            loopEnd = TimeoutSwitch;    //20170703
-                            //次のステップへ
-                        }
+                    {
+                        //loopEnd = RedSwitch;
+                        loopEnd = TimeoutSwitch;    //20170703
+                                                    //次のステップへ
+                    }
                     else
                     {
                         TNoRetryNo = 1;
@@ -269,7 +262,7 @@ namespace NippoControlSystem.UI.Views
                     else
                     {
                         //次のステップへ
-                        if (hasError  == false)
+                        if (hasError == false)
                         {
                             //音を鳴らす 20170417
                             //PlaySoundPause();
@@ -484,14 +477,15 @@ namespace NippoControlSystem.UI.Views
             DataRow dtListDatRow = dtListDat.Rows[TNo];
             DataRow dtListDatResultRow = dtListDatResult.Rows[TNo];
             int iPOS = 0;
-            int iRet = 0;
+            CaioErrorCode iaRet = 0;
+            CdioErrorCode idRet = 0;
             string iFeildName = "";
             string iFeildName2 = "";
             float ScannerValue;
             float AiData;
 
             float[] AiAll = new float[Default.AI2DI_BDmax * Default.AI2DI_AImax];
-            iRet = ai2di.MultiAiEx(AiAll);  //New AI
+            iaRet = ai2di.MultiAiEx(AiAll);  //New AI
 
             //DO Start
             Cyc.IO.Log.WriteLine(Main_LogLevel, "inspect_Exec -0", "DO Start");
@@ -503,7 +497,7 @@ namespace NippoControlSystem.UI.Views
                     iPOS = i * Default.DioNums[0] + j;
                     iFeildName = string.Format("{0}-{1:00}", Default.DioNames[i], jj);
                     DioStat = dtListDatRow[iFeildName].ToString();
-                    iRet = nio.NippoDIO_OUT(iPOS, (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DioStat]);
+                    idRet = (CdioErrorCode)nio.NippoDIO_OUT(iPOS, (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DioStat]);
                 }
             }
             //DI Start
@@ -546,7 +540,7 @@ namespace NippoControlSystem.UI.Views
                     }
                     statCurr = (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DioStat]; //現在の設定
                     //各端子のモードとEchoがあっていることを確認
-                    iRet = nio.NippoDIO_Echo(iPOS, out statEcho);  //IOのEcho
+                    idRet = (CdioErrorCode)nio.NippoDIO_Echo(iPOS, out statEcho);  //IOのEcho
                     switch (statCurr)
                     {
                         case Cyc.IO.NippoDIO.IO_STAT.iOP:
@@ -665,7 +659,7 @@ namespace NippoControlSystem.UI.Views
                         case Cyc.IO.NippoDIO.IO_STAT.iDc:
                         case Cyc.IO.NippoDIO.IO_STAT.iDs:
                         case Cyc.IO.NippoDIO.IO_STAT.iDp:
-                        //case Cyc.IO.NippoDIO.IO_STAT.iTo:
+                            //case Cyc.IO.NippoDIO.IO_STAT.iTo:
                             StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.iOP;
                             if (statEcho != Cyc.IO.NippoDIO.IO_STAT.iDRD)
                             {
@@ -719,7 +713,7 @@ namespace NippoControlSystem.UI.Views
                         case Cyc.IO.NippoDIO.IO_STAT.nDc:
                         case Cyc.IO.NippoDIO.IO_STAT.nDs:
                         case Cyc.IO.NippoDIO.IO_STAT.nDp:
-                        //case Cyc.IO.NippoDIO.IO_STAT.nTo:
+                            //case Cyc.IO.NippoDIO.IO_STAT.nTo:
                             StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.nOP;
                             if (statEcho != Cyc.IO.NippoDIO.IO_STAT.iDRD)
                             {
@@ -807,7 +801,7 @@ namespace NippoControlSystem.UI.Views
                     }
                 }
             }
-                
+
             //Cyc.IO.Log.WriteLine(Main_LogLevel, "inspect_Exec", "AO Start");
             //AOを実行
             float AO_Value;
@@ -905,10 +899,11 @@ namespace NippoControlSystem.UI.Views
             return hasError;
         }
 
-        private int allClear()
+        private CaioErrorCode allClear()
         {
             int iPOS;
-            int iRet = 0; ;
+            CaioErrorCode iaRet = 0; ;
+            CdioErrorCode idRet = 0; ;
             for (int i = 0; i < Default.DioNames.Length; i++)     // { "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH" }
             {
                 for (int j = 0; j < Default.DioNums[i]; j++)    //32loop
@@ -916,7 +911,7 @@ namespace NippoControlSystem.UI.Views
                     int jj = j + 1;
                     iPOS = i * Default.DioNums[0] + j;
                     //oOP
-                    iRet |= nio.NippoDIO_OUT(iPOS, Cyc.IO.NippoDIO.IO_STAT.oOP);
+                    idRet = (CdioErrorCode)nio.NippoDIO_OUT(iPOS, Cyc.IO.NippoDIO.IO_STAT.oOP);
                 }
             }
             //AOを実行
@@ -924,15 +919,15 @@ namespace NippoControlSystem.UI.Views
 
             for (int j = 0; j < Default.AoNum; j++)    //32loop
             {
-                iRet |= aio.SingleAoEx(j, AO_Value);
+                iaRet = (CaioErrorCode)aio.SingleAoEx(j, AO_Value);
             }
             //AO_Switch
             for (int j = 0; j < Default.AoSwichNum; j++)    //32loop
             {
-                iRet |= ai2di.NippoAIO_SW(j, 0);      //OFF
+                iaRet = (CaioErrorCode)ai2di.NippoAIO_SW(j, 0);      //OFF
             }
-            iRet |= aio.SetPower12V();  //12V
-            return iRet;
+            iaRet = aio.SetPower12V();  //12V
+            return iaRet;
         }
 
         string lastrichText = null;  //20180831
@@ -1021,7 +1016,7 @@ namespace NippoControlSystem.UI.Views
             }
         }
 
-     
+
         ////OK.WAVファイルを再生する-> PlaySoundPause()に統合
         //private void PlaySound1(string WavFileName)
         //{
