@@ -212,8 +212,7 @@ namespace NippoControlSystem.UI.ViewModels
             {
                 IsBusy = true;
 
-                int processId;
-                NativeMethods.GetWindowThreadProcessId(hWnd, out processId);
+                int v = NativeMethods.GetWindowThreadProcessId(hWnd, out int processId);
                 Process p = Process.GetProcessById(processId);
 
                 Console.WriteLine("プロセス名:" + p.ProcessName);
@@ -262,7 +261,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// <summary>
         /// メモ帳を開く（日時ヘッダー挿入なし）
         /// </summary>
-        public void OpenNotepad(string filePath)
+        public static void OpenNotepad(string filePath)
         {
             if (!File.Exists(filePath)) return;
 
@@ -272,7 +271,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

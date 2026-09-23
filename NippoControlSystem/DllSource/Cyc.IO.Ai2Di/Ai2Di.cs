@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NippoControlSystem.Infrastructure.NativeLibs;
+
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -12,11 +9,11 @@ namespace Cyc.IO
     public class Ai2Di
     {
         //for CONTEC Digital I/O device
-        CaioCs.Caio? aio = null;
+        CaioNative? aio = null;
         private bool m_AioEmu = false;
         private bool m_Connected = false;
         private bool m_Inited = false;
-        private short [] m_AIOid;
+        private short[] m_AIOid;
         private string? m_LastErrorString = null;
         private int m_AI2DI_BDmax = 0;
         private int m_AI2DI_AImax = 0;
@@ -53,7 +50,7 @@ namespace Cyc.IO
         //コンストラクタ
         public Ai2Di()
         {
-            aio = new CaioCs.Caio();
+            aio = new CaioNative();
             AIO_LogLevel = Default.DIO_LogLevel;
 
             m_AI2DI_BDmax = Default.AI2DI_BDmax;    //ボード枚数
@@ -148,7 +145,7 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Proparty
-        public short [] AIOid
+        public short[] AIOid
         {
             set { m_AIOid = value; }
         }
@@ -280,7 +277,7 @@ namespace Cyc.IO
                     {
                         AiData = Default.AI2DI_VoltMin;
                     }
-                    else if(AiData > Default.AI2DI_VoltMax)
+                    else if (AiData > Default.AI2DI_VoltMax)
                     {
                         AiData = Default.AI2DI_VoltMax;
                     }
@@ -303,7 +300,7 @@ namespace Cyc.IO
         {
             int AiChannels = AiData.Length;
             int startChannel = 0;
-            float [] AiBuf = new float[m_AI2DI_AImax];
+            float[] AiBuf = new float[m_AI2DI_AImax];
             int Ret = 0;
             float ScanData;
             if (m_AioEmu == false)
@@ -311,7 +308,7 @@ namespace Cyc.IO
                 for (int i = 0; i < AI2DI_BDmax; i++)
                 {
                     //入力レンジの設定
-                    int readAiChannels = (AiChannels <= m_AI2DI_AImax? AiChannels:m_AI2DI_AImax);
+                    int readAiChannels = (AiChannels <= m_AI2DI_AImax ? AiChannels : m_AI2DI_AImax);
                     Ret = aio.MultiAiEx(m_AIOid[i], (short)readAiChannels, AiBuf);
                     AiChannels -= readAiChannels;
                     if (Ret != 0)
@@ -408,7 +405,7 @@ namespace Cyc.IO
             {
                 //デジタル入力
                 Ret = aio.InputDiBit(m_AIOid[DiBitNo / AI2DI_BDmax], (short)(DiBitNo % AI2DI_BDmax), out sDiData);
-                DiData = sDiData==0?1:0;
+                DiData = sDiData == 0 ? 1 : 0;
                 if (Ret != 0)
                 {
                     GetErrorString("aio.InputDiBit", Ret);

@@ -9,7 +9,7 @@ namespace NippoControlSystem.UI.ViewModels
     public class DataInputViewModel : INotifyPropertyChanged
     {
         #region Fields
-        private DataSetItems _myDataSetItems;
+        private DataSetItems? _myDataSetItems;
         private int _startTNo;
         private int _tNo;
         private string _title = string.Empty;
@@ -23,7 +23,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Properties
-        public DataSetItems MyDataSetItems
+        public DataSetItems? MyDataSetItems
         {
             get => _myDataSetItems;
             set
@@ -167,7 +167,7 @@ namespace NippoControlSystem.UI.ViewModels
             // DIOデータ保存
             for (int i = 0; i < _defaultSettings.DioNames.Length; i++)
             {
-                DataTable dtViewDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.DioNames[i]}"];
+                DataTable? dtViewDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.DioNames[i]}"];
                 if (dtViewDIO == null) continue;
 
                 for (int j = 0; j < _defaultSettings.DioNums[i]; j++)
@@ -181,7 +181,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AOデータ保存
-            DataTable dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
+            DataTable? dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
                 for (int i = 0; i < _defaultSettings.AoSwichNum; i++)
@@ -200,7 +200,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AIデータ保存
-            DataTable dtViewAI = MyDataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
+            DataTable? dtViewAI = MyDataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
             if (dtViewAI != null)
             {
                 for (int i = 0; i < _defaultSettings.AiNum; i++)
@@ -233,7 +233,7 @@ namespace NippoControlSystem.UI.ViewModels
             // DIO View テーブル反映
             for (int i = 0; i < _defaultSettings.DioNames.Length; i++)
             {
-                DataTable dtViewDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.DioNames[i]}"];
+                DataTable? dtViewDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.DioNames[i]}"];
                 if (dtViewDIO == null) continue;
 
                 for (int j = 0; j < _defaultSettings.DioNums[i]; j++)
@@ -248,7 +248,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AI View テーブル反映
-            DataTable dtViewAI = MyDataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
+            DataTable? dtViewAI = MyDataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
             if (dtViewAI != null)
             {
                 for (int j = 0; j < _defaultSettings.AiNum; j++)
@@ -263,7 +263,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AO View テーブル反映
-            DataTable dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
+            DataTable? dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
                 int loopCount = Math.Max(_defaultSettings.AoNum, _defaultSettings.AoSwichNum);
@@ -281,8 +281,8 @@ namespace NippoControlSystem.UI.ViewModels
             // GND View テーブル反映
             for (int i = 0; i < _defaultSettings.GndNames.Length; i++)
             {
-                DataTable dtViewGndDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.GndNames[i]}"];
-                DataTable dtViewGndAIO = MyDataSetItems.Tables["View_GndAIO"];
+                DataTable? dtViewGndDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.GndNames[i]}"];
+                DataTable? dtViewGndAIO = MyDataSetItems.Tables["View_GndAIO"];
                 if (dtViewGndDIO == null) continue;
 
                 for (int j = 0; j < _defaultSettings.GndNums[i]; j++)
@@ -332,7 +332,7 @@ namespace NippoControlSystem.UI.ViewModels
             // DIO データ読み込み
             for (int i = 0; i < _defaultSettings.DioNames.Length; i++)
             {
-                DataTable dtViewDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.DioNames[i]}"];
+                DataTable? dtViewDIO = MyDataSetItems.Tables[$"View_{_defaultSettings.DioNames[i]}"];
                 if (dtViewDIO == null) continue;
 
                 for (int j = 0; j < _defaultSettings.DioNums[i]; j++)
@@ -347,7 +347,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AO データ読み込み
-            DataTable dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
+            DataTable? dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
                 for (int i = 0; i < _defaultSettings.AoSwichNum; i++)
@@ -368,7 +368,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AI データ読み込み
-            DataTable dtViewAI = MyDataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
+            DataTable? dtViewAI = MyDataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
             if (dtViewAI != null)
             {
                 for (int i = 0; i < _defaultSettings.AiNum; i++)
@@ -420,7 +420,7 @@ namespace NippoControlSystem.UI.ViewModels
                     bool addNew = RequestConfirmAddNewRow?.Invoke("最後の項目です。\n\n追加しますか？") ?? false;
                     if (addNew && MyDataSetItems?.ListDat != null)
                     {
-                        DataTable dtInspectItem = MyDataSetItems.ListDat;
+                        DataTable? dtInspectItem = MyDataSetItems.ListDat;
                         DataRow InspectItemRowNew = dtInspectItem.NewRow();
                         dtInspectItem.Rows.InsertAt(InspectItemRowNew, dtInspectItem.Rows.Count);
                         TNo++;

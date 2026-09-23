@@ -195,7 +195,7 @@ namespace NippoControlSystem.UI.ViewModels
             if (DataSetTopMenu == null) return;
 
             DataTable dtMain = DataSetTopMenu.menuMain;
-            DataTable dtSub = DataSetTopMenu.menuSub;
+            DataTable? dtSub = DataSetTopMenu.menuSub;
 
             if (TargetMode == EditTargetMode.Main)
             {
@@ -264,8 +264,8 @@ namespace NippoControlSystem.UI.ViewModels
 
             if (DataSetTopMenu == null) return;
 
-            DataTable dtMain = DataSetTopMenu.menuMain;
-            DataTable dtSub = DataSetTopMenu.menuSub;
+            //DataTable? dtMain = DataSetTopMenu.menuMain;
+            DataTable? dtSub = DataSetTopMenu.menuSub;
 
             if (TargetMode == EditTargetMode.Main)
             {
@@ -338,7 +338,7 @@ namespace NippoControlSystem.UI.ViewModels
         {
             if (DataSetTopMenu == null) return;
 
-            DataTable dtMain = DataSetTopMenu.menuMain;
+            DataTable? dtMain = DataSetTopMenu.menuMain;
             DataTable dtSub = DataSetTopMenu.menuSub;
 
             if (TargetMode == EditTargetMode.Main)
@@ -386,7 +386,7 @@ namespace NippoControlSystem.UI.ViewModels
         {
             if (DataSetTopMenu == null) return;
 
-            DataTable dtMain = DataSetTopMenu.menuMain;
+            DataTable? dtMain = DataSetTopMenu.menuMain;
             DataTable dtSub = DataSetTopMenu.menuSub;
 
             if (TargetMode == EditTargetMode.Main)
@@ -594,11 +594,9 @@ namespace NippoControlSystem.UI.ViewModels
         private bool FalseAndLog(string mainTitle, string subTitle, string outFolder, string errMsg)
         {
             string logFile = Path.Combine(outFolder, $"conv{DateTime.Now:yyyyMMdd}.log");
-            using (var sw = new StreamWriter(logFile, true, _mc.enc))
-            {
-                sw.WriteLine($"{mainTitle}-{subTitle} NG");
-                sw.Write(errMsg);
-            }
+            using var sw = new StreamWriter(logFile, true, _mc.enc);
+            sw.WriteLine($"{mainTitle}-{subTitle} NG");
+            sw.Write(errMsg);
             return false;
         }
 
@@ -632,7 +630,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

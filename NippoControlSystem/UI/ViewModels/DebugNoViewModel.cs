@@ -154,10 +154,7 @@ namespace NippoControlSystem.UI.ViewModels
             InitializeTNoItems();
             SelectedTNoIndex = CurrentTNo;
 
-            if (_timerReadSw != null)
-            {
-                _timerReadSw.Enabled = true;
-            }
+            _timerReadSw?.Enabled = true;
         }
 
         /// <summary>
@@ -165,10 +162,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public void Cleanup()
         {
-            if (_timerReadSw != null)
-            {
-                _timerReadSw.Enabled = false;
-            }
+            _timerReadSw?.Enabled = false;
 
             // Lamp消灯
             _aio.setGreenLamp(0);
@@ -318,7 +312,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {

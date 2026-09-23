@@ -18,6 +18,7 @@
     <!-- 既存の設定に SYSLIB0051 を追加 (複数ある場合はセミコロン区切り) -->
     <NoWarn>$(NoWarn);SYSLIB0051</NoWarn>
     <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,13 +40,11 @@
   <ItemGroup>
     <Folder Include="ApplicationService\Dtos\" />
     <Folder Include="ApplicationService\Scenarios\" />
-    <Folder Include="Domain\Interfaces\" />
     <Folder Include="Domain\Models\" />
     <Folder Include="Domain\Services\" />
     <Folder Include="Infrastructure\Devices\" />
     <Folder Include="Infrastructure\Persistence\" />
     <Folder Include="Infrastructure\Mocks\" />
-    <Folder Include="Infrastructure\NativeLibs\" />
     <Folder Include="UI\Controls\" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.0" />
     <!-- ThirdPartyの cdio.dll caio.dll をビルド出力先へ自動コピー -->

@@ -208,7 +208,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Business Logic
-        private string GetVoltString(string valueString)
+        private static string GetVoltString(string valueString)
         {
             string[] voltString = { "12V", "24V" };
             return (valueString == "1" ? voltString[1] : voltString[0]);
@@ -277,7 +277,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

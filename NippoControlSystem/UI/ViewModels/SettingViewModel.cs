@@ -179,7 +179,7 @@ namespace NippoControlSystem.UI.ViewModels
             return true;
         }
 
-        private string GetVoltString(string valueString)
+        private static string GetVoltString(string valueString)
         {
             string[] voltString = { "12V", "24V" };
             return (valueString == "1" ? voltString[1] : voltString[0]);
@@ -233,7 +233,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public int AddItem(int currentIndex)
         {
-            DataTable dtInspectItem = MyDataSetItems.ListDat;
+            DataTable? dtInspectItem = MyDataSetItems.ListDat;
             DataRow InspectItemRowNew = dtInspectItem.NewRow();
 
             if (dtInspectItem.Rows.Count > 0 && currentIndex >= 0)
@@ -282,7 +282,7 @@ namespace NippoControlSystem.UI.ViewModels
 
         private void ExecuteDelete(int minRows, int countRows)
         {
-            DataTable dtInspectItem = MyDataSetItems.ListDat;
+            DataTable? dtInspectItem = MyDataSetItems.ListDat;
             for (int i = 0; i < countRows; i++)
             {
                 if (minRows + countRows - 1 - i < dtInspectItem.Rows.Count)
@@ -320,7 +320,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public int MoveDownItem(int currentIndex)
         {
-            DataTable dtInspectItem = MyDataSetItems.ListDat;
+            DataTable? dtInspectItem = MyDataSetItems.ListDat;
             if (dtInspectItem.Rows.Count >= 2 && currentIndex >= 0 && currentIndex < dtInspectItem.Rows.Count - 1)
             {
                 DataRow dtInspectItemRowCurr = dtInspectItem.NewRow();
@@ -464,7 +464,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
         }
 
-        private bool CloseNotepad(string filePath)
+        private static bool CloseNotepad(string filePath)
         {
             string fileName = Path.GetFileName(filePath);
             string title = string.Format("{0} - メモ帳", fileName);
@@ -497,7 +497,7 @@ namespace NippoControlSystem.UI.ViewModels
             return true;
         }
 
-        private void OpenNotepad(string filePath)
+        private static void OpenNotepad(string filePath)
         {
             if (!File.Exists(filePath)) return;
             Process p = Process.Start("notepad.exe", filePath);
@@ -531,7 +531,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

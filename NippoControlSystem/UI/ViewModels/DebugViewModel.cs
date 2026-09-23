@@ -191,10 +191,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public void Initialize()
         {
-            if (_timerReadSw != null)
-            {
-                _timerReadSw.Enabled = true;
-            }
+            _timerReadSw?.Enabled = true;
         }
 
         /// <summary>
@@ -373,7 +370,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {

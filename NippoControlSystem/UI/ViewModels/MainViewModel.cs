@@ -11,7 +11,7 @@ namespace NippoControlSystem.UI.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
+        readonly Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
 
         #region Fields & Dependencies
         //private readonly ISoundService _soundService;
@@ -23,7 +23,7 @@ namespace NippoControlSystem.UI.ViewModels
 
         private DataSetItems _myDataSetItems;
         private int _autoTimeOut = 2; // デフォルト 2分
-        private bool _stopButtonClick = false;
+        //private bool _stopButtonClick;
 
         private readonly float[,] _aiDataPop;
         private readonly float[] _aiDataInput;
@@ -301,14 +301,14 @@ namespace NippoControlSystem.UI.ViewModels
                 _mc.InspecStat == MeasureCondition.enumInspectStat.Stat_NormalEND ||
                 _mc.InspecStat == MeasureCondition.enumInspectStat.Stat_FailEND)
             {
-                _stopButtonClick = false;
+                //_stopButtonClick = false;
                 // 検査開始処理呼び出し (MainInspectionViewModel 等と連携)
             }
         }
 
-        public void ExecuteStopInspection()
+        public static void ExecuteStopInspection()
         {
-            _stopButtonClick = true;
+            //_stopButtonClick = true;
         }
 
         public void ExecuteClose()
@@ -352,13 +352,13 @@ namespace NippoControlSystem.UI.ViewModels
 
         private void AllClear()
         {
-            int iDoLength = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
+            //int iDoLength = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
             for (int i = 0; i < Default.DioNames.Length; i++)
             {
                 for (int j = 0; j < Default.DioNums[i]; j++)
                 {
-                    int iPOS = i * Default.DioNums[0] + j;
-                    _nio_OUT(iPOS, Cyc.IO.NippoDIO.IO_STAT.oOP);
+                    //int iPOS = i * Default.DioNums[0] + j;
+                    //_nio_OUT(iPOS, Cyc.IO.NippoDIO.IO_STAT.oOP);
                 }
             }
 
@@ -375,14 +375,14 @@ namespace NippoControlSystem.UI.ViewModels
             _aio.SetPower12V();
         }
 
-        private void _nio_OUT(int pos, Cyc.IO.NippoDIO.IO_STAT stat)
-        {
-            // ニッポーDIOボード出力のヘルパーメソッド呼び出し
-        }
+        //private void _nio_OUT(int pos, Cyc.IO.NippoDIO.IO_STAT stat)
+        //{
+        //    // ニッポーDIOボード出力のヘルパーメソッド呼び出し
+        //}
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName ?? string.Empty));

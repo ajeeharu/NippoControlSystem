@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NippoControlSystem.Domain.Interfaces;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -144,7 +140,7 @@ namespace Cyc.IO
             int iBitNo = -1;
             int iPointNo2 = iPointNo * NUM_DO_BIT_OF_POINT;
             int[] oData = new int[NUM_DO_BIT_OF_POINT];
-            int dioErr = (int)CdioConst.DIO_ERR_SUCCESS;
+            int dioErr = (int)CdioErrorCode.DIO_ERR_SUCCESS;
             ERR_STAT thisStat = ERR_STAT.NO_ERROR;
             if (iPointNo >= 0 && iPointNo < MAX_POINT)
             {
@@ -222,7 +218,7 @@ namespace Cyc.IO
                 {
                     dioErr = dio.OutMultiBit(iUnit, iBitNo, oData);
 
-                    if (dioErr != (int)CdioConst.DIO_ERR_SUCCESS)
+                    if (dioErr != (int)CdioErrorCode.DIO_ERR_SUCCESS)
                     {
                         thisStat = ERR_STAT.DIO_ERROR;
                     }
@@ -246,7 +242,7 @@ namespace Cyc.IO
             int iBitNo = -1;
             int iPointNo2 = iPointNo * NUM_DO_BIT_OF_POINT;
             int[] iData = new int[NUM_DO_BIT_OF_POINT];
-            int dioErr = (int)CdioConst.DIO_ERR_SUCCESS;
+            int dioErr = (int)CdioErrorCode.DIO_ERR_SUCCESS;
             int iOutSwData = 0;
             int iInSwData = 0;
             ERR_STAT thisStat = ERR_STAT.NO_ERROR;
@@ -262,7 +258,7 @@ namespace Cyc.IO
                 //
                 dioErr = dio.EchoBackMultiBit(iUnit, iBitNo, iData);
                 //dioErr2 = dio.EchoBackBit(DO_SW_UNITNO , iPointNo % 32, out iSwData);ボード１枚時の調整用
-                if (dioErr == (int)CdioConst.DIO_ERR_SUCCESS)
+                if (dioErr == (int)CdioErrorCode.DIO_ERR_SUCCESS)
                 {
 
                     if (iOutSwData == 0 && iInSwData == 0)      //iHi入力リレー、iDh入力リレー共にOFF

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using NippoControlSystem.Infrastructure.NativeLibs;
 using System.Data;
 
 #pragma warning disable
@@ -12,7 +9,7 @@ namespace Cyc.IO
     public class cDio
     {
         //for CONTEC Digital I/O device
-        CdioCs.Cdio dio = null;
+        CdioNative dio = null;
         private int m_cDioEmu = 0;
         private bool m_Connected = false;
         private bool m_Inited = false;
@@ -64,9 +61,9 @@ namespace Cyc.IO
         //コンストラクタ
         public cDio()
         {
-            dio = new CdioCs.Cdio();
+            dio = new CdioNative();
             DIO_LogLevel = Default.DIO_LogLevel;
-            dicDeviceItem = new Dictionary<string,tagDeviceItem>();
+            dicDeviceItem = new Dictionary<string, tagDeviceItem>();
 
             //m_DImax = Default.DImax;
             m_DO_Pmax = Default.DO_Pmax;
@@ -204,74 +201,74 @@ namespace Cyc.IO
         //Proparty
         public string LastErrorString
         {
-            get {return m_LastErrorString;}
+            get { return m_LastErrorString; }
         }
 
-//        //--------1---------2---------3---------4---------5---------6---------7---------8
-//        //インデキサ
-//        public int this[string DevTitle]
-//        {
-//            set
-//            {
-//                //if (m_cDioEmu != 0) return;
-//                if (dicDeviceItem.ContainsKey(DevTitle))
-//                {
-//                    int DeviceNo = dicDeviceItem[DevTitle].DevNo;
-//                    int UnitNo = dicDeviceItem[DevTitle].UnitNo;
-//                    int errcode = OutBit(UnitNo, DeviceNo, value);
-//                    if (errcode != 0)
-//                    {
-//                        throw (new Exception(string.Format("{0}:Set:{1}:OutBit異常", m_titleText, DevTitle)));
-//                    }
-//                    inpData[DeviceNo] = value;
-//                }
-//                else
-//                {
-//                    if (m_cDioEmu == 0)
-//                    {
-//                        throw (new Exception(string.Format("{0}:Set:{1}:DevTitle該当なし", m_titleText, DevTitle)));
-//                    }
-//                    else
-//                    {
-//                        //inpData[DeviceNo] = value;
-//                    }
-//                }
-//            }
-//            get
-//            {
-//                //if (m_cDioEmu != 0) return 0;
-//                int ReturnValue = 0;
-//                if (dicDeviceItem.ContainsKey(DevTitle))
-//                {
-//                    int DeviceNo = dicDeviceItem[DevTitle].DevNo;
-//                    int UnitNo = dicDeviceItem[DevTitle].UnitNo;
-//#if DirectInp == fa 
-//                    if (DeviceNo < 32)
-//                    {
-//                        int errcode = InpBit(UnitNo, DeviceNo, out ReturnValue);
-//                        if (errcode != 0)
-//                        {
-//                            throw (new Exception(string.Format("{0}:Set:{1}:InpBit異常", m_titleText, DevTitle)));
-//                        }
-//                    }
-//                    else
-//                    {
-//                        ReturnValue = inpData[DeviceNo];
-//                    }
-//#else
-//                    ReturnValue = inpData[DeviceNo];
-//#endif
-//                }
-//                else
-//                {
-//                    if (m_cDioEmu == 0)
-//                    {
-//                        throw (new Exception(string.Format("{0}:get:{1}:DevTitle該当なし", m_titleText, DevTitle)));
-//                    }
-//                }
-//                return ReturnValue;
-//            }
-//        }
+        //        //--------1---------2---------3---------4---------5---------6---------7---------8
+        //        //インデキサ
+        //        public int this[string DevTitle]
+        //        {
+        //            set
+        //            {
+        //                //if (m_cDioEmu != 0) return;
+        //                if (dicDeviceItem.ContainsKey(DevTitle))
+        //                {
+        //                    int DeviceNo = dicDeviceItem[DevTitle].DevNo;
+        //                    int UnitNo = dicDeviceItem[DevTitle].UnitNo;
+        //                    int errcode = OutBit(UnitNo, DeviceNo, value);
+        //                    if (errcode != 0)
+        //                    {
+        //                        throw (new Exception(string.Format("{0}:Set:{1}:OutBit異常", m_titleText, DevTitle)));
+        //                    }
+        //                    inpData[DeviceNo] = value;
+        //                }
+        //                else
+        //                {
+        //                    if (m_cDioEmu == 0)
+        //                    {
+        //                        throw (new Exception(string.Format("{0}:Set:{1}:DevTitle該当なし", m_titleText, DevTitle)));
+        //                    }
+        //                    else
+        //                    {
+        //                        //inpData[DeviceNo] = value;
+        //                    }
+        //                }
+        //            }
+        //            get
+        //            {
+        //                //if (m_cDioEmu != 0) return 0;
+        //                int ReturnValue = 0;
+        //                if (dicDeviceItem.ContainsKey(DevTitle))
+        //                {
+        //                    int DeviceNo = dicDeviceItem[DevTitle].DevNo;
+        //                    int UnitNo = dicDeviceItem[DevTitle].UnitNo;
+        //#if DirectInp == fa 
+        //                    if (DeviceNo < 32)
+        //                    {
+        //                        int errcode = InpBit(UnitNo, DeviceNo, out ReturnValue);
+        //                        if (errcode != 0)
+        //                        {
+        //                            throw (new Exception(string.Format("{0}:Set:{1}:InpBit異常", m_titleText, DevTitle)));
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        ReturnValue = inpData[DeviceNo];
+        //                    }
+        //#else
+        //                    ReturnValue = inpData[DeviceNo];
+        //#endif
+        //                }
+        //                else
+        //                {
+        //                    if (m_cDioEmu == 0)
+        //                    {
+        //                        throw (new Exception(string.Format("{0}:get:{1}:DevTitle該当なし", m_titleText, DevTitle)));
+        //                    }
+        //                }
+        //                return ReturnValue;
+        //            }
+        //        }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Init()
@@ -373,7 +370,7 @@ namespace Cyc.IO
                     //m_DOid
                 }
             }
-            else    
+            else
             {
                 //m_cDioEmu
             }
@@ -410,7 +407,7 @@ namespace Cyc.IO
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //OutBit()
-        public int EchoBackBit(int iUnit, int iBitNo,out int oData)
+        public int EchoBackBit(int iUnit, int iBitNo, out int oData)
         {
             int Ret;
             if (m_cDioEmu == 0)

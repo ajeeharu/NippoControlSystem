@@ -148,14 +148,15 @@ namespace NippoControlSystem.UI.ViewModels
         {
             if (MeterWidth <= 0 || MeterHeight <= 0) return;
 
-            Bitmap bitmap = new Bitmap(MeterWidth, MeterHeight);
+            Bitmap bitmap = new(MeterWidth, MeterHeight);
 
             using (Graphics g = Graphics.FromImage(bitmap))
-            using (Font fontMSG = new Font("ＭＳ ゴシック", 9, FontStyle.Regular))
-            using (Font fontMSGscale = new Font("ＭＳ ゴシック", 8, FontStyle.Regular))
-            using (SolidBrush brushBlack = new SolidBrush(Color.Black))
-            using (Pen penRed = new Pen(Color.Red))
             {
+                Font font = new("ＭＳ ゴシック", 9, FontStyle.Regular);
+                using Font fontMSG = font;
+                using Font fontMSGscale = new("ＭＳ ゴシック", 8, FontStyle.Regular);
+                using SolidBrush brushBlack = new(Color.Black);
+                using Pen penRed = new(Color.Red);
                 // 補間方法として最近傍補間を指定
                 g.InterpolationMode = InterpolationMode.NearestNeighbor;
 
@@ -223,7 +224,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {

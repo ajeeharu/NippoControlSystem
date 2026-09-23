@@ -93,7 +93,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AI の読み込み[cite: 9]
-            DataTable dtViewAI = DataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
+            DataTable? dtViewAI = DataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
             if (dtViewAI != null)
             {
                 for (int j = 0; j < _defaultSettings.AiNum; j++)
@@ -127,7 +127,7 @@ namespace NippoControlSystem.UI.ViewModels
             for (int i = 0; i < _defaultSettings.GndNames.Length; i++)
             {
                 string gndName = _defaultSettings.GndNames[i];
-                DataTable dtViewGnd = DataSetItems.Tables[$"View_{gndName}"];
+                DataTable? dtViewGnd = DataSetItems.Tables[$"View_{gndName}"];
                 if (dtViewGnd == null) continue;
 
                 for (int j = 0; j < _defaultSettings.GndNums[i]; j++)
@@ -170,7 +170,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // AI の保存[cite: 9]
-            DataTable dtViewAI = DataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
+            DataTable? dtViewAI = DataSetItems.Tables[$"View_{_defaultSettings.AiName}"];
             if (dtViewAI != null)
             {
                 for (int j = 0; j < _defaultSettings.AiNum; j++)
@@ -202,7 +202,7 @@ namespace NippoControlSystem.UI.ViewModels
             for (int i = 0; i < _defaultSettings.GndNames.Length; i++)
             {
                 string gndName = _defaultSettings.GndNames[i];
-                DataTable dtViewGnd = DataSetItems.Tables[$"View_{gndName}"];
+                DataTable? dtViewGnd = DataSetItems.Tables[$"View_{gndName}"];
                 if (dtViewGnd == null) continue;
 
                 for (int j = 0; j < _defaultSettings.GndNums[i]; j++)
@@ -247,7 +247,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -8,7 +8,7 @@ namespace NippoControlSystem.UI.ViewModels
     /// <summary>
     /// 測定結果表示画面（ResultView）用 ViewModel
     /// </summary>
-    public class ResultViewModel : INotifyPropertyChanged
+    public partial class ResultViewModel : INotifyPropertyChanged
     {
         #region Fields
         private DataSetItems _dataSetItems;
@@ -240,7 +240,7 @@ namespace NippoControlSystem.UI.ViewModels
                 string tableName = $"View_{defaultSettings.DioNames[i]}";
                 if (DataSetItems.Tables.Contains(tableName))
                 {
-                    DataTable dtViewDIO = DataSetItems.Tables[tableName];
+                    DataTable? dtViewDIO = DataSetItems.Tables[tableName];
                     for (int j = 0; j < defaultSettings.DioNums[i]; j++)
                     {
                         string fieldName = $"{defaultSettings.DioNames[i]}-{j + 1:00}";
@@ -257,7 +257,7 @@ namespace NippoControlSystem.UI.ViewModels
             string aiTableName = $"View_{defaultSettings.AiName}";
             if (DataSetItems.Tables.Contains(aiTableName))
             {
-                DataTable dtViewAI = DataSetItems.Tables[aiTableName];
+                DataTable? dtViewAI = DataSetItems.Tables[aiTableName];
                 for (int j = 0; j < defaultSettings.AiNum; j++)
                 {
                     string fieldName = $"{defaultSettings.AiName}-{j + 1:0}";
@@ -292,7 +292,7 @@ namespace NippoControlSystem.UI.ViewModels
                 string tableName = $"View_{defaultSettings.GndNames[i]}";
                 if (DataSetItems.Tables.Contains(tableName))
                 {
-                    DataTable dtViewGndDIO = DataSetItems.Tables[tableName];
+                    DataTable? dtViewGndDIO = DataSetItems.Tables[tableName];
                     DataTable dtViewGndAIO = DataSetItems.Tables.Contains("View_GndAIO") ? DataSetItems.Tables["View_GndAIO"] : null;
 
                     for (int j = 0; j < defaultSettings.GndNums[i]; j++)
@@ -325,7 +325,7 @@ namespace NippoControlSystem.UI.ViewModels
                 string tableName = $"View_{defaultSettings.DioNames[i]}";
                 if (!DataSetItems.Tables.Contains(tableName)) continue;
 
-                DataTable dtViewDIO = DataSetItems.Tables[tableName];
+                DataTable? dtViewDIO = DataSetItems.Tables[tableName];
                 for (int j = 0; j < defaultSettings.DioNums[i]; j++)
                 {
                     string fieldName = $"{defaultSettings.DioNames[i]}-{j + 1:00}";
@@ -372,7 +372,7 @@ namespace NippoControlSystem.UI.ViewModels
             string aiTableName = $"View_{defaultSettings.AiName}";
             if (DataSetItems.Tables.Contains(aiTableName))
             {
-                DataTable dtViewAI = DataSetItems.Tables[aiTableName];
+                DataTable? dtViewAI = DataSetItems.Tables[aiTableName];
                 for (int i = 0; i < defaultSettings.AiNum; i++)
                 {
                     int ii = i + 1;
@@ -398,7 +398,7 @@ namespace NippoControlSystem.UI.ViewModels
             PlaySoundWav = null;
             if (string.IsNullOrEmpty(guideText)) return;
 
-            var matches = System.Text.RegularExpressions.Regex.Matches(guideText, @"\{.*?\}");
+            var matches = MyRegex().Matches(guideText);
             foreach (System.Text.RegularExpressions.Match match in matches)
             {
                 string keyWord = match.Value.Trim('{', '}');
@@ -475,11 +475,14 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName ?? string.Empty));
         }
+
+        [System.Text.RegularExpressions.GeneratedRegex(@"\{.*?\}")]
+        private static partial System.Text.RegularExpressions.Regex MyRegex();
         #endregion
     }
 }

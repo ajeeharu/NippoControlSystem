@@ -140,7 +140,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// <summary>
         /// アセンブリのカスタム属性を取得するヘルパーメソッド
         /// </summary>
-        private T GetAssemblyAttribute<T>(Assembly assembly) where T : Attribute
+        private static T GetAssemblyAttribute<T>(Assembly assembly) where T : Attribute
         {
             object[] attributes = assembly.GetCustomAttributes(typeof(T), false);
             if (attributes != null && attributes.Length > 0)
@@ -153,7 +153,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// <summary>
         /// バージョン番号 (Major.Minor.Build.Revision) からビルド日時を計算してフォーマット化
         /// </summary>
-        private string FormatBuildDateTime(string versionString)
+        private static string FormatBuildDateTime(string versionString)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

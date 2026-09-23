@@ -199,7 +199,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
@@ -209,22 +209,16 @@ namespace NippoControlSystem.UI.ViewModels
     }
 
     #region Helper RelayCommand
-    public class RelayCommand : ICommand
+    public class RelayCommand(System.Action execute, System.Func<bool>? canExecute = null) : ICommand
     {
-        private readonly System.Action _execute;
-        private readonly System.Func<bool>? _canExecute;
+        private readonly System.Action _execute = execute ?? throw new System.ArgumentNullException(nameof(execute));
+        private readonly System.Func<bool>? _canExecute = canExecute;
 
-        public RelayCommand(System.Action execute, System.Func<bool>? canExecute = null)
-        {
-            _execute = execute ?? throw new System.ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
-        }
+        public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
 
-        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+        public void Execute(object? parameter) => _execute();
 
-        public void Execute(object parameter) => _execute();
-
-        public event System.EventHandler CanExecuteChanged
+        public event System.EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;

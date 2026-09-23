@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NippoControlSystem.Infrastructure.NativeLibs;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -12,7 +8,7 @@ namespace Cyc.IO
     public class Aio
     {
         //for CONTEC Digital I/O device
-        CaioCs.Caio? aio = null;
+        CaioNative? aio = null;
         private bool m_AioEmu = false;
         private bool m_Connected = false;
         private bool m_Inited = false;
@@ -42,7 +38,7 @@ namespace Cyc.IO
         //コンストラクタ
         public Aio()
         {
-            aio = new CaioCs.Caio();
+            aio = new CaioNative();
             AIO_LogLevel = Default.DIO_LogLevel;
 
             m_AImax = Default.AImax;
@@ -295,7 +291,7 @@ namespace Cyc.IO
         {
             short AoMaxChannels = (short)AoData.Length;
             float[] AoDataCalib = new float[AoData.Length];
-            for(int i=0; i<AoData.Length;i++)
+            for (int i = 0; i < AoData.Length; i++)
             {
                 AoDataCalib[i] = (AoData[i] * AoData[i] * Default.AoCalib_A[i] + AoData[i] * Default.AoCalib_B[i] + Default.AoCalib_C[i]) / Default.AoDiv;
             }
@@ -315,7 +311,7 @@ namespace Cyc.IO
             }
             return Ret;
         }
-    
+
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //getGreenSw()
         public int getGreenSw()
@@ -344,7 +340,7 @@ namespace Cyc.IO
             {
                 //デジタル入力
                 Ret = aio.InputDiBit(m_AIOid, (short)DiBitNo, out sDiData);
-                DiData = sDiData==0?1:0;
+                DiData = sDiData == 0 ? 1 : 0;
                 if (Ret != 0)
                 {
                     GetErrorString("aio.InputDiBit", Ret);
