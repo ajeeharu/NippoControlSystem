@@ -1,13 +1,6 @@
 using NippoControlSystem.Infrastructure.Configuration;
 using NippoControlSystem.Infrastructure.Devices;
-using NippoControlSystem.UI.Views;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 #pragma warning disable
 #nullable disable // C# 8.0à»ç~ÇÃNullãñóeåxçêÇ‡è¡Ç∑èÍçá
@@ -23,7 +16,7 @@ namespace NippoControlSystem.UI.Views
         Settings Default = Settings.GetInstance();
         cDio dio = cDio.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
-        Aio aio = Aio.GetInstance();
+        private readonly Aio _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -44,9 +37,10 @@ namespace NippoControlSystem.UI.Views
         //int delayedViewRowIndex = 0;
 
 
-        public ResultLimitView()
+        public ResultLimitView(Aio aio)
         {
             InitializeComponent();
+            _aio = aio;
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8

@@ -1,14 +1,8 @@
 using NippoControlSystem.Infrastructure.Configuration;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.UI.Controls;
-using NippoControlSystem.UI.Views;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -24,7 +18,7 @@ namespace NippoControlSystem.UI.Views
         Settings Default = Settings.GetInstance();
         cDio dio = cDio.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
-        Aio aio = Aio.GetInstance();
+        private readonly Aio _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -40,9 +34,10 @@ namespace NippoControlSystem.UI.Views
         //Font fontRegularlstyle = new Font("ＭＳ ゴシック", 9, FontStyle.Regular);
         //Font fontBoldstyle = new Font("ＭＳ ゴシック", 9, FontStyle.Bold);
 
-        public ResultView()
+        public ResultView(Aio aio)
         {
             InitializeComponent();
+            _aio = aio;
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
@@ -262,8 +257,8 @@ namespace NippoControlSystem.UI.Views
                     switch (dtListDatRow[iFeildName].ToString())
                     {
                         case "dat":     //20180717
-                        //case "dmA":
-                        //case "dV":
+                                        //case "dmA":
+                                        //case "dV":
                             DoStat = dtListDatResultRow[iFeildName].ToString();
                             DoStatSplit = DoStat.Split(':');
                             if (DoStatSplit.Length == 2)
@@ -735,7 +730,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -744,7 +739,7 @@ namespace NippoControlSystem.UI.Views
             else
             {
                 //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -766,7 +761,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.RedSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     mc.RedSwitchStat = 0;
                 }
@@ -775,7 +770,7 @@ namespace NippoControlSystem.UI.Views
             else
             {
                 //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -1162,7 +1157,7 @@ namespace NippoControlSystem.UI.Views
 
         private void showFrmResultViewLMT(string SelectionCell)
         {
-            ResultLimitView fmResultViewLMT = new ResultLimitView();  //20170126
+            ResultLimitView fmResultViewLMT = new ResultLimitView(_aio);  //20170126
             fmResultViewLMT.myDataSetItems = this.myDataSetItems;
             fmResultViewLMT.TNo = this.TNo;
             //fmResultViewLMT.PageNo = PageNo;
@@ -1187,7 +1182,7 @@ namespace NippoControlSystem.UI.Views
             {
                 if (dataGridView1.Equals(dataGridView_DIO[i]))
                 {
-                    showFrmResultViewLMT(string.Format("{0}{1:00}",(char)('A' + i),e.RowIndex));
+                    showFrmResultViewLMT(string.Format("{0}{1:00}", (char)('A' + i), e.RowIndex));
                 }
             }
         }

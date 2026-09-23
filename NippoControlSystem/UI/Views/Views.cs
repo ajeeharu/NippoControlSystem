@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using NippoControlSystem.Infrastructure.Configuration;
 using System.Runtime.InteropServices;
-using NippoControlSystem.Infrastructure.Configuration;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -221,32 +215,32 @@ namespace NippoControlSystem.UI.Views
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //RemoveCloseButton
-        public void allFormsCreate()
-        {
-            if (m_frmMain == null) m_frmMain = new MainView();
-            if (m_frmDataInput == null) m_frmDataInput = new DataInputView();
-            if (m_frmDebug == null) m_frmDebug = new DebugView();
-            if (m_frmDebugNo == null) m_frmDebugNo = new DebugNoView();
-            //if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
-            if (m_frmPinAi == null) m_frmPinAi = new PinAnalogInputView();
-            if (m_frmPinAo == null) m_frmPinAo = new PinAnalogOutputView();
-            //if (m_frmPinAo == null) m_frmPinAo = new PinAnalogOutputView();
-            if (m_frmPinIO == null) m_frmPinIO = new PinInputOutput();
-            //if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
-            //if (m_frmPinIO == null) m_frmPinIO = new PinInputOutput();
-            if (m_frmPinName == null) m_frmPinName = new PinNameView();
-            if (m_frmPort == null) m_frmPort = new PortView();
-            if (m_frmResultView == null) m_frmResultView = new ResultView();
-            if (m_frmSerial == null) m_frmSerial = new SerialView();
-            if (m_frmSetting == null) m_frmSetting = new SettingView();
-            if (m_frmTopEdit == null) m_frmTopEdit = new TopEditView();
-            if (m_frmTopEditCopy == null) m_frmTopEditCopy = new TopEditCopyView();
-            if (m_frmTopEditInput == null) m_frmTopEditInput = new TopEditInputView();
-            if (m_frmVersion == null) m_frmVersion = new VersionView();
-            //if (m_frmAIOMonitor == null) m_frmAIOMonitor = new frmAIOMonitor();
-            //if (m_frmPinAoMonitor == null) m_frmPinAoMonitor = new frmPinAoMonitor();
-            if (m_frmHistView == null) m_frmHistView = new TestHistoryView();
-        }
+        //public void allFormsCreate()
+        //{
+        //    if (m_frmMain == null) m_frmMain = new MainView();
+        //    if (m_frmDataInput == null) m_frmDataInput = new DataInputView();
+        //    if (m_frmDebug == null) m_frmDebug = new DebugView();
+        //    if (m_frmDebugNo == null) m_frmDebugNo = new DebugNoView();
+        //    //if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
+        //    if (m_frmPinAi == null) m_frmPinAi = new PinAnalogInputView();
+        //    if (m_frmPinAo == null) m_frmPinAo = new PinAnalogOutputView();
+        //    //if (m_frmPinAo == null) m_frmPinAo = new PinAnalogOutputView();
+        //    if (m_frmPinIO == null) m_frmPinIO = new PinInputOutput();
+        //    //if (m_frmOpenning == null) m_frmOpenning = new OpeningView();
+        //    //if (m_frmPinIO == null) m_frmPinIO = new PinInputOutput();
+        //    if (m_frmPinName == null) m_frmPinName = new PinNameView();
+        //    if (m_frmPort == null) m_frmPort = new PortView();
+        //    if (m_frmResultView == null) m_frmResultView = new ResultView(_aio);
+        //    if (m_frmSerial == null) m_frmSerial = new SerialView(_aio);
+        //    if (m_frmSetting == null) m_frmSetting = new SettingView();
+        //    if (m_frmTopEdit == null) m_frmTopEdit = new TopEditView();
+        //    if (m_frmTopEditCopy == null) m_frmTopEditCopy = new TopEditCopyView();
+        //    if (m_frmTopEditInput == null) m_frmTopEditInput = new TopEditInputView();
+        //    if (m_frmVersion == null) m_frmVersion = new VersionView();
+        //    //if (m_frmAIOMonitor == null) m_frmAIOMonitor = new frmAIOMonitor();
+        //    //if (m_frmPinAoMonitor == null) m_frmPinAoMonitor = new frmPinAoMonitor();
+        //    if (m_frmHistView == null) m_frmHistView = new TestHistoryView();
+        //}
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //RemoveCloseButton
@@ -281,7 +275,7 @@ namespace NippoControlSystem.UI.Views
         {
             if (string.IsNullOrEmpty(loc))
                 return;
-            string[] sPoint = loc.Split(new char [] {','});
+            string[] sPoint = loc.Split(new char[] { ',' });
             if (sPoint.Length != 2)
                 return;
             int x, y;

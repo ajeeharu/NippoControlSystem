@@ -21,6 +21,7 @@ namespace NippoControlSystem.UI.ViewModels
         private string _serialTitle = string.Empty;
         private string _gokiTitle = string.Empty;
         private DataSetItems _myDataSetItems;
+        private readonly Aio _aio;
 
         // ハードウェアSW状態保持用
         private int _lastGreenSwitch = 0;
@@ -151,9 +152,10 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Constructor & Initialization
-        public SerialViewModel()
+        public SerialViewModel(Aio aio)
         {
             InitializeSettings();
+            _aio = aio;
         }
 
         /// <summary>
@@ -245,14 +247,12 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public void OnHardwareTimerTick()
         {
-            var aio = Aio.GetInstance();
-
-            int newGreenSwitch = aio.getGreenSw();
-            int newRedSwitch = aio.getRedSw();
+            int newGreenSwitch = _aio.getGreenSw();
+            int newRedSwitch = _aio.getRedSw();
 
             // ランプ制御
-            aio.setGreenLamp(newGreenSwitch ^ (WorkingLampON ? 1 : 0));
-            aio.setRedLamp(newRedSwitch ^ (WorkingLampON ? 1 : 0));
+            _aio.setGreenLamp(newGreenSwitch ^ (WorkingLampON ? 1 : 0));
+            _aio.setRedLamp(newRedSwitch ^ (WorkingLampON ? 1 : 0));
 
             // 緑ボタン押下検知 (1 -> 0 への立ち下がり)
             if (newGreenSwitch == 0 && _lastGreenSwitch == 1)
@@ -276,11 +276,10 @@ namespace NippoControlSystem.UI.ViewModels
         /// <summary>
         /// 画面終了時のハードウェアランプ消灯処理
         /// </summary>
-        public static void CleanupHardware()
+        public void CleanupHardware()
         {
-            var aio = Aio.GetInstance();
-            aio.setGreenLamp(0);
-            aio.setRedLamp(0);
+            _aio.setGreenLamp(0);
+            _aio.setRedLamp(0);
         }
         #endregion
 

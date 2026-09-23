@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.Versioning;
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using NippoControlSystem.Infrastructure.Devices;
-using NippoControlSystem.Infrastructure.Configuration;
+using System.Runtime.Versioning;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -37,15 +32,17 @@ namespace NippoControlSystem.UI.Views
         const int ColumnIndexIOdataField = 2;
         const int ColumnIndexAOdataField = 2;
         const int ColumnIndexAOswField = 3;
+        private readonly Aio _aio;
 
         Font fontRegularlstyle = new Font("ＭＳ Ｐゴシック", 9, FontStyle.Regular);
         Font fontBoldstyle = new Font("ＭＳ Ｐゴシック", 9, FontStyle.Bold);
         //Font fontRegularlstyle = new Font("ＭＳ ゴシック", 9, FontStyle.Regular);
         //Font fontBoldstyle = new Font("ＭＳ ゴシック", 9, FontStyle.Bold);
 
-        public DataInputView()
+        public DataInputView(Aio aio)
         {
             InitializeComponent();
+            _aio = aio;
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
@@ -280,7 +277,7 @@ namespace NippoControlSystem.UI.Views
                                 {
                                     dtListDatRow[iFeildName + "L"] = setValueSplit[1];
                                     dtListDatRow[iFeildName + "H"] = setValueSplit[2];
-                                return true;
+                                    return true;
                                 }
                                 else
                                 {
@@ -765,7 +762,7 @@ namespace NippoControlSystem.UI.Views
                 dataGridView_DA_Restore(TNo);
             }
 
-            if (TNo < (myDataSetItems.ListDat.Rows.Count-1))
+            if (TNo < (myDataSetItems.ListDat.Rows.Count - 1))
             {
                 TNo++;
                 this.textBox_TNo.Text = string.Format("{0}", TNo + 1);
@@ -775,7 +772,7 @@ namespace NippoControlSystem.UI.Views
             }
             else
             {
-                DialogResult dr = System.Windows.Forms.MessageBox.Show("最後の項目です。\n\n追加しますか？", Default.ApplicationName,MessageBoxButtons.YesNo);
+                DialogResult dr = System.Windows.Forms.MessageBox.Show("最後の項目です。\n\n追加しますか？", Default.ApplicationName, MessageBoxButtons.YesNo);
                 if (dr == System.Windows.Forms.DialogResult.Yes)
                 {
                     DataTable dtInspectItem = myDataSetItems.ListDat;
@@ -843,7 +840,7 @@ namespace NippoControlSystem.UI.Views
                         mForms.fmPinIO.PinIO = dataGridView1[2, e.RowIndex].Value.ToString();
                         //20180726
                         DataRow dtListDatRow = myDataSetItems.ListDat.Rows[TNo];
-                        int RowIndex = e.RowIndex+1;
+                        int RowIndex = e.RowIndex + 1;
                         string iFeildName;
                         iFeildName = string.Format("{0}-{1:00}L", Default.DioNames[i], RowIndex);
                         string iDpL = dtListDatRow[iFeildName].ToString();
@@ -861,7 +858,7 @@ namespace NippoControlSystem.UI.Views
                         //mForms.fmPinIO.StartPosition = FormStartPosition.CenterScreen;
                         //親フォームの中央に表示する
                         mForms.fmPinIO.Left = this.Left + this.Width / 2 - (mForms.fmPinIO.Width / 2);
-                        mForms.fmPinIO.Top = this.Top + this.Height / 2 - (mForms.fmPinIO.Height/2);
+                        mForms.fmPinIO.Top = this.Top + this.Height / 2 - (mForms.fmPinIO.Height / 2);
                         mForms.fmPinIO.StartPosition = FormStartPosition.Manual;//
                         mForms.fmPinIO.ShowDialog();
                         if (mForms.fmPinIO.DialogResult == System.Windows.Forms.DialogResult.OK)
@@ -1096,7 +1093,7 @@ namespace NippoControlSystem.UI.Views
             {
                 //列ヘッダーに表示するContextMenuStripを設定する
                 e.ContextMenuStrip = this.contextMenuStripAO;
-                dataGridView_AO_CellMouseClick(dataGridView1, new DataGridViewCellEventArgs(e.ColumnIndex,e.RowIndex)); //右クリックでも選択する
+                dataGridView_AO_CellMouseClick(dataGridView1, new DataGridViewCellEventArgs(e.ColumnIndex, e.RowIndex)); //右クリックでも選択する
             }
             else if (e.ColumnIndex < 0)
             {
@@ -1549,7 +1546,7 @@ namespace NippoControlSystem.UI.Views
                         break;
                 }
             }
-         }
+        }
 
         private void dataGridView_AI_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
@@ -1599,7 +1596,7 @@ namespace NippoControlSystem.UI.Views
 
         private void dataGridView_AI_MouseMove(object sender, MouseEventArgs e)
         {
-            
+
         }
 
         private void mnuBack_Click(object sender, EventArgs e)
@@ -1640,7 +1637,7 @@ namespace NippoControlSystem.UI.Views
 
         private void showFrmResultViewLMT(string SelectionCell)
         {
-            DataInputLimitView fmDataInputLMT = new DataInputLimitView();  //20170126
+            DataInputLimitView fmDataInputLMT = new DataInputLimitView(_aio);  //20170126
             fmDataInputLMT.myDataSetItems = this.myDataSetItems;
             fmDataInputLMT.TNo = this.TNo;
             //fmResultViewLMT.PageNo = PageNo;
@@ -1656,6 +1653,5 @@ namespace NippoControlSystem.UI.Views
             this.Show();
             fmDataInputLMT.Dispose(); //20170126
         }
-
     }
 }

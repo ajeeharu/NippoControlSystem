@@ -1,13 +1,8 @@
 using NippoControlSystem.Infrastructure.Configuration;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.UI.Controls;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 #pragma warning disable
 #nullable disable // C# 8.0ˆÈ~‚ÌNull‹–—eŒx‚àÁ‚·ê‡
@@ -23,7 +18,7 @@ namespace NippoControlSystem.UI.Views
 
         Settings Default = Settings.GetInstance();
         cDio dio = cDio.GetInstance();
-        Aio aio = Aio.GetInstance();
+        private readonly Aio _aio;
         NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
         screenShot screen = screenShot.GetInstance();
@@ -38,9 +33,10 @@ namespace NippoControlSystem.UI.Views
         //Const
         const int AveTimes = 10;
 
-        public TestHistoryView()
+        public TestHistoryView(Aio aio)
         {
             InitializeComponent();
+            _aio = aio;
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
@@ -300,7 +296,7 @@ namespace NippoControlSystem.UI.Views
             System.Windows.Forms.DataGridView dv = this.dataGridView_Inspection;
 
             //frmResultView fmResultView = mForms.fmResultView;
-            ResultView fmResultView = new ResultView();  //20170126
+            ResultView fmResultView = new ResultView(_aio);  //20170126
             fmResultView.myDataSetItems = myDataSetItems;
             fmResultView.TNo = dv.CurrentCell.RowIndex;
             fmResultView.ShowDialog();
@@ -327,7 +323,7 @@ namespace NippoControlSystem.UI.Views
             if (dv.CurrentCell.RowIndex > 0)
             {
                 dv.CurrentCell = dv[dv.CurrentCell.ColumnIndex, dv.CurrentCell.RowIndex - 1];
-                this.textBox_TestNo.Text = (dv.CurrentCell.RowIndex+ 1).ToString();
+                this.textBox_TestNo.Text = (dv.CurrentCell.RowIndex + 1).ToString();
             }
         }
 
@@ -364,7 +360,7 @@ namespace NippoControlSystem.UI.Views
             this.timerInspect.Enabled = false;
             //Dio close
             dio.Exit();
-            aio.Exit();
+            _aio.Exit();
         }
 
         private void timerReadSw_Tick(object sender, EventArgs e)

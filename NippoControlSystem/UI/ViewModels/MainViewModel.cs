@@ -18,7 +18,7 @@ namespace NippoControlSystem.UI.ViewModels
         //private readonly ISoundService _soundService;
         private readonly Settings _defaultSettings = Settings.GetInstance();
         private readonly cDio _dio = cDio.GetInstance();
-        private readonly Aio _aio = Aio.GetInstance();
+        private readonly Aio _aio;
         private readonly Ai2Di _ai2di = Ai2Di.GetInstance();
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
@@ -157,8 +157,9 @@ namespace NippoControlSystem.UI.ViewModels
 
         #region Constructor
         //public MainViewModel(ISoundService soundService = null)
-        public MainViewModel()
+        public MainViewModel(Aio aio)
         {
+            _aio = aio;
             // _soundService = soundService ?? new SoundService();
 
             AiDataAve = new float[_defaultSettings.AiNum];

@@ -2,14 +2,7 @@ using NippoControlSystem.Infrastructure.Configuration;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.Infrastructure.Persistence;
 using NippoControlSystem.UI.Controls;
-using NippoControlSystem.UI.Views;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 #pragma warning disable
 #nullable disable // C# 8.0à»ç~ÇÃNullãñóeåxçêÇ‡è¡Ç∑èÍçá
@@ -26,7 +19,7 @@ namespace NippoControlSystem.UI.Views
         Settings Default = Settings.GetInstance();
         cDio dio = cDio.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
-        Aio aio = Aio.GetInstance();
+        private readonly Aio _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
         screenShot screen = screenShot.GetInstance();
@@ -43,9 +36,10 @@ namespace NippoControlSystem.UI.Views
         const int OpSwLampOn = (WorkingLampON ? 0 : 1);
         const int OpSwLampOff = (WorkingLampON ? 1 : 0);
 
-        public SerialView()
+        public SerialView(Aio aio)
         {
             InitializeComponent();
+            _aio = aio;
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
@@ -151,11 +145,11 @@ namespace NippoControlSystem.UI.Views
         private void TimerReadSw_Tick(object sender, EventArgs e)
         {
             //Aio-Dio
-            newGreenSwitch = aio.getGreenSw();
-            newRedSwitch = aio.getRedSw();
+            newGreenSwitch = _aio.getGreenSw();
+            newRedSwitch = _aio.getRedSw();
 
-            aio.setGreenLamp(newGreenSwitch ^ (WorkingLampON ? 1 : 0));
-            aio.setRedLamp(newRedSwitch ^ (WorkingLampON ? 1 : 0));
+            _aio.setGreenLamp(newGreenSwitch ^ (WorkingLampON ? 1 : 0));
+            _aio.setRedLamp(newRedSwitch ^ (WorkingLampON ? 1 : 0));
 
             if (newGreenSwitch == 0 && lastGreenSwitch == 1)
             {
@@ -187,8 +181,8 @@ namespace NippoControlSystem.UI.Views
         private void frmSerial_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.TimerReadSw.Enabled = false;
-            aio.setGreenLamp(0);
-            aio.setRedLamp(0);
+            _aio.setGreenLamp(0);
+            _aio.setRedLamp(0);
         }
 
     }

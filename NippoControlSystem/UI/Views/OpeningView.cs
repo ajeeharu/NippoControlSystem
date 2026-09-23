@@ -456,7 +456,6 @@ namespace NippoControlSystem.UI.Views
             //mForms.fmSetting = new frmSetting();
             //mForms.fmPort = new frmPort();
             //mForms.fmDataInput = new frmDataInput();
-            mForms.allFormsCreate();
 
             this.timerInitalUpdate.Enabled = false;
 
