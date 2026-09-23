@@ -1,3 +1,5 @@
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +19,7 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
+        Settings Default = Settings.GetInstance();
         //Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
         //Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
@@ -111,13 +113,13 @@ namespace NippoControlSystem.UI.Views
             }
 
             //Color 20180830
-            this.label_iDo電流下限値.ForeColor = Default.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDo - (int)Cyc.IO.NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDh電流下限値.ForeColor = Default.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDh - (int)Cyc.IO.NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDb電流下限値.ForeColor = Default.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDb - (int)Cyc.IO.NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDc電流下限値.ForeColor = Default.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDc - (int)Cyc.IO.NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDs電流下限値.ForeColor = Default.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDs - (int)Cyc.IO.NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDp電流下限値.ForeColor = Default.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDp - (int)Cyc.IO.NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iTo電流下限値.ForeColor = Default.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDo電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDo - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDh電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDh - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDb電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDb - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDc電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDc - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDs電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDp電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDp - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iTo電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.oOP].ForeColor;
 
             this.dataSetItemsBindingSource.DataSource = myDataSetItems;
 
@@ -171,16 +173,16 @@ namespace NippoControlSystem.UI.Views
             myDataSetItems.CheckDat.Rows[0]["Volt"] = newVolt;
             DataRow dtCheckDatRow = myDataSetItems.CheckDat.Rows[itemFound];
 
-            int iDo_Length = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
             //12V 24V
             int mVoltIdx = (newVolt == "1" ? 2 : 0); //0:12V 2:24V
 
             string dtCheckDatFields = null;
             for (int i = 0; i < iDo_Length; i++)
             {
-                dtCheckDatFields = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
+                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx][i].ToString("F1");    //iOP-HiLMT～iTo-HiLMT
-                dtCheckDatFields = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
+                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");    //iOP-LoLMT～iTo-LoLMT
             }
         }

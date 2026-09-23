@@ -1,4 +1,6 @@
-﻿using NippoControlSystem.Domain.Interfaces;
+﻿using NippoControlSystem.Domain.Interfaces.enums;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.Services;
 using System.ComponentModel;
 using System.Data;
 
@@ -26,8 +28,8 @@ namespace NippoControlSystem.UI.Views
         //int AutoTimeOut = 1; //Default 1分
         int AutoTimeOut = 2; //Default 2分に変更 20170908
         //CheckDatLMT
-        float[] CheckDatLMTLo = new float[(int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1];
-        float[] CheckDatLMTHi = new float[(int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1];
+        float[] CheckDatLMTLo = new float[(int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1];
+        float[] CheckDatLMTHi = new float[(int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1];
         float CheckDatiDsLo = 0f;
         float CheckDatiDsHi = 0f;
 
@@ -55,14 +57,14 @@ namespace NippoControlSystem.UI.Views
             PowerVolt = myDataSetItems.CheckDat.Rows[0]["Volt"].ToString(); //20170126
             if (PowerVolt == "1")
             {
-                aio.SetPower24V();
+                _aio.SetPower24V();
             }
             else
             {
-                aio.SetPower12V();
+                _aio.SetPower12V();
             }
             //LMT
-            int iDo_Length = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
             string dtCheckDatFields;
             int idx24 = (PowerVolt == "1" ? 2 : 0);
             for (int i = 0; i < iDo_Length; i++)
@@ -70,14 +72,14 @@ namespace NippoControlSystem.UI.Views
                 CheckDatLMTHi[i] = Default.CheckDatLMT[idx24 + 0][i];
                 CheckDatLMTLo[i] = Default.CheckDatLMT[idx24 + 1][i];
 
-                dtCheckDatFields = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
+                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
                 //CheckDatLMTHi[i] = float.Parse(myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString());    //iOP-HiLMT～iTo-HiLMT
                 float.TryParse(myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString(), out CheckDatLMTHi[i]); //20180911 nullに備える20180911-3
-                dtCheckDatFields = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
+                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
                 //CheckDatLMTLo[i] = float.Parse(myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString());    //iOP-LoLMT～iTo-LoLMT
                 float.TryParse(myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString(), out CheckDatLMTLo[i]); //20180911 nullに備える20180911-3
             }
-            int idxiDs = ((int)Cyc.IO.NippoDIO.IO_STAT.iDs - (int)Cyc.IO.NippoDIO.IO_STAT.iOP);
+            int idxiDs = ((int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP);
             {
                 CheckDatiDsHi = CheckDatLMTHi[idxiDs];   //各Step毎のiDs-HiLMT、iDs-LoLMTが空欄に備えて、初期値を保存しておく
                 CheckDatiDsLo = CheckDatLMTLo[idxiDs];
@@ -176,7 +178,7 @@ namespace NippoControlSystem.UI.Views
                 textBox_CurrentResult.Text = hasError ? "Fail" : "Pass";
                 if (TNo == 62)
                 {
-                    Cyc.IO.Log.WriteLine(Main_LogLevel, "inspect_Exec", string.Format("timerInspect_Tick TNo={0}", TNo));
+                    Log.WriteLine(Main_LogLevel, "inspect_Exec", string.Format("timerInspect_Tick TNo={0}", TNo));
                 }
                 //20170410 １回目は判定しない。（時間経過と共に、PassからFailに変化する場合があるので、初回判定しないで、次回から判定することでちょっと待つことになる）
                 if (TNoRetryNo == 0)
@@ -314,11 +316,11 @@ namespace NippoControlSystem.UI.Views
                         PowerVolt = myDataSetItems.CheckDat.Rows[0]["Volt"].ToString(); //20170126
                         if (PowerVolt == "1")
                         {
-                            aio.SetPower24V();
+                            _aio.SetPower24V();
                         }
                         else
                         {
-                            aio.SetPower12V();
+                            _aio.SetPower12V();
                         }
                         //StopWatchを起動する。規定時間内に終了しないときは、強制NG終了とする
                         this.timeOutStopwatch.Restart();
@@ -477,8 +479,8 @@ namespace NippoControlSystem.UI.Views
             DataRow dtListDatRow = dtListDat.Rows[TNo];
             DataRow dtListDatResultRow = dtListDatResult.Rows[TNo];
             int iPOS = 0;
-            CaioErrorCode iaRet = 0;
-            CdioErrorCode idRet = 0;
+            CioDeviceErrorCode iaRet = 0;
+            CioDeviceErrorCode idRet = 0;
             string iFeildName = "";
             string iFeildName2 = "";
             float ScannerValue;
@@ -488,7 +490,7 @@ namespace NippoControlSystem.UI.Views
             iaRet = ai2di.MultiAiEx(AiAll);  //New AI
 
             //DO Start
-            Cyc.IO.Log.WriteLine(Main_LogLevel, "inspect_Exec -0", "DO Start");
+            Log.WriteLine(Main_LogLevel, "inspect_Exec -0", "DO Start");
             for (int i = 0; i < Default.DioNames.Length; i++)     // { "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH" }
             {
                 for (int j = 0; j < Default.DioNums[i]; j++)    //32loop for (int j = 0; j < Default.DioNums[i]; j++)
@@ -497,14 +499,14 @@ namespace NippoControlSystem.UI.Views
                     iPOS = i * Default.DioNums[0] + j;
                     iFeildName = string.Format("{0}-{1:00}", Default.DioNames[i], jj);
                     DioStat = dtListDatRow[iFeildName].ToString();
-                    idRet = (CdioErrorCode)nio.NippoDIO_OUT(iPOS, (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DioStat]);
+                    idRet = (CioDeviceErrorCode)nio.NippoDIO_OUT(iPOS, (NippoDIO.IO_STAT)mc.dicDioStat[DioStat]);
                 }
             }
             //DI Start
             //Cyc.IO.Log.WriteLine(Main_LogLevel, "inspect_Exec", "DI Start");
             //DIを実行
-            Cyc.IO.NippoDIO.IO_STAT statCurr = Cyc.IO.NippoDIO.IO_STAT.ERR;
-            Cyc.IO.NippoDIO.IO_STAT statEcho = Cyc.IO.NippoDIO.IO_STAT.ERR;
+            NippoDIO.IO_STAT statCurr = NippoDIO.IO_STAT.ERR;
+            NippoDIO.IO_STAT statEcho = NippoDIO.IO_STAT.ERR;
             //Cyc.IO.NippoDIO.IO_STAT statIN = Cyc.IO.NippoDIO.IO_STAT.ERR;
             string errStat = "";
             //bool errLimitStat = false;
@@ -524,61 +526,61 @@ namespace NippoControlSystem.UI.Views
                     //iDs ステップ毎の上下限値を設定,Nullの時は、Checkdatの初期値を設定
                     if (string.IsNullOrEmpty(dtListDatRow["iDs-LoLMT"].ToString()))
                     {
-                        CheckDatLMTLo[(int)Cyc.IO.NippoDIO.IO_STAT.iDs - (int)Cyc.IO.NippoDIO.IO_STAT.iOP] = CheckDatiDsLo;
+                        CheckDatLMTLo[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = CheckDatiDsLo;
                     }
                     else
                     {
-                        CheckDatLMTLo[(int)Cyc.IO.NippoDIO.IO_STAT.iDs - (int)Cyc.IO.NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow["iDs-LoLMT"].ToString());  //iDs-LoLMT
+                        CheckDatLMTLo[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow["iDs-LoLMT"].ToString());  //iDs-LoLMT
                     }
                     if (string.IsNullOrEmpty(dtListDatRow["iDs-HiLMT"].ToString()))
                     {
-                        CheckDatLMTHi[(int)Cyc.IO.NippoDIO.IO_STAT.iDs - (int)Cyc.IO.NippoDIO.IO_STAT.iOP] = CheckDatiDsHi;
+                        CheckDatLMTHi[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = CheckDatiDsHi;
                     }
                     else
                     {
-                        CheckDatLMTHi[(int)Cyc.IO.NippoDIO.IO_STAT.iDs - (int)Cyc.IO.NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow["iDs-HiLMT"].ToString());  //iDs-HiLMT
+                        CheckDatLMTHi[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow["iDs-HiLMT"].ToString());  //iDs-HiLMT
                     }
-                    statCurr = (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DioStat]; //現在の設定
+                    statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DioStat]; //現在の設定
                     //各端子のモードとEchoがあっていることを確認
-                    idRet = (CdioErrorCode)nio.NippoDIO_Echo(iPOS, out statEcho);  //IOのEcho
+                    idRet = (CioDeviceErrorCode)nio.NippoDIO_Echo(iPOS, out statEcho);  //IOのEcho
                     switch (statCurr)
                     {
-                        case Cyc.IO.NippoDIO.IO_STAT.iOP:
-                        case Cyc.IO.NippoDIO.IO_STAT.iGN:
-                        case Cyc.IO.NippoDIO.IO_STAT.iHi:
-                        case Cyc.IO.NippoDIO.IO_STAT.nHi:
-                        case Cyc.IO.NippoDIO.IO_STAT.nOP:
-                        case Cyc.IO.NippoDIO.IO_STAT.nGN:
+                        case NippoDIO.IO_STAT.iOP:
+                        case NippoDIO.IO_STAT.iGN:
+                        case NippoDIO.IO_STAT.iHi:
+                        case NippoDIO.IO_STAT.nHi:
+                        case NippoDIO.IO_STAT.nOP:
+                        case NippoDIO.IO_STAT.nGN:
                             //case Cyc.IO.NippoDIO.IO_STAT.dV:
                             //iRet = ai2di.SingleAiEx(iPOS, out ScannerValue);  //New AI
                             ScannerValue = AiAll[iPOS];
                             AiData = ScannerValue * Default.AI2V_A + Default.AI2V_B;
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.iDo:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDh:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDb:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDc:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDs:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDp:
-                        case Cyc.IO.NippoDIO.IO_STAT.iTo:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDo:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDh:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDb:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDc:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDs:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDp:
-                        case Cyc.IO.NippoDIO.IO_STAT.nTo:
-                        case Cyc.IO.NippoDIO.IO_STAT.dat:
+                        case NippoDIO.IO_STAT.iDo:
+                        case NippoDIO.IO_STAT.iDh:
+                        case NippoDIO.IO_STAT.iDb:
+                        case NippoDIO.IO_STAT.iDc:
+                        case NippoDIO.IO_STAT.iDs:
+                        case NippoDIO.IO_STAT.iDp:
+                        case NippoDIO.IO_STAT.iTo:
+                        case NippoDIO.IO_STAT.nDo:
+                        case NippoDIO.IO_STAT.nDh:
+                        case NippoDIO.IO_STAT.nDb:
+                        case NippoDIO.IO_STAT.nDc:
+                        case NippoDIO.IO_STAT.nDs:
+                        case NippoDIO.IO_STAT.nDp:
+                        case NippoDIO.IO_STAT.nTo:
+                        case NippoDIO.IO_STAT.dat:
                             //case Cyc.IO.NippoDIO.IO_STAT.dmA:
                             //iRet = ai2di.SingleAiEx(iPOS, out ScannerValue);  //New AI
                             ScannerValue = AiAll[iPOS];
                             AiData = ScannerValue * Default.AI2I_A + Default.AI2I_B;
                             //Get Limit for Point
-                            if (statCurr == Cyc.IO.NippoDIO.IO_STAT.iDp || statCurr == Cyc.IO.NippoDIO.IO_STAT.nDp)
+                            if (statCurr == NippoDIO.IO_STAT.iDp || statCurr == NippoDIO.IO_STAT.nDp)
                             {
-                                CheckDatLMTLo[(int)Cyc.IO.NippoDIO.IO_STAT.iDp - (int)Cyc.IO.NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow[iFeildName + "L"].ToString());  //iOP-LoLMT
-                                CheckDatLMTHi[(int)Cyc.IO.NippoDIO.IO_STAT.iDp - (int)Cyc.IO.NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow[iFeildName + "H"].ToString());  //iOP-HiLMT
+                                CheckDatLMTLo[(int)NippoDIO.IO_STAT.iDp - (int)NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow[iFeildName + "L"].ToString());  //iOP-LoLMT
+                                CheckDatLMTHi[(int)NippoDIO.IO_STAT.iDp - (int)NippoDIO.IO_STAT.iOP] = float.Parse(dtListDatRow[iFeildName + "H"].ToString());  //iOP-HiLMT
                             }
                             break;
 
@@ -592,32 +594,32 @@ namespace NippoControlSystem.UI.Views
                     //errLimitStat = false;
                     switch (statCurr)
                     {
-                        case Cyc.IO.NippoDIO.IO_STAT.oOP:
+                        case NippoDIO.IO_STAT.oOP:
                             if (statEcho != statCurr /* || statIN != Cyc.IO.NippoDIO.IO_STAT.oOP */)  //oOPはstatINを判断しない
                             {
                                 errStat = statEcho.ToString();
                             }
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.oGN:
+                        case NippoDIO.IO_STAT.oGN:
                             if (statEcho != statCurr /* || statIN != Cyc.IO.NippoDIO.IO_STAT.iGN*/)  //20170107 oGN時、同時入力はなくなったので、statINを判断しない
                             {
                                 errStat = statEcho.ToString();
                             }
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.oHi:
+                        case NippoDIO.IO_STAT.oHi:
                             if (statEcho != statCurr /* || statIN != Cyc.IO.NippoDIO.IO_STAT.iHi*/)  //20170107 oHi時、同時入力はなくなったので、statINを判断しない 
                             {
                                 errStat = statEcho.ToString();
                             }
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.iOP:
-                        case Cyc.IO.NippoDIO.IO_STAT.iGN:
-                        case Cyc.IO.NippoDIO.IO_STAT.iHi:
-                            StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.iOP;
-                            if (statEcho != Cyc.IO.NippoDIO.IO_STAT.iRD)
+                        case NippoDIO.IO_STAT.iOP:
+                        case NippoDIO.IO_STAT.iGN:
+                        case NippoDIO.IO_STAT.iHi:
+                            StatIdx = (int)statCurr - (int)NippoDIO.IO_STAT.iOP;
+                            if (statEcho != NippoDIO.IO_STAT.iRD)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -625,7 +627,7 @@ namespace NippoControlSystem.UI.Views
                             {
                                 if (!(AiData <= CheckDatLMTHi[StatIdx] && AiData >= CheckDatLMTLo[StatIdx]))
                                 {
-                                    errStat = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.nOP + StatIdx)).ToString();
+                                    errStat = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.nOP + StatIdx)).ToString();
                                     //errLimitStat = true;
                                 }
                             }
@@ -633,11 +635,11 @@ namespace NippoControlSystem.UI.Views
                             dtListDatResultRow[iFeildName + "L"] = CheckDatLMTLo[StatIdx].ToString("F1");
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.nOP:
-                        case Cyc.IO.NippoDIO.IO_STAT.nGN:
-                        case Cyc.IO.NippoDIO.IO_STAT.nHi:
-                            StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.nOP;
-                            if (statEcho != Cyc.IO.NippoDIO.IO_STAT.iRD)
+                        case NippoDIO.IO_STAT.nOP:
+                        case NippoDIO.IO_STAT.nGN:
+                        case NippoDIO.IO_STAT.nHi:
+                            StatIdx = (int)statCurr - (int)NippoDIO.IO_STAT.nOP;
+                            if (statEcho != NippoDIO.IO_STAT.iRD)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -645,7 +647,7 @@ namespace NippoControlSystem.UI.Views
                             {
                                 if (!(AiData <= CheckDatLMTHi[StatIdx] && AiData >= CheckDatLMTLo[StatIdx]))
                                 {
-                                    errStat = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + StatIdx)).ToString();
+                                    errStat = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + StatIdx)).ToString();
                                     //errLimitStat = true;
                                 }
                             }
@@ -653,15 +655,15 @@ namespace NippoControlSystem.UI.Views
                             dtListDatResultRow[iFeildName + "L"] = CheckDatLMTLo[StatIdx].ToString("F1");
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.iDo:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDh:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDb:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDc:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDs:
-                        case Cyc.IO.NippoDIO.IO_STAT.iDp:
+                        case NippoDIO.IO_STAT.iDo:
+                        case NippoDIO.IO_STAT.iDh:
+                        case NippoDIO.IO_STAT.iDb:
+                        case NippoDIO.IO_STAT.iDc:
+                        case NippoDIO.IO_STAT.iDs:
+                        case NippoDIO.IO_STAT.iDp:
                             //case Cyc.IO.NippoDIO.IO_STAT.iTo:
-                            StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.iOP;
-                            if (statEcho != Cyc.IO.NippoDIO.IO_STAT.iDRD)
+                            StatIdx = (int)statCurr - (int)NippoDIO.IO_STAT.iOP;
+                            if (statEcho != NippoDIO.IO_STAT.iDRD)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -669,7 +671,7 @@ namespace NippoControlSystem.UI.Views
                             {
                                 if (!(AiData <= CheckDatLMTHi[StatIdx] && AiData >= CheckDatLMTLo[StatIdx]))
                                 {
-                                    errStat = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.nOP + StatIdx)).ToString();
+                                    errStat = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.nOP + StatIdx)).ToString();
                                     //errLimitStat = true;
                                 }
                             }
@@ -683,9 +685,9 @@ namespace NippoControlSystem.UI.Views
 
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.iTo:   //2018/0921-1 iToは、oOpで出力している
-                            StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.iOP;
-                            if (statEcho != Cyc.IO.NippoDIO.IO_STAT.oOP)
+                        case NippoDIO.IO_STAT.iTo:   //2018/0921-1 iToは、oOpで出力している
+                            StatIdx = (int)statCurr - (int)NippoDIO.IO_STAT.iOP;
+                            if (statEcho != NippoDIO.IO_STAT.oOP)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -693,7 +695,7 @@ namespace NippoControlSystem.UI.Views
                             {
                                 if (!(AiData <= CheckDatLMTHi[StatIdx] && AiData >= CheckDatLMTLo[StatIdx]))
                                 {
-                                    errStat = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.nOP + StatIdx)).ToString();
+                                    errStat = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.nOP + StatIdx)).ToString();
                                     //errLimitStat = true;
                                 }
                             }
@@ -707,15 +709,15 @@ namespace NippoControlSystem.UI.Views
 
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.nDo:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDh:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDb:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDc:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDs:
-                        case Cyc.IO.NippoDIO.IO_STAT.nDp:
+                        case NippoDIO.IO_STAT.nDo:
+                        case NippoDIO.IO_STAT.nDh:
+                        case NippoDIO.IO_STAT.nDb:
+                        case NippoDIO.IO_STAT.nDc:
+                        case NippoDIO.IO_STAT.nDs:
+                        case NippoDIO.IO_STAT.nDp:
                             //case Cyc.IO.NippoDIO.IO_STAT.nTo:
-                            StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.nOP;
-                            if (statEcho != Cyc.IO.NippoDIO.IO_STAT.iDRD)
+                            StatIdx = (int)statCurr - (int)NippoDIO.IO_STAT.nOP;
+                            if (statEcho != NippoDIO.IO_STAT.iDRD)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -723,7 +725,7 @@ namespace NippoControlSystem.UI.Views
                             {
                                 if (!(AiData <= CheckDatLMTHi[StatIdx] && AiData >= CheckDatLMTLo[StatIdx]))
                                 {
-                                    errStat = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + StatIdx)).ToString();
+                                    errStat = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + StatIdx)).ToString();
                                     //errLimitStat = true;
                                 }
                             }
@@ -731,9 +733,9 @@ namespace NippoControlSystem.UI.Views
                             dtListDatResultRow[iFeildName + "L"] = CheckDatLMTLo[StatIdx].ToString("F1");
                             break;
 
-                        case Cyc.IO.NippoDIO.IO_STAT.nTo:       //20180921 iTo/nToはoOpで出力している。
-                            StatIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.nOP;
-                            if (statEcho != Cyc.IO.NippoDIO.IO_STAT.oOP)
+                        case NippoDIO.IO_STAT.nTo:       //20180921 iTo/nToはoOpで出力している。
+                            StatIdx = (int)statCurr - (int)NippoDIO.IO_STAT.nOP;
+                            if (statEcho != NippoDIO.IO_STAT.oOP)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -741,7 +743,7 @@ namespace NippoControlSystem.UI.Views
                             {
                                 if (!(AiData <= CheckDatLMTHi[StatIdx] && AiData >= CheckDatLMTLo[StatIdx]))
                                 {
-                                    errStat = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + StatIdx)).ToString();
+                                    errStat = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + StatIdx)).ToString();
                                     //errLimitStat = true;
                                 }
                             }
@@ -751,8 +753,8 @@ namespace NippoControlSystem.UI.Views
 
 
                         //case Cyc.IO.NippoDIO.IO_STAT.dmA:
-                        case Cyc.IO.NippoDIO.IO_STAT.dat:
-                            if (statEcho != Cyc.IO.NippoDIO.IO_STAT.iDRD)
+                        case NippoDIO.IO_STAT.dat:
+                            if (statEcho != NippoDIO.IO_STAT.iDRD)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -767,7 +769,7 @@ namespace NippoControlSystem.UI.Views
 
                         default:
                             //その他？20180806
-                            if (statCurr != Cyc.IO.NippoDIO.IO_STAT.NoOP)
+                            if (statCurr != NippoDIO.IO_STAT.NoOP)
                             {
                                 errStat = statEcho.ToString();
                             }
@@ -823,7 +825,7 @@ namespace NippoControlSystem.UI.Views
                         AO_Value = 0f;
                     }
                 }
-                aio.SingleAoEx(j, AO_Value);
+                _aio.SingleAoEx(j, AO_Value);
             }
             //Cyc.IO.Log.WriteLine(Main_LogLevel, "inspect_Exec", "AO_Switch Start");
             //AO_Switch
@@ -899,11 +901,11 @@ namespace NippoControlSystem.UI.Views
             return hasError;
         }
 
-        private CaioErrorCode allClear()
+        private CioDeviceErrorCode allClear()
         {
             int iPOS;
-            CaioErrorCode iaRet = 0; ;
-            CdioErrorCode idRet = 0; ;
+            CioDeviceErrorCode iaRet = 0; ;
+            CioDeviceErrorCode idRet = 0; ;
             for (int i = 0; i < Default.DioNames.Length; i++)     // { "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH" }
             {
                 for (int j = 0; j < Default.DioNums[i]; j++)    //32loop
@@ -911,7 +913,7 @@ namespace NippoControlSystem.UI.Views
                     int jj = j + 1;
                     iPOS = i * Default.DioNums[0] + j;
                     //oOP
-                    idRet = (CdioErrorCode)nio.NippoDIO_OUT(iPOS, Cyc.IO.NippoDIO.IO_STAT.oOP);
+                    idRet = (CioDeviceErrorCode)nio.NippoDIO_OUT(iPOS, NippoDIO.IO_STAT.oOP);
                 }
             }
             //AOを実行
@@ -919,14 +921,14 @@ namespace NippoControlSystem.UI.Views
 
             for (int j = 0; j < Default.AoNum; j++)    //32loop
             {
-                iaRet = (CaioErrorCode)aio.SingleAoEx(j, AO_Value);
+                iaRet = (CioDeviceErrorCode)_aio.SingleAoEx(j, AO_Value);
             }
             //AO_Switch
             for (int j = 0; j < Default.AoSwichNum; j++)    //32loop
             {
-                iaRet = (CaioErrorCode)ai2di.NippoAIO_SW(j, 0);      //OFF
+                iaRet = (CioDeviceErrorCode)ai2di.NippoAIO_SW(j, 0);      //OFF
             }
-            iaRet = aio.SetPower12V();  //12V
+            iaRet = _aio.SetPower12V();  //12V
             return iaRet;
         }
 

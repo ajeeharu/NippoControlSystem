@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -30,7 +32,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Fields
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
         private readonly MeasureCondition _measureCondition = MeasureCondition.GetInstance();
 
         private string _mainTitle;
@@ -211,15 +213,15 @@ namespace NippoControlSystem.UI.ViewModels
                     MyDataSetItems.CheckDat.Rows[0]["Volt"] = newVolt;
                     DataRow dtCheckDatRow = MyDataSetItems.CheckDat.Rows[_itemFound];
 
-                    int iDo_Length = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
+                    int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
                     int mVoltIdx = (newVolt == "1" ? 2 : 0); // 0:12V, 2:24V
 
                     for (int i = 0; i < iDo_Length; i++)
                     {
-                        string dtCheckDatFieldsHi = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[0];
+                        string dtCheckDatFieldsHi = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[0];
                         dtCheckDatRow[dtCheckDatFieldsHi] = _defaultSettings.CheckDatLMT[mVoltIdx][i].ToString("F1");
 
-                        string dtCheckDatFieldsLo = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[1];
+                        string dtCheckDatFieldsLo = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[1];
                         dtCheckDatRow[dtCheckDatFieldsLo] = _defaultSettings.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");
                     }
                 }

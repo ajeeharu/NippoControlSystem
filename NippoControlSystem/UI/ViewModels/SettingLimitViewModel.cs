@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -177,21 +179,21 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         private void InitializeSettings()
         {
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
 
             LblMainNo = defaultSettings.MainNo; // "仕様書番号"
             LblSubNo = defaultSettings.SubNo;   // "追番"
             LblItem = defaultSettings.Item;     // "品名"
 
             // セルスタイルの配色設定
-            int baseOffset = (int)Cyc.IO.NippoDIO.IO_STAT.oOP;
-            ForeColorIDo = defaultSettings.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDo - baseOffset].ForeColor;
-            ForeColorIDh = defaultSettings.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDh - baseOffset].ForeColor;
-            ForeColorIDb = defaultSettings.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDb - baseOffset].ForeColor;
-            ForeColorIDc = defaultSettings.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDc - baseOffset].ForeColor;
-            ForeColorIDs = defaultSettings.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDs - baseOffset].ForeColor;
-            ForeColorIDp = defaultSettings.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iDp - baseOffset].ForeColor;
-            ForeColorITo = defaultSettings.CellStyles[(int)Cyc.IO.NippoDIO.IO_STAT.iTo - baseOffset].ForeColor;
+            int baseOffset = (int)NippoDIO.IO_STAT.oOP;
+            ForeColorIDo = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDo - baseOffset].ForeColor;
+            ForeColorIDh = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDh - baseOffset].ForeColor;
+            ForeColorIDb = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDb - baseOffset].ForeColor;
+            ForeColorIDc = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDc - baseOffset].ForeColor;
+            ForeColorIDs = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDs - baseOffset].ForeColor;
+            ForeColorIDp = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDp - baseOffset].ForeColor;
+            ForeColorITo = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iTo - baseOffset].ForeColor;
         }
 
         /// <summary>
@@ -221,7 +223,7 @@ namespace NippoControlSystem.UI.ViewModels
         {
             if (MyDataSetItems?.CheckDat == null || MyDataSetItems.CheckDat.Rows.Count == 0) return;
 
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
             int itemFound = 0;
 
             DataRow dtCheckDatRow = MyDataSetItems.CheckDat.Rows[itemFound];
@@ -242,17 +244,17 @@ namespace NippoControlSystem.UI.ViewModels
             VoltText = newVoltStr;
             dtCheckDatRow["Volt"] = newVolt;
 
-            int iDo_Length = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
             int mVoltIdx = (newVolt == "1" ? 2 : 0); // 0:12V, 2:24V
 
             for (int i = 0; i < iDo_Length; i++)
             {
                 // Hi 限界値設定
-                string hiField = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[0];
+                string hiField = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[0];
                 dtCheckDatRow[hiField] = defaultSettings.CheckDatLMT[mVoltIdx][i].ToString("F1");
 
                 // Lo 限界値設定
-                string loField = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[1];
+                string loField = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[1];
                 dtCheckDatRow[loField] = defaultSettings.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");
             }
 

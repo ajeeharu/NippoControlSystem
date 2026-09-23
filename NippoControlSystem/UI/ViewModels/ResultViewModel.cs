@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Runtime.CompilerServices;
@@ -215,7 +216,7 @@ namespace NippoControlSystem.UI.ViewModels
 
         private void ParseInspectionType(string typeValue)
         {
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
             if (int.TryParse(typeValue, out int instType))
             {
                 if (instType >= 0 && instType < defaultSettings.inspection_TypeText.Length)
@@ -231,7 +232,7 @@ namespace NippoControlSystem.UI.ViewModels
         {
             if (DataSetItems.PortDat == null || DataSetItems.PortDat.Rows.Count == 0) return;
 
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
             DataRow dtPortDatRow = DataSetItems.PortDat.Rows[0];
 
             // DIO 表示名の割り当て
@@ -317,7 +318,7 @@ namespace NippoControlSystem.UI.ViewModels
 
         private void UpdateDataTables(DataRow dtListDatRow, DataRow dtListDatResultRow)
         {
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
 
             // DIO の IO ステータス設定
             for (int i = 0; i < defaultSettings.DioNames.Length; i++)

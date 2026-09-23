@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -12,7 +13,7 @@ namespace NippoControlSystem.UI.ViewModels
     public class TopEditInputViewModel : INotifyPropertyChanged
     {
         #region Fields
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
 
         private string _lblMainNo;
         private string _lblSubNo;

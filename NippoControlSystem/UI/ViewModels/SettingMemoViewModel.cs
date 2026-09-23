@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -129,7 +130,7 @@ namespace NippoControlSystem.UI.ViewModels
         {
             if (string.IsNullOrEmpty(Folder) || !Directory.Exists(Folder)) return;
 
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
 
             try
             {

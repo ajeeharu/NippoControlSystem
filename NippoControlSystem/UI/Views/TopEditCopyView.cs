@@ -1,3 +1,5 @@
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,9 +19,9 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
 
         public TopEditCopyView()

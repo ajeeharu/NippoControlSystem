@@ -1,11 +1,6 @@
-using NippoControlSystem.UI.Views;
-using System;
-using System.Collections.Generic;
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -18,10 +13,10 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
-        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
+        private readonly Aio _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -31,8 +26,9 @@ namespace NippoControlSystem.UI.Views
         const int OpSwLampOn = (WorkingLampON ? 0 : 1);
         const int OpSwLampOff = (WorkingLampON ? 1 : 0);
 
-        public DebugView()
+        public DebugView(Aio aio)
         {
+            _aio = aio;
             InitializeComponent();
         }
 
@@ -78,7 +74,7 @@ namespace NippoControlSystem.UI.Views
 
         private void button_Start_Click(object sender, EventArgs e)
         {
-            if (radioButton1_0.Checked) 
+            if (radioButton1_0.Checked)
             {
                 //強制的に最後の項目まで検査する。
                 this.CurrentTNo = 0;       //最初から
@@ -128,8 +124,8 @@ namespace NippoControlSystem.UI.Views
         private void frmDebug_FormClosed(object sender, FormClosedEventArgs e)
         {
             //Lamp
-            aio.setGreenLamp(0);
-            aio.setRedLamp(0);
+            _aio.setGreenLamp(0);
+            _aio.setRedLamp(0);
         }
 
         private void frmDebug_FormClosing(object sender, FormClosingEventArgs e)
@@ -152,7 +148,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)    //OFFしたら、GreenSwitchStat(ON中)をリセットする 20170126
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -160,7 +156,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.RedSwitchStat != 0)    //OFFしたら、RedSwitchStat(ON中)をリセットする 20170126
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     mc.RedSwitchStat = 0;
                 }
@@ -172,7 +168,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -180,8 +176,8 @@ namespace NippoControlSystem.UI.Views
             }
             else
             {
-                //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                //switchLabelGreenSwitch.LampValueは、ON=1、_aio.getGreenSw()はON=1
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -203,7 +199,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.RedSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     mc.RedSwitchStat = 0;
                 }
@@ -212,7 +208,7 @@ namespace NippoControlSystem.UI.Views
             else
             {
                 //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -229,37 +225,37 @@ namespace NippoControlSystem.UI.Views
         private void switchLabelGreenSwitch_MouseDown(object sender, MouseEventArgs e)
         {
             this.switchLabelGreenSwitch.LampValue = 0;
-            aio.setGreenLamp(OpSwLampOn);
+            _aio.setGreenLamp(OpSwLampOn);
         }
 
         private void switchLabelGreenSwitch_MouseLeave(object sender, EventArgs e)
         {
             this.switchLabelGreenSwitch.LampValue = 1;
-            aio.setGreenLamp(0);
+            _aio.setGreenLamp(0);
         }
 
         private void switchLabelGreenSwitch_MouseUp(object sender, MouseEventArgs e)
         {
             this.switchLabelGreenSwitch.LampValue = 1;
-            aio.setGreenLamp(0);
+            _aio.setGreenLamp(0);
         }
 
         private void switchLabelRedSwitch_MouseDown(object sender, MouseEventArgs e)
         {
             this.switchLabelRedSwitch.LampValue = 0;
-            aio.setRedLamp(OpSwLampOn);
+            _aio.setRedLamp(OpSwLampOn);
         }
 
         private void switchLabelRedSwitch_MouseLeave(object sender, EventArgs e)
         {
             this.switchLabelRedSwitch.LampValue = 1;
-            aio.setRedLamp(0);
+            _aio.setRedLamp(0);
         }
 
         private void switchLabelRedSwitch_MouseUp(object sender, MouseEventArgs e)
         {
             this.switchLabelRedSwitch.LampValue = 1;
-            aio.setRedLamp(0);
+            _aio.setRedLamp(0);
         }
     }
 }

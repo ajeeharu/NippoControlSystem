@@ -1,3 +1,5 @@
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.UI.Views;
 using System;
 using System.Collections.Generic;
@@ -18,10 +20,10 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
-        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
+        Aio aio = Aio.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 

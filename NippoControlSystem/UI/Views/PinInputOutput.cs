@@ -1,3 +1,4 @@
+using NippoControlSystem.Infrastructure.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +18,7 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
+        Settings Default = Settings.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
 
         public PinInputOutput()

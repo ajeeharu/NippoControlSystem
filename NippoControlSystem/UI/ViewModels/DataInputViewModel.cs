@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Runtime.CompilerServices;
@@ -19,7 +20,7 @@ namespace NippoControlSystem.UI.ViewModels
         private string _errorMessage = string.Empty;
 
         // 設定の参照 (既存の Cyc.IO.Settings などから取得)
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
         #endregion
 
         #region Properties

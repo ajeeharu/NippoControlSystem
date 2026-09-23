@@ -6,6 +6,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.Configuration;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -18,7 +20,7 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
+        Settings Default = Settings.GetInstance();
         //Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
         //Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
@@ -976,12 +978,12 @@ namespace NippoControlSystem.UI.Views
                     string DoStat = Value;
                     if (mc.dicDioStat.ContainsKey(DoStat))
                     {
-                        Cyc.IO.NippoDIO.IO_STAT statCurr = (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DoStat]; //現在の設定
+                        NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStat]; //現在の設定
 
-                        int CellStylesIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.oOP;
-                        if (CellStylesIdx >= (int)Cyc.IO.NippoDIO.IO_STAT.nOP)
+                        int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STAT.oOP;
+                        if (CellStylesIdx >= (int)NippoDIO.IO_STAT.nOP)
                         {
-                            CellStylesIdx -= ((int)Cyc.IO.NippoDIO.IO_STAT.nOP - 3);
+                            CellStylesIdx -= ((int)NippoDIO.IO_STAT.nOP - 3);
                         }
                         //if (Default.CellStyles[CellStylesIdx].ForeColor != Color.Black)
                         //{

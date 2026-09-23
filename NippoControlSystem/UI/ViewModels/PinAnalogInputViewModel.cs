@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -7,7 +8,7 @@ namespace NippoControlSystem.UI.ViewModels
     public class PinAnalogInputViewModel : INotifyPropertyChanged
     {
         #region Fields & Dependencies
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
 
         private int _selectPin;
         private string _lowerValue = "";

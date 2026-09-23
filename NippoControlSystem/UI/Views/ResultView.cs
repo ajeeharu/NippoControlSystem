@@ -1,3 +1,6 @@
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.UI.Controls;
 using NippoControlSystem.UI.Views;
 using System;
 using System.Collections.Generic;
@@ -18,10 +21,10 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
-        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
+        Aio aio = Aio.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -375,12 +378,12 @@ namespace NippoControlSystem.UI.Views
                         string DoStatLocal = Value;
                         if (mc.dicDioStat.ContainsKey(DoStatLocal))
                         {
-                            Cyc.IO.NippoDIO.IO_STAT statCurr = (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DoStatLocal]; //現在の設定
+                            NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStatLocal]; //現在の設定
 
-                            int CellStylesIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.oOP;
-                            if (CellStylesIdx >= (int)Cyc.IO.NippoDIO.IO_STAT.nOP)
+                            int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STAT.oOP;
+                            if (CellStylesIdx >= (int)NippoDIO.IO_STAT.nOP)
                             {
-                                CellStylesIdx -= ((int)Cyc.IO.NippoDIO.IO_STAT.nOP - 3);
+                                CellStylesIdx -= ((int)NippoDIO.IO_STAT.nOP - 3);
                             }
                             //if (Default.CellStyles[CellStylesIdx].ForeColor != Color.Black)
                             //{
@@ -785,7 +788,7 @@ namespace NippoControlSystem.UI.Views
 
         private void mnuPrint_Click(object sender, EventArgs e)
         {
-            Cyc.Windows.Forms.screenShot.GetInstance().PrintForm(this, true);
+            screenShot.GetInstance().PrintForm(this, true);
         }
 
         private void mnuClose_Click(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -25,7 +25,7 @@ namespace NippoControlSystem.UI.ViewModels
         private int _redSwitchLampValue = 1;
 
         // ドメイン/ハードウェア依存クラスの参照
-        private readonly Cyc.IO.Aio _aio = Cyc.IO.Aio.GetInstance();
+        private readonly Aio _aio;
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
         // 稼働時点灯フラグに基づくランプON/OFF値設定
@@ -171,8 +171,9 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Constructor
-        public DebugViewModel()
+        public DebugViewModel(Aio aio)
         {
+            _aio = aio;
             StartCommand = new RelayCommand(OnStart);
             CancelCommand = new RelayCommand(OnCancel);
 

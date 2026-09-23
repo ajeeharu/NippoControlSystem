@@ -1,4 +1,7 @@
-﻿using NippoControlSystem.Domain.Interfaces;
+﻿using NippoControlSystem.Domain.Interfaces.enums;
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.Persistence;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -9,14 +12,14 @@ namespace NippoControlSystem.UI.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        readonly Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
+        readonly Settings Default = Settings.GetInstance();
 
         #region Fields & Dependencies
         //private readonly ISoundService _soundService;
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
-        private readonly Cyc.IO.cDio _dio = Cyc.IO.cDio.GetInstance();
-        private readonly Cyc.IO.Aio _aio = Cyc.IO.Aio.GetInstance();
-        private readonly Cyc.IO.Ai2Di _ai2di = Cyc.IO.Ai2Di.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
+        private readonly cDio _dio = cDio.GetInstance();
+        private readonly Aio _aio = Aio.GetInstance();
+        private readonly Ai2Di _ai2di = Ai2Di.GetInstance();
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
         private DataSetItems _myDataSetItems;
@@ -182,16 +185,16 @@ namespace NippoControlSystem.UI.ViewModels
             IsButtonsEnabled = true;
 
             // ボード初期化
-            CdioErrorCode iRetDio = _dio.Init();
+            CioDeviceErrorCode iRetDio = _dio.Init();
             if (iRetDio != 0) GuideText = "DIOボードの初期化エラー";
 
-            CaioErrorCode iRetAio = _aio.Init();
+            CioDeviceErrorCode iRetAio = _aio.Init();
             if (iRetAio != 0) GuideText = "AIOボードの初期化エラー";
 
             _aio.setInspctLamp(0);
             _aio.setGreenLamp(0);
 
-            CaioErrorCode iRetAi2Di = _ai2di.Init();
+            CioDeviceErrorCode iRetAi2Di = _ai2di.Init();
             if (iRetAi2Di != 0) GuideText = "AIボードの初期化エラー";
 
             // 電圧設定

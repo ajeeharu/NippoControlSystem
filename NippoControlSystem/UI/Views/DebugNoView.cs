@@ -1,11 +1,6 @@
-using NippoControlSystem.UI.Views;
-using System;
-using System.Collections.Generic;
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -18,10 +13,10 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
-        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
+        private readonly Aio _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -31,8 +26,9 @@ namespace NippoControlSystem.UI.Views
         const int OpSwLampOn = (WorkingLampON ? 0 : 1);
         const int OpSwLampOff = (WorkingLampON ? 1 : 0);
 
-        public DebugNoView()
+        public DebugNoView(Aio aio)
         {
+            _aio = aio;
             InitializeComponent();
         }
 
@@ -73,7 +69,7 @@ namespace NippoControlSystem.UI.Views
 
             int ListItemsCount = myDataSetItems.ListDat.Count;
             this.comboBox_TNo.Items.Clear();
-            for (int i=0; i< ListItemsCount; i++)
+            for (int i = 0; i < ListItemsCount; i++)
             {
                 this.comboBox_TNo.Items.Add((i + 1).ToString());
             }
@@ -107,8 +103,8 @@ namespace NippoControlSystem.UI.Views
         private void frmDebugNo_FormClosed(object sender, FormClosedEventArgs e)
         {
             //Lamp消灯
-            aio.setGreenLamp(0);
-            aio.setRedLamp(0);
+            _aio.setGreenLamp(0);
+            _aio.setRedLamp(0);
         }
 
         private void frmDebugNo_FormClosing(object sender, FormClosingEventArgs e)
@@ -131,7 +127,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)    //OFFしたら、GreenSwitchStat(ON中)をリセットする 20170126
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -139,7 +135,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.RedSwitchStat != 0)    //OFFしたら、RedSwitchStat(ON中)をリセットする 20170126
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     mc.RedSwitchStat = 0;
                 }
@@ -151,7 +147,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -159,8 +155,8 @@ namespace NippoControlSystem.UI.Views
             }
             else
             {
-                //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
+                //switchLabelGreenSwitch.LampValueは、ON=1、_aio.getGreenSw()はON=1
+                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -182,7 +178,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.RedSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     mc.RedSwitchStat = 0;
                 }
@@ -190,8 +186,8 @@ namespace NippoControlSystem.UI.Views
             }
             else
             {
-                //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
+                //switchLabelGreenSwitch.LampValueは、ON=1、_aio.getGreenSw()はON=1
+                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -209,18 +205,18 @@ namespace NippoControlSystem.UI.Views
 
         private void comboBox_TNo_Validating(object sender, CancelEventArgs e)
         {
-           System.Windows.Forms.ComboBox comboBox1 = (System.Windows.Forms.ComboBox)sender;
+            System.Windows.Forms.ComboBox comboBox1 = (System.Windows.Forms.ComboBox)sender;
 
-           System.Diagnostics.Debug.WriteLine(string.Format("comboBox_TNo_Validating:\"{0}\":{1}", comboBox1.Text, comboBox1.SelectedIndex));
-           for (int i = 0; i < comboBox1.Items.Count; i++)
-           {
-               if (comboBox1.Text.ToString() == comboBox1.Items[i].ToString())
-               {
-                   comboBox1.SelectedIndex = i;
-                   return;
-               }
-           }
-           e.Cancel = false;
+            System.Diagnostics.Debug.WriteLine(string.Format("comboBox_TNo_Validating:\"{0}\":{1}", comboBox1.Text, comboBox1.SelectedIndex));
+            for (int i = 0; i < comboBox1.Items.Count; i++)
+            {
+                if (comboBox1.Text.ToString() == comboBox1.Items[i].ToString())
+                {
+                    comboBox1.SelectedIndex = i;
+                    return;
+                }
+            }
+            e.Cancel = false;
         }
 
         const int SlLampOn = 1;

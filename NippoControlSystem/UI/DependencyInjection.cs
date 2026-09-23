@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NippoControlSystem.ApplicationService.Interfaces;
 using NippoControlSystem.ApplicationService.Services;
+using NippoControlSystem.Domain.Interfaces;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.NativeLibs;
 using NippoControlSystem.UI.ViewModels;
 using NippoControlSystem.UI.Views;
 
@@ -14,7 +17,12 @@ namespace NippoControlSystem.UI
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            // サービスの登録
+            // Device / Hardware 依存クラスの登録(シングルトンとして登録)
+            services.AddSingleton<ICaioDevice, CaioDevice>();
+            services.AddSingleton<Aio>();
+            services.AddSingleton<ICdioDevice, CdioDevice>();
+
+            // サービスの登録(シングルトンとして登録)
             services.AddSingleton<INavigationService, NavigationService>();
 
             // View / ViewModel の登録
@@ -25,7 +33,6 @@ namespace NippoControlSystem.UI
             services.AddTransient<TestHistoryView>();
             services.AddTransient<TopEditView>();
             services.AddTransient<VersionView>();
-
             return services;
         }
     }

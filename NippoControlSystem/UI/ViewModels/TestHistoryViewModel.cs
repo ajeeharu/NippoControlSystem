@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 
 namespace NippoControlSystem.UI.ViewModels
 {
@@ -15,9 +13,9 @@ namespace NippoControlSystem.UI.ViewModels
     public class TestHistoryViewModel : INotifyPropertyChanged
     {
         #region Fields
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
-        private readonly Cyc.IO.cDio _dio = Cyc.IO.cDio.GetInstance();
-        private readonly Cyc.IO.Aio _aio = Cyc.IO.Aio.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
+        private readonly cDio _dio = cDio.GetInstance();
+        private readonly Aio _aio;
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
         private string _historyFile = "";
@@ -211,16 +209,14 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Constructors
-        public TestHistoryViewModel()
-        {
-        }
 
-        public TestHistoryViewModel(string historyFile, string mainTitle, string subTitle, string folder)
+        public TestHistoryViewModel(string historyFile, string mainTitle, string subTitle, string folder, Aio aio)
         {
             HistoryFile = historyFile;
             MainTitle = mainTitle;
             SubTitle = subTitle;
             Folder = folder;
+            _aio = aio;
         }
         #endregion
 

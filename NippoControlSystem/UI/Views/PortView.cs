@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.Versioning;
 using NippoControlSystem.UI.Views;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.UI.Controls;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -19,9 +22,9 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -699,7 +702,7 @@ namespace NippoControlSystem.UI.Views
 
         private void mnuPrint_Click(object sender, EventArgs e)
         {
-            Cyc.Windows.Forms.screenShot.GetInstance().PrintForm(this, true);
+            screenShot.GetInstance().PrintForm(this, true);
         }
 
         private void mnuClose_Click(object sender, EventArgs e)

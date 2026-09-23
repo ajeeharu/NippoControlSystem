@@ -41,17 +41,13 @@
     <Folder Include="ApplicationService\Dtos\" />
     <Folder Include="ApplicationService\Scenarios\" />
     <Folder Include="Domain\Models\" />
-    <Folder Include="Domain\Services\" />
-    <Folder Include="Infrastructure\Devices\" />
-    <Folder Include="Infrastructure\Persistence\" />
     <Folder Include="Infrastructure\Mocks\" />
-    <Folder Include="UI\Controls\" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.0" />
     <!-- ThirdPartyの cdio.dll caio.dll をビルド出力先へ自動コピー -->
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DataSetItems.designer.cs">
+    <Compile Update="Infrastructure\Persistence\DataSetItems.designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>DataSetItems.xsd</DependentUpon>
@@ -70,9 +66,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Update="DataSetItems.xsd">
+    <None Update="Infrastructure\Persistence\DataSetItems.xsd">
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSetItems.Designer.cs</LastGenOutput>
+      <LastGenOutput>DataSetItems.designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

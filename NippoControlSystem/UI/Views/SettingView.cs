@@ -6,7 +6,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using NippoControlSystem.UI.Views; // setforegraoundwindow
+using NippoControlSystem.UI.Views;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.Configuration;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -19,7 +21,7 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
+        Settings Default = Settings.GetInstance();
         //Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
         //Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
@@ -190,16 +192,16 @@ namespace NippoControlSystem.UI.Views
             myDataSetItems.CheckDat.Rows[0]["Volt"] = newVolt;
             DataRow dtCheckDatRow = myDataSetItems.CheckDat.Rows[itemFound];
 
-            int iDo_Length = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
             //12V 24V
             int mVoltIdx = (newVolt == "1" ? 2 : 0); //0:12V 2:24V
 
             string dtCheckDatFields = null;
             for (int i = 0; i < iDo_Length; i++)
             {
-                dtCheckDatFields = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
+                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx][i].ToString("F1");    //iOP-HiLMT～iTo-HiLMT
-                dtCheckDatFields = ((Cyc.IO.NippoDIO.IO_STAT)((int)Cyc.IO.NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
+                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");    //iOP-LoLMT～iTo-LoLMT
             }
         }
@@ -733,12 +735,12 @@ namespace NippoControlSystem.UI.Views
                 string DoStat = Value;
                 if (mc.dicDioStat.ContainsKey(DoStat))
                 {
-                    Cyc.IO.NippoDIO.IO_STAT statCurr = (Cyc.IO.NippoDIO.IO_STAT)mc.dicDioStat[DoStat]; //現在の設定
+                    NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStat]; //現在の設定
 
-                    int CellStylesIdx = (int)statCurr - (int)Cyc.IO.NippoDIO.IO_STAT.oOP;
-                    if (CellStylesIdx >= (int)Cyc.IO.NippoDIO.IO_STAT.nOP)
+                    int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STAT.oOP;
+                    if (CellStylesIdx >= (int)NippoDIO.IO_STAT.nOP)
                     {
-                        CellStylesIdx -= ((int)Cyc.IO.NippoDIO.IO_STAT.nOP - 3);
+                        CellStylesIdx -= ((int)NippoDIO.IO_STAT.nOP - 3);
                     }
                     //if (Default.CellStyles[CellStylesIdx].ForeColor != Color.Black)
                     //{

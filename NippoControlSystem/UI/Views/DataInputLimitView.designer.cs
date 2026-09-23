@@ -1,4 +1,6 @@
-﻿namespace NippoControlSystem.UI.Views
+﻿using NippoControlSystem.UI.Controls;
+
+namespace NippoControlSystem.UI.Views
 {
     partial class DataInputLimitView
     {
@@ -131,21 +133,21 @@
             this.bindingSourceCheckDat = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label57 = new System.Windows.Forms.Label();
-            this.textBox_iDs電流上限値 = new Cyc.Forms.NumericTextBox();
+            this.textBox_iDs電流上限値 = new NumericTextBox();
             this.label59 = new System.Windows.Forms.Label();
             this.label_iDs電流下限値 = new System.Windows.Forms.Label();
-            this.textBox_iDs電流下限値 = new Cyc.Forms.NumericTextBox();
+            this.textBox_iDs電流下限値 = new NumericTextBox();
             this.label42 = new System.Windows.Forms.Label();
-            this.textBox_iDc電流上限値 = new Cyc.Forms.NumericTextBox();
+            this.textBox_iDc電流上限値 = new NumericTextBox();
             this.label_iDc電流下限値 = new System.Windows.Forms.Label();
-            this.textBox_iDc電流下限値 = new Cyc.Forms.NumericTextBox();
+            this.textBox_iDc電流下限値 = new NumericTextBox();
             this.label36 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
-            this.textBox_iDb電流上限値 = new Cyc.Forms.NumericTextBox();
+            this.textBox_iDb電流上限値 = new NumericTextBox();
             this.label38 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
             this.label_iDb電流下限値 = new System.Windows.Forms.Label();
-            this.textBox_iDb電流下限値 = new Cyc.Forms.NumericTextBox();
+            this.textBox_iDb電流下限値 = new NumericTextBox();
             this.Label3 = new System.Windows.Forms.Label();
             this.comboBox_Volt = new System.Windows.Forms.TextBox();
             this.label44 = new System.Windows.Forms.Label();
@@ -1640,12 +1642,12 @@
         public System.Windows.Forms.Label label38;
         public System.Windows.Forms.Label label39;
         public System.Windows.Forms.Label label_iDb電流下限値;
-        public Cyc.Forms.NumericTextBox textBox_iDc電流下限値;
-        public Cyc.Forms.NumericTextBox textBox_iDb電流下限値;
-        public Cyc.Forms.NumericTextBox textBox_iDb電流上限値;
-        public Cyc.Forms.NumericTextBox textBox_iDs電流上限値;
-        public Cyc.Forms.NumericTextBox textBox_iDs電流下限値;
-        public Cyc.Forms.NumericTextBox textBox_iDc電流上限値;
+        public NumericTextBox textBox_iDc電流下限値;
+        public NumericTextBox textBox_iDb電流下限値;
+        public NumericTextBox textBox_iDb電流上限値;
+        public NumericTextBox textBox_iDs電流上限値;
+        public NumericTextBox textBox_iDs電流下限値;
+        public NumericTextBox textBox_iDc電流上限値;
         public System.Windows.Forms.Label Label3;
         private System.Windows.Forms.TextBox comboBox_Volt;
         public System.Windows.Forms.Label label44;

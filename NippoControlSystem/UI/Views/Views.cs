@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using NippoControlSystem.Infrastructure.Configuration;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -342,7 +343,7 @@ namespace NippoControlSystem.UI.Views
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //FullScreenModeの設定
         //string viewMode = Cyc.IO.IniFileHandler.GetPrivateProfileString("Window", "WindowStyle", "2");
-        string viewMode = Cyc.IO.Settings.GetInstance().WindowStyle;
+        string viewMode = Settings.GetInstance().WindowStyle;
         // フルスクリーン・モードかどうかのフラグ
         private bool _bScreenMode;
         // フルスクリーン表示前のウィンドウの状態を保存する
@@ -448,7 +449,7 @@ namespace NippoControlSystem.UI.Views
 
         //m_HideTaskbar
         //string m_HideTaskbar = Cyc.IO.IniFileHandler.GetPrivateProfileString("Window", "HideTaskbar", @"0");
-        string m_HideTaskbar = Cyc.IO.Settings.GetInstance().HideTaskbar;   // @"0"
+        string m_HideTaskbar = Settings.GetInstance().HideTaskbar;   // @"0"
 
         public void HideTaskbar(bool mode)
         {

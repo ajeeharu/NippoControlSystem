@@ -1,4 +1,6 @@
-﻿namespace NippoControlSystem.UI.Views
+﻿using NippoControlSystem.UI.Controls;
+
+namespace NippoControlSystem.UI.Views
 {
     partial class PinInputOutput
     {
@@ -40,20 +42,20 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.textBoxiDp電流上限値 = new Cyc.Forms.NumericTextBox();
+            this.textBoxiDp電流上限値 = new NumericTextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBoxiDp電流下限値 = new Cyc.Forms.NumericTextBox();
+            this.textBoxiDp電流下限値 = new NumericTextBox();
             this.groupBoxiDs = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBoxiDs電流上限値 = new Cyc.Forms.NumericTextBox();
+            this.textBoxiDs電流上限値 = new NumericTextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.textBoxiDs電流下限値 = new Cyc.Forms.NumericTextBox();
+            this.textBoxiDs電流下限値 = new NumericTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataSetItems)).BeginInit();
             this.groupBoxiDp.SuspendLayout();
@@ -446,19 +448,19 @@
         public System.Windows.Forms.Label label9;
         public System.Windows.Forms.Label label10;
         public System.Windows.Forms.Label label11;
-        public Cyc.Forms.NumericTextBox textBoxiDp電流上限値;
+        public NumericTextBox textBoxiDp電流上限値;
         public System.Windows.Forms.Label label6;
         public System.Windows.Forms.Label label7;
         public System.Windows.Forms.Label label8;
-        public Cyc.Forms.NumericTextBox textBoxiDp電流下限値;
+        public NumericTextBox textBoxiDp電流下限値;
         private System.Windows.Forms.GroupBox groupBoxiDs;
         public System.Windows.Forms.Label label2;
         public System.Windows.Forms.Label label3;
         public System.Windows.Forms.Label label4;
-        public Cyc.Forms.NumericTextBox textBoxiDs電流上限値;
+        public NumericTextBox textBoxiDs電流上限値;
         public System.Windows.Forms.Label label5;
         public System.Windows.Forms.Label label12;
         public System.Windows.Forms.Label label13;
-        public Cyc.Forms.NumericTextBox textBoxiDs電流下限値;
+        public NumericTextBox textBoxiDs電流下限値;
     }
 }

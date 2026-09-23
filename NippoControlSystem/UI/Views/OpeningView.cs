@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.Services;
 using NippoControlSystem.UI.ViewModels;
+using System.Data;
 
 
 #pragma warning disable
@@ -18,11 +15,13 @@ namespace NippoControlSystem.UI.Views
         //　------　MVVMパターン用にリファクタリングしたコード　------
 
         private readonly OpeningViewModel _viewModel;
+        private readonly Aio _aio;
         // DIコンテナ経由で ViewModel を受け取る
-        public OpeningView(OpeningViewModel viewModel)
+        public OpeningView(OpeningViewModel viewModel, Aio aio)
         {
             InitializeComponent();
             _viewModel = viewModel;
+            _aio = aio;
             _viewModel.CurrentView = this;
         }
 
@@ -72,10 +71,9 @@ namespace NippoControlSystem.UI.Views
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
-        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
         //Forms mForms = Forms.GetInstance();
         Views mForms = null;            //20170127
@@ -104,10 +102,10 @@ namespace NippoControlSystem.UI.Views
             {
                 // AIOのDOをプリセット（検査ランプ消灯、操作SW 緑、赤を消灯）して自身は終了する
                 //Lamp Off
-                aio.setInspctLamp(0);   //LED_OFF
-                aio.setGreenLamp(0);
-                aio.setRedLamp(0);
-                aio.SetPower12V();
+                _aio.setInspctLamp(0);   //LED_OFF
+                _aio.setGreenLamp(0);
+                _aio.setRedLamp(0);
+                _aio.SetPower12V();
                 System.Environment.Exit(0);     //自分自身も終了する
             }
 
@@ -132,10 +130,10 @@ namespace NippoControlSystem.UI.Views
             this.lblSubNo.Text = Default.SubNo;     //"追番";
 
             //Lamp Off
-            aio.setInspctLamp(0);   //LED_OFF
-            aio.setGreenLamp(0);
-            aio.setRedLamp(0);
-            aio.SetPower12V();
+            _aio.setInspctLamp(0);   //LED_OFF
+            _aio.setGreenLamp(0);
+            _aio.setRedLamp(0);
+            _aio.SetPower12V();
 
             //DataSet
             mc.DataSetTopMenu = new DataSetTopMenu();
@@ -143,10 +141,10 @@ namespace NippoControlSystem.UI.Views
             mc.loadMenuCsv(mc.DataSetTopMenu, menuCsvPass);
 
             //Log Level
-            Cyc.IO.Log.LoggingLevel = Cyc.IO.Log.LogLevel.LOG_INFO;
+            Log.LoggingLevel = Log.LogLevel.LOG_INFO;
 
             //Debug
-            Cyc.IO.Log.LoggingLevel = Cyc.IO.Log.LogLevel.LOG_DEBUG;
+            Log.LoggingLevel = Log.LogLevel.LOG_DEBUG;
             //foreach (DataRow dtMainRow in mc.DataSetTopMenu.menuMain.Rows)
             //{
             //    Cyc.IO.Log.WriteLine(Cyc.IO.Log.LogLevel.LOG_DEBUG, "frmOpenning", string.Format("menuMain:{0}:{1}", dtMainRow["MainID"], dtMainRow["Title"]));
@@ -254,7 +252,7 @@ namespace NippoControlSystem.UI.Views
         private void button_ViewManual_Click(object sender, EventArgs e)
         {
             //string filePath = @"D:\ogura\工番\P16010063_配線チェッカー\制御\Project\NippoControlSystem\Manual.pdf";
-            string filePath = Default.ApplicationFloder+ Default.ManualPath;
+            string filePath = Default.ApplicationFloder + Default.ManualPath;
             string option = "";
 
             try
@@ -489,11 +487,11 @@ namespace NippoControlSystem.UI.Views
             string ItemFolder = founddtSubRow["Folder"].ToString();
             //exe実行
             //ProcessStartInfoオブジェクトを作成する
-            System.Diagnostics.ProcessStartInfo psi =  new System.Diagnostics.ProcessStartInfo();
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             //起動するファイルのパスを指定する
             psi.FileName = Default.AioMonitorExePath;
             //コマンドライン引数を指定する
-            psi.Arguments = string.Format("-d \"{0}\"",ItemFolder);
+            psi.Arguments = string.Format("-d \"{0}\"", ItemFolder);
 
             //アプリケーションを起動する
             System.Diagnostics.Process.Start(psi);
@@ -503,12 +501,12 @@ namespace NippoControlSystem.UI.Views
         private void frmOpenning_FormClosed(object sender, FormClosedEventArgs e)
         {
             //Lamp Off 2016/10/27
-            aio.setInspctLamp(0);   //LED_OFF
-            aio.setGreenLamp(0);
-            aio.setRedLamp(0);
-            aio.SetPower12V();
+            _aio.setInspctLamp(0);   //LED_OFF
+            _aio.setGreenLamp(0);
+            _aio.setRedLamp(0);
+            _aio.SetPower12V();
             //Close
-            aio.Exit();
+            _aio.Exit();
             nio.Close();
             dio.Exit();
         }

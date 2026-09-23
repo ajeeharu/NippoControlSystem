@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Runtime.CompilerServices;
@@ -11,7 +12,7 @@ namespace NippoControlSystem.UI.ViewModels
     public class PortViewModel : INotifyPropertyChanged
     {
         #region Fields & Dependencies
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
         private DataSetItems _dataSetItems;
         #endregion
 

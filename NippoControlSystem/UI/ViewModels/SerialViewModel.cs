@@ -1,6 +1,7 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.Infrastructure.Persistence;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -160,7 +161,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public void InitializeSettings()
         {
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
             var mc = MeasureCondition.GetInstance();
 
             SerialTitle = string.Format("{0}を入力して下さい。", defaultSettings.SerialTitle);
@@ -177,7 +178,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public bool SaveAndClose()
         {
-            var defaultSettings = Cyc.IO.Settings.GetInstance();
+            var defaultSettings = Settings.GetInstance();
             var mc = MeasureCondition.GetInstance();
 
             if (string.IsNullOrWhiteSpace(SerialNo))
@@ -244,7 +245,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public void OnHardwareTimerTick()
         {
-            var aio = Cyc.IO.Aio.GetInstance();
+            var aio = Aio.GetInstance();
 
             int newGreenSwitch = aio.getGreenSw();
             int newRedSwitch = aio.getRedSw();
@@ -277,7 +278,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public static void CleanupHardware()
         {
-            var aio = Cyc.IO.Aio.GetInstance();
+            var aio = Aio.GetInstance();
             aio.setGreenLamp(0);
             aio.setRedLamp(0);
         }

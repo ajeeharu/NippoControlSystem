@@ -1,3 +1,6 @@
+using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
+using NippoControlSystem.UI.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,12 +21,12 @@ namespace NippoControlSystem.UI.Views
 
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
-        Cyc.IO.Settings Default = Cyc.IO.Settings.GetInstance();
-        Cyc.IO.cDio dio = Cyc.IO.cDio.GetInstance();
-        Cyc.IO.Aio aio = Cyc.IO.Aio.GetInstance();
-        Cyc.IO.NippoDIO nio = Cyc.IO.NippoDIO.GetInstance();
+        Settings Default = Settings.GetInstance();
+        cDio dio = cDio.GetInstance();
+        Aio aio = Aio.GetInstance();
+        NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
-        Cyc.Windows.Forms.screenShot screen = Cyc.Windows.Forms.screenShot.GetInstance();
+        screenShot screen = screenShot.GetInstance();
         Views mForms = Views.GetInstance();
         System.Windows.Forms.PictureBox[] pictureBoxMeter;
 
@@ -403,7 +406,7 @@ namespace NippoControlSystem.UI.Views
 
         private void mnuPrint_Click(object sender, EventArgs e)
         {
-            Cyc.Windows.Forms.screenShot.GetInstance().PrintForm(this, true);
+            screenShot.GetInstance().PrintForm(this, true);
         }
 
         private void mnuEnd_Click(object sender, EventArgs e)

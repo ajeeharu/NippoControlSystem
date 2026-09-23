@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace NippoControlSystem.UI.ViewModels
     public class PinAnalogOutputViewModel : INotifyPropertyChanged
     {
         #region Fields & Dependencies
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
 
         private int _selectPin;
         private string _aoValue = "";

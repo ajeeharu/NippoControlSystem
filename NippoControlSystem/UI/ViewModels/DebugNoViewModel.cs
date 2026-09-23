@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Devices;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -18,8 +19,8 @@ namespace NippoControlSystem.UI.ViewModels
         private int _redSwitchLampValue;
 
         // ドメイン/ハードウェア依存クラスの参照
-        private readonly Cyc.IO.Settings _defaultSettings = Cyc.IO.Settings.GetInstance();
-        private readonly Cyc.IO.Aio _aio = Cyc.IO.Aio.GetInstance();
+        private readonly Settings _defaultSettings = Settings.GetInstance();
+        private readonly Aio _aio;
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
         // 監視用タイマー (WinForms Timer 等を抽象化または直接利用)
@@ -136,8 +137,9 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Constructor
-        public DebugNoViewModel()
+        public DebugNoViewModel(Aio aio)
         {
+            _aio = aio;
             StartCommand = new RelayCommand(OnStart);
             CancelCommand = new RelayCommand(OnCancel);
 
