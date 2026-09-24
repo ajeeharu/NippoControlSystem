@@ -20,7 +20,7 @@ namespace NippoControlSystem.UI.ViewModels
             public const uint WM_KEYUP = 0x0101;
 
             [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
-            public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+            public static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
 
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
             public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);

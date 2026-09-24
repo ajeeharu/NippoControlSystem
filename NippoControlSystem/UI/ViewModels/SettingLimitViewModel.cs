@@ -1,9 +1,7 @@
 ﻿using NippoControlSystem.Infrastructure.Configuration;
 using NippoControlSystem.Infrastructure.Devices;
-using System;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Runtime.CompilerServices;
 
 namespace NippoControlSystem.UI.ViewModels
@@ -212,7 +210,7 @@ namespace NippoControlSystem.UI.ViewModels
         #region Business Logic
         private static string GetVoltString(string valueString)
         {
-            string[] voltString = { "12V", "24V" };
+            string[] voltString = ["12V", "24V"];
             return (valueString == "1" ? voltString[1] : voltString[0]);
         }
 

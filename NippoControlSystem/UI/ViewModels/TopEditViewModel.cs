@@ -1,10 +1,8 @@
 ﻿using NippoControlSystem.Infrastructure.Configuration;
-using System;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 
 namespace NippoControlSystem.UI.ViewModels
 {
@@ -483,9 +481,9 @@ namespace NippoControlSystem.UI.ViewModels
         {
             if (mainRow == null || subRow == null) return;
 
-            string mainTitle = mainRow["Title"]?.ToString();
-            string subTitle = subRow["SubTitle"]?.ToString();
-            string folder = subRow["Folder"]?.ToString();
+            string? mainTitle = mainRow["Title"]?.ToString();
+            string? subTitle = subRow["SubTitle"]?.ToString();
+            string? folder = subRow["Folder"]?.ToString();
 
             GetSaveOldVerFolder(outFolder =>
             {
@@ -516,9 +514,9 @@ namespace NippoControlSystem.UI.ViewModels
                 {
                     foreach (DataRow subRow in mainRow.GetChildRows("menuMain_menuSub"))
                     {
-                        string mainTitle = mainRow["Title"]?.ToString();
-                        string subTitle = subRow["SubTitle"]?.ToString();
-                        string folder = subRow["Folder"]?.ToString();
+                        string? mainTitle = mainRow["Title"]?.ToString();
+                        string? subTitle = subRow["SubTitle"]?.ToString();
+                        string? folder = subRow["Folder"]?.ToString();
 
                         isSuccess &= ConvToOldVer(mainTitle, subTitle, folder, outFolder);
                     }

@@ -51,9 +51,6 @@ NippoControlSystem/
 
 ## 🏛 レイヤー構造と各モジュールの解説
 
-### 1. UI Layer (Presentation 層)
-画面描画およびユーザーインターフェースとの対話を担う層です。表示制御およびユーザー操作の受け付けに専念します。
-
 * **`DataInputViewModel.cs`**  
   検査項目の入力・切り替え（`StartTNo` / `TNo`）、DataSet へのデータ復元（`RestoreCurrentData`）やデータ読み込みを担当する ViewModel。
 * **`SerialViewModel.cs`**  
@@ -61,118 +58,115 @@ NippoControlSystem/
 * **`screenShot.cs` (`Cyc.Windows.Forms`)**  
   `Form` や `Control` の画面イメージをキャプチャし、印刷ダイアログやプレビュー表示を行なう UI ユーティリティ。
 
+### 1. UI Layer (Presentation 層)
+
 画面描画およびユーザーインターフェースとの対話を担う層です。表示制御およびユーザー操作の受け付けに専念します。
 
 Views/: 画面レイアウト・UIデザイン定義。
 
-ViewModels/: MVVMパターンに基づく表示ロジック・状態保持。
+* **`ViewModels/`**  :
+MVVMパターンに基づく表示ロジック・状態保持。
 
-DataInputViewModel.cs: 検査項目の入力・切り替え（StartTNo / TNo）、DataSet へのデータ復元（RestoreCurrentData）やデータ読み込みを担当。
+* **`DataInputViewModel.cs`**  :
+検査項目の入力・切り替え（StartTNo / TNo）、DataSet へのデータ復元（RestoreCurrentData）やデータ読み込みを担当。
 
-SerialViewModel.cs: 測定・シリアルナンバー等の検査制御を担当。
+* **`SerialViewModel.cs`**  :
+ 測定・シリアルナンバー等の検査制御を担当。
 
-Controls/: 再利用可能なカスタムコントロールおよび表示用UIコンポーネント。
+* **`Controls/`**  :
+ 再利用可能なカスタムコントロールおよび表示用UIコンポーネント。
 
-Properties/: アプリケーションリソースやアセンブリ情報。
+* **`Properties/`**  :
+ アプリケーションリソースやアセンブリ情報。
 
-Program.cs: アプリケーションの開始・エントリーポイント。
+* **`Program.cs`**  :
+ アプリケーションの開始・エントリーポイント。
 
-DependencyInjection.cs: DIコンテナの設定。各層のインターフェースと実装クラスのバインド・ライフサイクル管理を担当。
+* **`DependencyInjection.cs`**  :
+ DIコンテナの設定。各層のインターフェースと実装クラスのバインド・ライフサイクル管理を担当。
 
 ---
 
-### 2. Domain Layer (ドメイン層)
-システムの中心となるビジネスロジックおよび抽象化インターフェースを定義します。
+### 2. Application Layer (アプリケーションサービス層)
 
-* **`MeasureCondition.cs`**  
-  測定データおよび検査条件を表現する核心モデル。
-* **`ICaioNative.cs`**  
-  ハードウェア制御用のネイティブ DLL を抽象化するインターフェース。パラメータに `enum` (例: `AiRange`) を定義することで型安全な制御を実現。
-2. Application Layer (アプリケーションサービス層)
 ユースケースの実現、ドメインモデルとUI層の連携仲介、データ転送を行います。
 
 ※ .NET標準の System.Windows.Forms.Application や System.Windows.Application クラスとの名前空間衝突を回避するため、フォルダー・レイヤー名を ApplicationService としています。
 
-Dtos/: UI層とApplication層間でデータをやり取りするための軽量オブジェクト。
+* **`Dtos/`**  : 
+UI層とApplication層間でデータをやり取りするための軽量オブジェクト。
 
-Interfaces/: ユースケースやアプリケーションサービスの抽象インターフェース定義。
+* **`Interfaces/`**  :
+ ユースケースやアプリケーションサービスの抽象インターフェース定義。
 
-Scenarios/: 一連の検査手順や測定シーケンスなど、複数ステップにわたるユースケースのシナリオ実行ロジック。
+* **`Scenarios/`**  : 
+一連の検査手順や測定シーケンスなど、複数ステップにわたるユースケースのシナリオ実行ロジック。
 
-Services/: アプリケーション固有のユースケース処理の実装。
+* **`Services/`**  : 
+アプリケーション固有のユースケース処理の実装。
 ---
 
-### 3. Infrastructure Layer (インフラストラクチャ層)
-OS 依存処理、物理ファイル I/O、ハードウェア DLL 通信などの外部依存をカプセル化します。
-
-* **`NativeMethods.cs`**  
-  Win32 API (`FindWindow`, `PrintWindow`, `BitBlt` 等) の P/Invoke 定義。外部アプリ制御や描画補助で使用。
-* **`CaioNativeLib.cs`**  
-  コンテック製 AIO ボード用ライブラリ (`caio.dll`) との直接通信および `ICaioNative` の実装。
-* **`Settings.cs` (`Cyc.IO`)**  
-  `XmlSerializer` や `ConfigurationManager` を使用して、アプリケーション設定の保存・読み込みを行う設定管理クラス。
-* **`MeasureConditionCNV.cs`**  
-  設定テキスト（`List.dat` など）内の旧形式コマンド (`iDh`) から新形式 (`iDb`) への正規表現による互換性変換処理。
-3. Domain Layer (ドメイン層)
+### 3. Domain Layer (ドメイン層)
 外部フレームワークやデータベース、UIに依存しない、システムの核心となるビジネスロジックおよび抽象化インターフェースを定義します。
 
-Models/: システムのドメインエンティティおよび値オブジェクト。
+* **`Models/`**  :
+ システムのドメインエンティティおよび値オブジェクト。
 
-MeasureCondition.cs: 測定データおよび検査条件を表現する核心モデル。
+* **`MeasureCondition.cs`**  :
+ 測定データおよび検査条件を表現する核心モデル。
 
-Interfaces/: ハードウェア制御や外部サービスの抽象化インターフェース。
+* **`Interfaces/`**  :
+ ハードウェア制御や外部サービスの抽象化インターフェース。
 
-ICaioNative.cs: AIO/DIO 制御用ネイティブ DLL を抽象化するインターフェース。パラメータに enum (例: AiRange) を用いることで型安全な制御を実現。
+* **`ICaioNative.cs`**  : 
+AIO/DIO 制御用ネイティブ DLL を抽象化するインターフェース。パラメータに enum (例: AiRange) を用いることで型安全な制御を実現。
 
-Services/: エンティティ単体に収まらないドメイン独自の領域ロジックや計算処理を担当するドメインサービス。
+* **`Services/`**  : 
+エンティティ単体に収まらないドメイン独自の領域ロジックや計算処理を担当するドメインサービス。
 ---
 
-### 4. Test Suite (テストプロジェクト)
-* **`MSTestSettings.cs`**  
-  MSTest アセンブリ全体の並列実行設定 (`[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]`) を定義。
-4. Infrastructure Layer (インフラストラクチャ層)
+### 4. Infrastructure Layer (インフラストラクチャ層)
 OS 依存処理、物理ファイル I/O、ハードウェア DLL 通信などの外部依存を具体的に実装・カプセル化する層です。
 
-Configuration/: アプリケーションの環境設定・永続化処理。
+* **`Configuration/`**  :
+ アプリケーションの環境設定・永続化処理。
 
-Settings.cs (Cyc.IO): XML や App.config を利用した設定値の読み書き処理。
+* **`Settings.cs`**  :
+ XML や App.config を利用した設定値の読み書き処理。
 
-Devices/: 実際の測定器やハードウェアデバイスとの通信・制御を行う具体的な実装クラス群。
+* **`Devices/`**  :
+ 実際の測定器やハードウェアデバイスとの通信・制御を行う具体的な実装クラス群。
 
-Mocks/: 実機が存在しない開発・テスト環境用ダミー機器・モックサービス群。
+* **`Mocks/`**  :
+ 実機が存在しない開発・テスト環境用ダミー機器・モックサービス群。
 
-NativeLibs/: C/C++ 等で作成された外部 DLL ライブラリとの連携実装。
+* **`NativeLibs/`**  :
+ C/C++ 等で作成された外部 DLL ライブラリとの連携実装。
 
-CaioNativeLib.cs: コンテック製 AIO ボード用ライブラリ (caio.dll) との直接通信および ICaioNative の実装。
+* **`CaioNativeLib.cs`**  :
+ コンテック製 AIO ボード用ライブラリ (caio.dll) との直接通信および ICaioNative の実装。
 
-Persistence/: ファイル保存・データベース処理およびデータフォーマット変換。
+* **`Persistence/`**  :
+ ファイル保存・データベース処理およびデータフォーマット変換。
 
-MeasureConditionCNV.cs: 設定テキスト（List.dat など）内の旧形式コマンド (iDh) から新形式 (iDb) への正規表現互換性変換・永続化処理。
+* **`MeasureConditionCNV.cs`**  :
+ 設定テキスト（List.dat など）内の旧形式コマンド (iDh) から新形式 (iDb) への正規表現互換性変換・永続化処理。
 
-Services/: ログ出力やシステム共通のインフラストラクチャサービス。
+* **`Services/`**  :
+ ログ出力やシステム共通のインフラストラクチャサービス。
 
-Win32/: OS（Windows）固有の低レイヤー API 呼び出し。
+* **`Win32/`**  :
+ OS（Windows）固有の低レイヤー API 呼び出し。
 
-Win32Api.cs: Win32 API (FindWindow, PrintWindow, BitBlt 等) の P/Invoke 定義。
+* **`Win32Api.cs`**  :
+ Win32 API (FindWindow, PrintWindow, BitBlt 等) の P/Invoke 定義。
 ---
 
 ## ⚙ 設計における重要ルール
 
 1. **P/Invoke・OS依存処理の集約**  
-   Win32 API などの直接呼び出し (`[DllImport]`) は `Infrastructure/NativeLibs/NativeMethods.cs` に隠蔽し、インターフェース経由で ViewModel 等から呼び出す。
+   Win32 API などの直接呼び出し (`[LibralyImport]`) は `Infrastructure/NativeLibs/Win32Api.cs` に隠蔽し、インターフェース経由で ViewModel や Application 層から呼び出す。
 2. **型安全なパラメータ管理**  
-   ハードウェア制御インターフェースでは、魔法の数値 (`magic number`) を避け、`Domain` 層に定義した `enum` を使用して可読性と保守性を高める。
-
-
-   P/Invoke・OS依存処理の集約
-
-Win32 API などの直接呼び出し ([DllImport]) は Infrastructure/Win32/Win32Api.cs に隠蔽し、インターフェース経由で ViewModel や Application 層から呼び出す。
-
-型安全なパラメータ管理
-
-ハードウェア制御インターフェースでは、マジックナンバーを排除し、Domain 層に定義した enum を使用して可読性と保守性を高める。
-
-実機とモックの分離（DIによる切り替え）
-
-開発・テスト時には Infrastructure/Mocks/ 内のモック実装を DI コンテナ（DependencyInjection.cs）経由で注入することで、ハードウェア非接続環境でもアプリケーション動作を検証可能とする。
-'@ | Set-Content -Encoding utf8 README.md
+   ハードウェア制御インターフェースでは、マジックナンバーを排除し、`Domain` 層に定義した `enum` を使用して可読性と保守性を高める。
+3. **実機とモックの分離（DIによる切り替え）**
+   開発・テスト時には Infrastructure/Mocks/ 内のモック実装を DI コンテナ（DependencyInjection.cs）経由で注入することで、ハードウェア非接続環境でもアプリケーション動作を検証可能とする。

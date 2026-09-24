@@ -270,7 +270,7 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             string alltext = _mc.ReadAllText(HistoryFile, _mc.enc);
-            string[] splitedText = alltext.Split(new string[] { Environment.NewLine + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splitedText = alltext.Split([Environment.NewLine + Environment.NewLine], StringSplitOptions.RemoveEmptyEntries);
 
             string histFolder = Path.Combine(_defaultSettings.ApplicationFloder, _defaultSettings.SettingsHolder, _defaultSettings.HistViewFolder);
             if (!Directory.Exists(histFolder))

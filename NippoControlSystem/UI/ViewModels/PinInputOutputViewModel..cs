@@ -1,8 +1,5 @@
 ﻿using NippoControlSystem.Infrastructure.Configuration;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace NippoControlSystem.UI.ViewModels
@@ -88,7 +85,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// <summary>
         /// コンボボックス用の選択肢リスト (DioStatGuide)[cite: 6]
         /// </summary>
-        public List<string> DioStatGuideList => _defaultSettings.DioStatGuide?.ToList() ?? new List<string>();
+        public List<string> DioStatGuideList => _defaultSettings.DioStatGuide?.ToList() ?? [];
 
         /// <summary>
         /// コンボボックスの選択インデックス[cite: 6]

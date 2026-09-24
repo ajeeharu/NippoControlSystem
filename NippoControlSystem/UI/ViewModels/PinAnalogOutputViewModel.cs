@@ -1,8 +1,5 @@
 ﻿using NippoControlSystem.Infrastructure.Configuration;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace NippoControlSystem.UI.ViewModels
@@ -66,7 +63,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// <summary>
         /// コンボボックス用の選択肢リスト (AoSwichGuide)
         /// </summary>
-        public List<string> AoSwichGuideList => _defaultSettings.AoSwichGuide?.ToList() ?? new List<string>();
+        public List<string> AoSwichGuideList => _defaultSettings.AoSwichGuide?.ToList() ?? [];
 
         /// <summary>
         /// コンボボックスの選択インデックス
