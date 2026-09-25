@@ -40,7 +40,6 @@
   <ItemGroup>
     <Folder Include="ApplicationService\Dtos\" />
     <Folder Include="ApplicationService\Scenarios\" />
-    <Folder Include="Domain\Models\" />
     <Folder Include="Infrastructure\Mocks\" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.0" />
     <!-- ThirdPartyの cdio.dll caio.dll をビルド出力先へ自動コピー -->
