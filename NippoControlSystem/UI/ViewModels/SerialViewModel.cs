@@ -21,7 +21,7 @@ namespace NippoControlSystem.UI.ViewModels
         private string _serialTitle = string.Empty;
         private string _gokiTitle = string.Empty;
         private DataSetItems _myDataSetItems;
-        private readonly Aio _aio;
+        private readonly AnalogIO _aio;
 
         // ハードウェアSW状態保持用
         private int _lastGreenSwitch = 0;
@@ -152,7 +152,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Constructor & Initialization
-        public SerialViewModel(Aio aio)
+        public SerialViewModel(AnalogIO aio)
         {
             InitializeSettings();
             _aio = aio;

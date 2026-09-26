@@ -20,7 +20,7 @@ namespace NippoControlSystem.UI.ViewModels
 
         // ドメイン/ハードウェア依存クラスの参照
         private readonly Settings _defaultSettings = Settings.GetInstance();
-        private readonly Aio _aio;
+        private readonly AnalogIO _aio;
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
         // 監視用タイマー (WinForms Timer 等を抽象化または直接利用)
@@ -137,7 +137,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Constructor
-        public DebugNoViewModel(Aio aio)
+        public DebugNoViewModel(AnalogIO aio)
         {
             _aio = aio;
             StartCommand = new RelayCommand(OnStart);

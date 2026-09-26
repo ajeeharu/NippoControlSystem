@@ -17,9 +17,9 @@ namespace NippoControlSystem.UI.Views
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
         Settings Default = Settings.GetInstance();
-        cDio dio = cDio.GetInstance();
+        DigitalIO dio = DigitalIO.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
-        private readonly Aio _aio;
+        private readonly AnalogIO _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
         screenShot screen = screenShot.GetInstance();
@@ -36,7 +36,7 @@ namespace NippoControlSystem.UI.Views
         const int OpSwLampOn = (WorkingLampON ? 0 : 1);
         const int OpSwLampOff = (WorkingLampON ? 1 : 0);
 
-        public SerialView(Aio aio)
+        public SerialView(AnalogIO aio)
         {
             InitializeComponent();
             _aio = aio;

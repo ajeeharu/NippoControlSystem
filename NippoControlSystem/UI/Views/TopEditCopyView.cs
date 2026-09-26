@@ -20,7 +20,7 @@ namespace NippoControlSystem.UI.Views
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
         Settings Default = Settings.GetInstance();
-        cDio dio = cDio.GetInstance();
+        DigitalIO dio = DigitalIO.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
 

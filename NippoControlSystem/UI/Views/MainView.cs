@@ -21,8 +21,8 @@ namespace NippoControlSystem.UI.Views
     {
         Settings Default = Settings.GetInstance();
         Log.LogLevel Main_LogLevel = Log.LogLevel.LOG_INFO;
-        cDio dio = cDio.GetInstance();
-        private readonly Aio _aio;
+        DigitalIO dio = DigitalIO.GetInstance();
+        private readonly AnalogIO _aio;
         Ai2Di ai2di = Ai2Di.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
@@ -51,7 +51,7 @@ namespace NippoControlSystem.UI.Views
         string PowerVolt = "";
         DataSetItems myDataSetItems;
 
-        public MainView(Aio aio)
+        public MainView(AnalogIO aio)
         {
             _aio = aio;
             InitializeComponent();

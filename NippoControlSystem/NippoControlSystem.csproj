@@ -19,6 +19,7 @@
     <NoWarn>$(NoWarn);SYSLIB0051</NoWarn>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <SupportedOSPlatformVersion>6.1</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

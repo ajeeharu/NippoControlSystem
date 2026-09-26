@@ -10,7 +10,7 @@ using System.Data;
 
 namespace NippoControlSystem.Infrastructure.Devices
 {
-    public class cDio
+    public class DigitalIO
     {
         //for CONTEC Digital I/O device
         CdioDevice dio = null;
@@ -51,19 +51,19 @@ namespace NippoControlSystem.Infrastructure.Devices
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //メンバ変数：設定格納変数
-        private static cDio m_instance = null;
-        public static cDio GetInstance()
+        private static DigitalIO m_instance = null;
+        public static DigitalIO GetInstance()
         {
             if (m_instance == null)
             {
-                m_instance = new cDio();
+                m_instance = new DigitalIO();
             }
             return m_instance;
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //コンストラクタ
-        public cDio()
+        public DigitalIO()
         {
             dio = new CdioDevice();
             DIO_LogLevel = Default.DIO_LogLevel;
@@ -83,7 +83,7 @@ namespace NippoControlSystem.Infrastructure.Devices
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //デコンストラクタ
         //public void Dispose()
-        ~cDio()
+        ~DigitalIO()
         {
             this.Exit();
         }

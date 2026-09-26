@@ -57,7 +57,7 @@ namespace NippoControlSystem.Infrastructure.Devices
         }
 
         Settings Default = Settings.GetInstance();
-        cDio dio = null;
+        DigitalIO dio = null;
         //private int[] m_DImax = null;
         private int m_DO_Pmax = 0;
 
@@ -89,7 +89,7 @@ namespace NippoControlSystem.Infrastructure.Devices
             // 
             // TODO: コンストラクタ ロジックをここに追加してください。
             //
-            dio = cDio.GetInstance();
+            dio = DigitalIO.GetInstance();
             dio.Init();
             //m_DImax = dio.DImax;
             m_DO_Pmax = dio.DO_Pmax;

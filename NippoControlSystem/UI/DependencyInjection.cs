@@ -19,7 +19,7 @@ namespace NippoControlSystem.UI
         {
             // Device / Hardware 依存クラスの登録(シングルトンとして登録)
             services.AddSingleton<ICaioDevice, CaioDevice>();
-            services.AddSingleton<Aio>();
+            services.AddSingleton<AnalogIO>();
             services.AddSingleton<ICdioDevice, CdioDevice>();
 
             // サービスの登録(シングルトンとして登録)

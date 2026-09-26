@@ -69,7 +69,7 @@
             this.textBox_Filter.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.textBox_Filter.Size = new System.Drawing.Size(265, 31);
             this.textBox_Filter.TabIndex = 16;
-            this.textBox_Filter.TextChanged += new System.EventHandler(this.textBox_Filter_TextChanged);
+            this.textBox_Filter.TextChanged += new System.EventHandler(this.FilterMenu_TextChanged);
             // 
             // button_ViewManual
             // 
@@ -102,7 +102,7 @@
             this.listBox_SubNo.TabIndex = 15;
             this.ToolTip1.SetToolTip(this.listBox_SubNo, "選択してください。");
             this.listBox_SubNo.ValueMember = "SubID";
-            this.listBox_SubNo.DoubleClick += new System.EventHandler(this.listBox_SubNo_DoubleClick);
+            this.listBox_SubNo.DoubleClick += new System.EventHandler(this.ExecuteInspection_OnSubNoDoubleClick);
             // 
             // menuSubBindingSource
             // 
@@ -135,7 +135,7 @@
             this.listBox_MainNo.TabIndex = 14;
             this.ToolTip1.SetToolTip(this.listBox_MainNo, "選択してください。");
             this.listBox_MainNo.ValueMember = "MainID";
-            this.listBox_MainNo.SelectedIndexChanged += new System.EventHandler(this.listBox_MainNo_SelectedIndexChanged);
+            this.listBox_MainNo.SelectedIndexChanged += new System.EventHandler(this.SyncMainNoSelection_SelectedIndexChanged);
             // 
             // button_frmSetting
             // 
@@ -150,7 +150,7 @@
             this.button_frmSetting.TabIndex = 19;
             this.button_frmSetting.Text = "検査定義の編集(&I)";
             this.button_frmSetting.UseVisualStyleBackColor = false;
-            this.button_frmSetting.Click += new System.EventHandler(this.button_SettingView_Click);
+            this.button_frmSetting.Click += new System.EventHandler(this.EditSetting_Click);
             // 
             // button_Exit
             // 
@@ -165,7 +165,7 @@
             this.button_Exit.TabIndex = 21;
             this.button_Exit.Text = "終了(&Q)";
             this.button_Exit.UseVisualStyleBackColor = false;
-            this.button_Exit.Click += new System.EventHandler(this.button_Exit_Click);
+            this.button_Exit.Click += new System.EventHandler(this.CloseScreen_Click);
             // 
             // button_frmTopEdit
             // 
@@ -180,7 +180,7 @@
             this.button_frmTopEdit.TabIndex = 18;
             this.button_frmTopEdit.Text = "この画面の編集(&E)";
             this.button_frmTopEdit.UseVisualStyleBackColor = false;
-            this.button_frmTopEdit.Click += new System.EventHandler(this.button_TopEditView_Click);
+            this.button_frmTopEdit.Click += new System.EventHandler(this.EditTopView_Click);
             // 
             // button_frmMain
             // 
@@ -195,7 +195,7 @@
             this.button_frmMain.TabIndex = 17;
             this.button_frmMain.Text = "検査(&C)";
             this.button_frmMain.UseVisualStyleBackColor = false;
-            this.button_frmMain.Click += new System.EventHandler(this.button_MainView_Click);
+            this.button_frmMain.Click += new System.EventHandler(this.ExecuteInspection_Click);
             // 
             // Label2
             // 
@@ -236,7 +236,7 @@
             this.lblVersion.TabIndex = 25;
             this.lblVersion.Text = "lblVersion";
             this.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblVersion.Click += new System.EventHandler(this.lblVersion_Click);
+            this.lblVersion.Click += new System.EventHandler(this.OpenVersion_Click);
             // 
             // Label3
             // 
@@ -277,10 +277,6 @@
             this.lblMainNo.TabIndex = 22;
             this.lblMainNo.Text = "lblMainNo";
             // 
-            // timerInitalUpdate
-            // 
-            this.timerInitalUpdate.Tick += new System.EventHandler(this.timerInitalUpdate_Tick);
-            // 
             // button_AnalogMonitor
             // 
             this.button_AnalogMonitor.BackColor = System.Drawing.SystemColors.Control;
@@ -295,7 +291,7 @@
             this.button_AnalogMonitor.Text = "アナログ入出力モニタ(&A)";
             this.button_AnalogMonitor.UseVisualStyleBackColor = false;
             this.button_AnalogMonitor.Visible = false;
-            this.button_AnalogMonitor.Click += new System.EventHandler(this.button_AnalogMonitor_Click);
+            this.button_AnalogMonitor.Click += new System.EventHandler(this.LaunchAnalogAioMonitor_Click);
             // 
             // buttonHistory
             // 
@@ -310,7 +306,7 @@
             this.buttonHistory.TabIndex = 29;
             this.buttonHistory.Text = "検査履歴(&D)";
             this.buttonHistory.UseVisualStyleBackColor = false;
-            this.buttonHistory.Click += new System.EventHandler(this.button_HistoryView_Click);
+            this.buttonHistory.Click += new System.EventHandler(this.OpenHistory_Click);
             // 
             // frmOpenning
             // 
@@ -342,9 +338,9 @@
             this.Name = "frmOpenning";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "配線チェッカー V2 ";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmOpenning_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmOpenning_FormClosed);
-            this.Load += new System.EventHandler(this.frmOpenning_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
+            this.Load += new System.EventHandler(this.Initialize_Load);
             ((System.ComponentModel.ISupportInitialize)(this.menuSubBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuMainBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataSetTopMenu)).EndInit();

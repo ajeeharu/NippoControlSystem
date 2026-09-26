@@ -16,9 +16,9 @@ namespace NippoControlSystem.UI.Views
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
         Settings Default = Settings.GetInstance();
-        cDio dio = cDio.GetInstance();
+        DigitalIO dio = DigitalIO.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
-        private readonly Aio _aio;
+        private readonly AnalogIO _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -34,7 +34,7 @@ namespace NippoControlSystem.UI.Views
         //Font fontRegularlstyle = new Font("ＭＳ ゴシック", 9, FontStyle.Regular);
         //Font fontBoldstyle = new Font("ＭＳ ゴシック", 9, FontStyle.Bold);
 
-        public ResultView(Aio aio)
+        public ResultView(AnalogIO aio)
         {
             InitializeComponent();
             _aio = aio;

@@ -25,7 +25,7 @@ namespace NippoControlSystem.UI.ViewModels
         private int _redSwitchLampValue = 1;
 
         // ドメイン/ハードウェア依存クラスの参照
-        private readonly Aio _aio;
+        private readonly AnalogIO _aio;
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
         // 稼働時点灯フラグに基づくランプON/OFF値設定
@@ -171,7 +171,7 @@ namespace NippoControlSystem.UI.ViewModels
         #endregion
 
         #region Constructor
-        public DebugViewModel(Aio aio)
+        public DebugViewModel(AnalogIO aio)
         {
             _aio = aio;
             StartCommand = new RelayCommand(OnStart);

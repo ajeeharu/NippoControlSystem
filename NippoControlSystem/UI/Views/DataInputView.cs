@@ -32,14 +32,14 @@ namespace NippoControlSystem.UI.Views
         const int ColumnIndexIOdataField = 2;
         const int ColumnIndexAOdataField = 2;
         const int ColumnIndexAOswField = 3;
-        private readonly Aio _aio;
+        private readonly AnalogIO _aio;
 
         Font fontRegularlstyle = new Font("ÇlÇr ÇoÉSÉVÉbÉN", 9, FontStyle.Regular);
         Font fontBoldstyle = new Font("ÇlÇr ÇoÉSÉVÉbÉN", 9, FontStyle.Bold);
         //Font fontRegularlstyle = new Font("ÇlÇr ÉSÉVÉbÉN", 9, FontStyle.Regular);
         //Font fontBoldstyle = new Font("ÇlÇr ÉSÉVÉbÉN", 9, FontStyle.Bold);
 
-        public DataInputView(Aio aio)
+        public DataInputView(AnalogIO aio)
         {
             InitializeComponent();
             _aio = aio;

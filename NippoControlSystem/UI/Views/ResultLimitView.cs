@@ -14,9 +14,9 @@ namespace NippoControlSystem.UI.Views
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
         Settings Default = Settings.GetInstance();
-        cDio dio = cDio.GetInstance();
+        DigitalIO dio = DigitalIO.GetInstance();
         NippoDIO nio = NippoDIO.GetInstance();
-        private readonly Aio _aio;
+        private readonly AnalogIO _aio;
         MeasureCondition mc = MeasureCondition.GetInstance();
         Views mForms = Views.GetInstance();
 
@@ -37,7 +37,7 @@ namespace NippoControlSystem.UI.Views
         //int delayedViewRowIndex = 0;
 
 
-        public ResultLimitView(Aio aio)
+        public ResultLimitView(AnalogIO aio)
         {
             InitializeComponent();
             _aio = aio;

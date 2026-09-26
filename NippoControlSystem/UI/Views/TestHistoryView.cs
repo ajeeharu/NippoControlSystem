@@ -17,8 +17,8 @@ namespace NippoControlSystem.UI.Views
         //　------　MVVM化のためにリファクタリングする前のコード　------
 
         Settings Default = Settings.GetInstance();
-        cDio dio = cDio.GetInstance();
-        private readonly Aio _aio;
+        DigitalIO dio = DigitalIO.GetInstance();
+        private readonly AnalogIO _aio;
         NippoDIO nio = NippoDIO.GetInstance();
         MeasureCondition mc = MeasureCondition.GetInstance();
         screenShot screen = screenShot.GetInstance();
@@ -33,7 +33,7 @@ namespace NippoControlSystem.UI.Views
         //Const
         const int AveTimes = 10;
 
-        public TestHistoryView(Aio aio)
+        public TestHistoryView(AnalogIO aio)
         {
             InitializeComponent();
             _aio = aio;

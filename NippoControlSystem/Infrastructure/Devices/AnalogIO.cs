@@ -9,7 +9,7 @@ using NippoControlSystem.Infrastructure.Services;
 
 namespace NippoControlSystem.Infrastructure.Devices
 {
-    public class Aio
+    public class AnalogIO
     {
         //for CONTEC Digital I/O device
         private readonly ICaioDevice _aioDevice;
@@ -24,7 +24,7 @@ namespace NippoControlSystem.Infrastructure.Devices
                                               //private string m_titleText = "Cyc.IO.AIO";      //タイトル
 
         // コンストラクタで ICaioDevice を受け取る
-        public Aio(ICaioDevice aioDevice)
+        public AnalogIO(ICaioDevice aioDevice)
         {
             _aioDevice = aioDevice ?? throw new ArgumentNullException(nameof(aioDevice));
 
@@ -43,7 +43,7 @@ namespace NippoControlSystem.Infrastructure.Devices
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //デコンストラクタ
         //public void Dispose()
-        ~Aio()
+        ~AnalogIO()
         {
             this.Exit();
         }

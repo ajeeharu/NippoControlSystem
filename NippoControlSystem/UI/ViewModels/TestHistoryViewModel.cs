@@ -14,8 +14,8 @@ namespace NippoControlSystem.UI.ViewModels
     {
         #region Fields
         private readonly Settings _defaultSettings = Settings.GetInstance();
-        private readonly cDio _dio = cDio.GetInstance();
-        private readonly Aio _aio;
+        private readonly DigitalIO _dio = DigitalIO.GetInstance();
+        private readonly AnalogIO _aio;
         private readonly MeasureCondition _mc = MeasureCondition.GetInstance();
 
         private string _historyFile = "";
@@ -210,7 +210,7 @@ namespace NippoControlSystem.UI.ViewModels
 
         #region Constructors
 
-        public TestHistoryViewModel(string historyFile, string mainTitle, string subTitle, string folder, Aio aio)
+        public TestHistoryViewModel(string historyFile, string mainTitle, string subTitle, string folder, AnalogIO aio)
         {
             HistoryFile = historyFile;
             MainTitle = mainTitle;
