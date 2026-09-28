@@ -1,17 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NippoControlSystem.ApplicationService.Interfaces;
-using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.UI.Views;
 using System.Data;
 using System.IO;
 
 namespace NippoControlSystem.UI.ViewModels
 {
-    public partial class OpeningViewModel(INavigationService navigationService, AnalogIO aio) : ObservableObject
+    public partial class OpeningViewModel(INavigationService navigationService) : ObservableObject
     {
         private readonly INavigationService _navigationService = navigationService;
-        private readonly AnalogIO _aio = aio;
 
         /// <summary>
         /// 親画面の参照（Hide/Show制御用）
@@ -211,6 +209,9 @@ namespace NippoControlSystem.UI.ViewModels
             System.Diagnostics.Process.Start(psi);
             return true;
         }
+        /// <summary>
+        /// 初期データをデータベースから非同期で読み込み、画面の初期化を行います。
+        /// </summary>
         private async Task LoadInitialDataFromDbAsync()
         {
             //Locationを設定、ConfigurationManagerは、System.Configuration.dll への参照設定が必要
@@ -225,31 +226,6 @@ namespace NippoControlSystem.UI.ViewModels
             //this.lblVersion.Text = string.Format("Version {0}", System.Reflection.Assembly.GetEntryAssembly().GetName().VersionCompatibility.ToString());
             this.lblVersion.Text = string.Format("Ver {0}", Application.ProductVersion);
 
-            //コマンドラインを配列で取得する 20170127
-            string[] cmds;
-            cmds = System.Environment.GetCommandLineArgs();
-            string CommandLineArgs = "";
-            for (int i = 0; i < cmds.Length; i++)
-                CommandLineArgs += (" " + cmds[i]);
-            if (cmds.Length == 2 && (cmds[1] == "PRESET_ADO" || cmds[1] == "PRESET"))
-            {
-                // AIOのDOをプリセット（検査ランプ消灯、操作SW 緑、赤を消灯）して自身は終了する
-                //Lamp Off
-                _aio.setInspctLamp(0);   //LED_OFF
-                _aio.setGreenLamp(0);
-                _aio.setRedLamp(0);
-                _aio.SetPower12V();
-                System.Environment.Exit(0);     //自分自身も終了する
-            }
-
-            // 同じ実行ファイル名のプロセスは起動しない
-            // 注) パス違いでも「同名」実行ファイルは起動しない！
-            if (System.Diagnostics.Process.GetProcessesByName(
-                    System.Diagnostics.Process.GetCurrentProcess().ProcessName).Length > 1)
-            {
-                MessageBox.Show("すでに起動しています！");
-                System.Environment.Exit(0);
-            }
 
             //自ウィンドウをシステムトレイに入れる
             //HideMe();
@@ -394,20 +370,6 @@ namespace NippoControlSystem.UI.ViewModels
             return true;
         }
 
-        //自ウィンドウをシステムトレイにから取出し通常表示する
-        private void ShowMe()
-        {
-            // フォームの表示
-            this.Visible = true;
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                this.WindowState = FormWindowState.Normal; // 最小化をやめる
-            }
-            //タスクバーにアイコンを表示する
-            this.ShowInTaskbar = true;
-            // フォームをアクティブにする
-            this.Activate();
-        }
 
     }
 }

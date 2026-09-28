@@ -1,11 +1,6 @@
 ﻿using NippoControlSystem.Domain.Interfaces;
 using NippoControlSystem.Domain.Interfaces.enums;
-using NippoControlSystem.Infrastructure.Configuration;
-using NippoControlSystem.Infrastructure.Services;
 
-
-#pragma warning disable
-#nullable disable // C# 8.0以降のNull許容警告も消す場合
 
 namespace NippoControlSystem.Infrastructure.Devices
 {
@@ -39,96 +34,6 @@ namespace NippoControlSystem.Infrastructure.Devices
 
         Settings Default = Settings.GetInstance();
         Log.LogLevel AIO_LogLevel = Log.LogLevel.LOG_INFO;
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //デコンストラクタ
-        //public void Dispose()
-        ~AnalogIO()
-        {
-            this.Exit();
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        // プロパティ
-        public string DeviceNameAIO
-        {
-            get
-            {
-                return m_DeviceNameAIO;
-            }
-            set
-            {
-                m_DeviceNameAIO = value;
-            }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        // プロパティ
-        public string SettingsHolder
-        {
-            get
-            {
-                return Default.SettingsHolder;
-            }
-            set
-            {
-                Default.SettingsHolder = value;
-            }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Proparty
-        public bool AioEmu
-        {
-            get { return m_AioEmu; }
-            set { m_AioEmu = value; }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Proparty
-        public int AImax
-        {
-            get { return m_AImax; }
-            //set { m_DImax = value; }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Proparty
-        public int AOmax
-        {
-            get { return m_AOmax; }
-            //set { m_DOmax = value; }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Proparty
-        public short AIOid
-        {
-            set { m_AIOid = value; }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Proparty
-        public bool Connected
-        {
-            get { return m_Connected; }
-            //set { m_Inited = value; }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Proparty
-        public bool Inited
-        {
-            get { return m_Inited; }
-            set { m_Inited = value; }
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Proparty
-        public string LastErrorString
-        {
-            get { return m_LastErrorString; }
-        }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //Init()
@@ -204,28 +109,6 @@ namespace NippoControlSystem.Infrastructure.Devices
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
-        //SingleAiEx()
-        public CioDeviceErrorCode SingleAiEx(int AiChannel, out float AiData)
-        {
-            CioDeviceErrorCode Ret = 0;
-            if (m_AioEmu == false)
-            {
-                //入力レンジの設定
-                Ret = _aioDevice.SingleAiEx(m_AIOid, (short)AiChannel, out AiData);
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.SingleAiEx", (int)Ret);
-                }
-                AiData = (AiData * Default.AiCalib_A[AiChannel] + Default.AiCalib_B[AiChannel]) * Default.AiMulti;
-            }
-            else
-            {
-                AiData = 0.0f;
-            }
-            return Ret;
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
         //MultiAi()
         public CioDeviceErrorCode MultiAi(float[] AiData)
         {
@@ -269,33 +152,6 @@ namespace NippoControlSystem.Infrastructure.Devices
                 if (Ret != 0)
                 {
                     GetErrorString("aio.SingleAoEx", (int)Ret);
-                }
-            }
-            else
-            {
-                //m_AioEmu
-            }
-            return Ret;
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //MultiAoEx()
-        public CioDeviceErrorCode MultiAoEx(float[] AoData)
-        {
-            short AoMaxChannels = (short)AoData.Length;
-            float[] AoDataCalib = new float[AoData.Length];
-            for (int i = 0; i < AoData.Length; i++)
-            {
-                AoDataCalib[i] = (AoData[i] * AoData[i] * Default.AoCalib_A[i] + AoData[i] * Default.AoCalib_B[i] + Default.AoCalib_C[i]) / Default.AoDiv;
-            }
-            CioDeviceErrorCode Ret = 0;
-            if (m_AioEmu == false)
-            {
-                //アナログ出力
-                Ret = _aioDevice.MultiAoEx(m_AIOid, AoMaxChannels, AoDataCalib);
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.MultiAoEx", (int)Ret);
                 }
             }
             else
@@ -354,12 +210,6 @@ namespace NippoControlSystem.Infrastructure.Devices
             return OutputDoBit(0, DoData);  //ON=24V,  OFF=12V
         }
         //--------1---------2---------3---------4---------5---------6---------7---------8
-        //EchoBackPowerV()
-        public CioDeviceErrorCode EchoBackPowerVolt()
-        {
-            return (CioDeviceErrorCode)PowerVoltEchoBackData;  //ON=24V,  OFF=12V
-        }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
         //Power12()
         public CioDeviceErrorCode SetPower12V()
         {
@@ -411,74 +261,5 @@ namespace NippoControlSystem.Infrastructure.Devices
             }
             return Ret;
         }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //InputDiBit()
-        public CioDeviceErrorCode InputDiByte(int DiBitNo, out int DiData)
-        {
-            CioDeviceErrorCode Ret = 0;
-            short sDiData;
-            if (m_AioEmu == false)
-            {
-                //デジタル入力
-                Ret = _aioDevice.InputDiByte(m_AIOid, (short)DiBitNo, out sDiData);
-                DiData = sDiData;
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.InputDiByte", (int)Ret);
-                }
-            }
-            else
-            {
-                DiData = 0;
-            }
-            return Ret;
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //OutputDoByte()
-        public CioDeviceErrorCode OutputDoByte(int DoBitNo, int DoData)
-        {
-            CioDeviceErrorCode Ret = 0;
-            if (m_AioEmu == false)
-            {
-                //デジタル出力
-                Ret = _aioDevice.OutputDoByte(m_AIOid, (short)DoBitNo, (short)DoData);
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.OutputDoByte", (int)Ret);
-                }
-            }
-            else
-            {
-                //m_AioEmu
-            }
-            return Ret;
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //GetErrorString()
-        public void GetErrorString(string funcName, int Ret)
-        {
-            if (Ret != 0)
-            {
-                if (Ret == -1)
-                {
-                    m_LastErrorString = "デジタル出力モジュールでエラーが発生しました。処理を終了します。" + "\n" + funcName + " : " + System.Convert.ToString(Ret) + " : " + "Driver not installed";
-                }
-                else
-                {
-                    string ErrorString;
-                    _aioDevice.GetErrorString(Ret, out ErrorString);
-                    m_LastErrorString = "デジタル出力モジュールでエラーが発生しました。処理を終了します。" + "\n" + funcName + " : " + System.Convert.ToString(Ret) + " : " + ErrorString;
-                }
-            }
-            else
-            {
-                m_LastErrorString = null;
-            }
-        }
-
-
     }
 }

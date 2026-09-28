@@ -1,0 +1,15 @@
+{
+  "Ui": {
+    "WindowStyle": "2",
+    "HideTaskbar": "0",
+    "PlaySoundEnable": "Yes",
+    "OkWavPath": "Settings\\ok.wav",
+    "NgWavPath": "Settings\\ng.wav",
+    "PauseWavPath": "Settings\\pause.wav",
+    "DefaultPageSettings_Landscape": false,
+    "DefaultPageSettings_Margins_Left": 100,
+    "DefaultPageSettings_Margins_Right": 100,
+    "DefaultPageSettings_Margins_Top": 100,
+    "DefaultPageSettings_Margins_Bottom": 100
+  }
+}

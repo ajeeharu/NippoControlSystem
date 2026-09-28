@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.ApplicationService.Confiigurations;
 using NippoControlSystem.UI.ViewModels;
 
 namespace NippoControlSystem.UI.Views
@@ -6,12 +6,14 @@ namespace NippoControlSystem.UI.Views
     public partial class OpeningView : Form
     {
         private readonly OpeningViewModel _viewModel;
+        private readonly AppInfoSettings _config;
 
         // DIコンテナ経由で ViewModel を受け取る
-        public OpeningView(OpeningViewModel viewModel)
+        public OpeningView(OpeningViewModel viewModel, AppInfoSettings applicationConfig)
         {
             InitializeComponent();
             _viewModel = viewModel;
+            _config = applicationConfig;
             _viewModel.CurrentView = this;       // ViewModel への CurrentView 設定
         }
 
@@ -151,14 +153,14 @@ namespace NippoControlSystem.UI.Views
         private void LaunchAnalogAioMonitor_Click(object sender, EventArgs e)
         {
             // リストで選択された SubID の値を取得して ViewModel 側の起動ロジックを実行
-            object selectedSubId = this.listBox_SubNo.SelectedValue;
+            object selectedSubId = listBox_SubNo.SelectedValue;
 
             bool isSuccess = _viewModel.LaunchAnalogAioMonitor(selectedSubId);
 
             if (!isSuccess)
             {
                 // Properties.Settings.Default を使用するか、直接文字列を指定
-                System.Windows.Forms.MessageBox.Show("選択されたSubIDが見つかりません。", Settings.ApplicationName);
+                System.Windows.Forms.MessageBox.Show("選択されたSubIDが見つかりません。", _config.ApplicationName);
                 this.Close();
             }
         }
@@ -167,12 +169,11 @@ namespace NippoControlSystem.UI.Views
         /// </summary>
         private void SyncSelectedValuesToViewModel()
         {
-            //_viewModel.SelectedMainTitle = listBox_MainNo.Text?.ToString();
-            //_viewModel.SelectedSubTitle = listBox_SubNo.Text?.ToString();
-            //_viewModel.SelectedSubId = listBox_SubNo.SelectedValue?.ToString();
-            //_viewModel.DataSetTopMenu = mc.DataSetTopMenu;
-            //_viewModel.SelectedMainIndex = listBox_MainNo.SelectedIndex;
-            //_viewModel.SelectedSubIndex = listBox_SubNo.SelectedIndex;
+            _viewModel.SelectedMainTitle = listBox_MainNo.Text?.ToString();
+            _viewModel.SelectedSubTitle = listBox_SubNo.Text?.ToString();
+            _viewModel.SelectedSubId = listBox_SubNo.SelectedValue?.ToString();
+            _viewModel.SelectedMainIndex = listBox_MainNo.SelectedIndex;
+            _viewModel.SelectedSubIndex = listBox_SubNo.SelectedIndex;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 #pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
@@ -458,38 +457,6 @@ namespace NippoControlSystem.UI.Views
             HideTaskbar(m_HideTaskbar == @"1");
         }
 
-        //List<Form> frmParent = null;
-        //public void ShowDialog(Form parent, Form child)
-        //{
-        //    if (child != null)
-        //    {
-        //        //frmParent.Add((Form)parent);
-        //        //child.Show();
-        //        //parent.Hide();
-        //        ////while (child.Visible == true)
-        //        ////{
-        //        ////    System.Threading.Thread.Sleep(100);
-        //        ////}
-        //        ////ev.WaitOne();
-        //        child.ShowDialog();
-        //    }
-        //}
-        //public void Hide(Form child, FormClosingEventArgs e)
-        //{
-        //    this.Hide(child);
-        //    //e.Cancel = true;
-        //}
-        //public void Hide(Form child)
-        //{
-        //    //Form parent = frmParent.Last();
-        //    //if (parent != null)
-        //    //{
-        //    //    parent.Show();
-        //    //    child.Hide();
-        //    //    frmParent.Remove(parent);
-        //    //}
-        //    child.DialogResult = DialogResult.OK;
-        //    child.Hide();
-        //}
+
     }
 }

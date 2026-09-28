@@ -1,9 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
-
-#pragma warning disable
-#nullable disable // C# 8.0以降のNull許容警告も消す場合
-
-namespace NippoControlSystem.Infrastructure.Persistence
+﻿namespace NippoControlSystem.Infrastructure.Persistence
 {
     class libSerialNo
     {

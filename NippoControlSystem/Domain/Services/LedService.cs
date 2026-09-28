@@ -4,7 +4,7 @@ namespace NippoControlSystem.Domain.Services
 {
     public class LedControlService
     {
-        private readonly ILedService _ledService;
+        private readonly ILedController _ledService;
 
         //public async Task TurnOnLedAsync()
         //{

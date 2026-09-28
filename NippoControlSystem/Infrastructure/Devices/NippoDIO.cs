@@ -1,21 +1,9 @@
 ﻿using NippoControlSystem.Domain.Interfaces.enums;
-using NippoControlSystem.Infrastructure.Configuration;
-
-#pragma warning disable
-#nullable disable // C# 8.0以降のNull許容警告も消す場合
 
 namespace NippoControlSystem.Infrastructure.Devices
 {
     public class NippoDIO
     {
-        //public enum IO_STAT
-        //{
-        //    OPEN = 0,
-        //    GND,
-        //    HIGH,
-        //    ERR,
-        //    READ,
-        //}
         public enum IO_STAT //2016/11/11 IO_STATをDioStatに合わせる
         {
             oOP = 0,
@@ -94,41 +82,6 @@ namespace NippoControlSystem.Infrastructure.Devices
             //m_DImax = dio.DImax;
             m_DO_Pmax = dio.DO_Pmax;
             //m_AO_USE_IN_DO = dio.AO_USE_IN_DO;
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //デコンストラクタ
-        //public void Dispose()
-        ~NippoDIO()
-        {
-        }
-
-        /// <summary>
-        /// 必要なデザイナ変数です。
-        /// </summary>
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //private string m_titleText = "Cyc.IO.NippoDIO";      //タイトル
-
-        ////プロパティMyUnitNo
-        //public int MyUnitNo
-        //{
-        //    get { return m_UnitNo; }
-        //    set { m_UnitNo = value; }
-        //}
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //	[初期化ルーチン]
-        public uint Init()
-        {
-            uint Ret = 0U;                                   //出力OFF
-            return Ret;
-        }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //	[終了処理ルーチン]
-        public uint Close()
-        {
-            return 0U;
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
