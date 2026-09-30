@@ -4,7 +4,7 @@ namespace NippoControlSystem.Domain.Interfaces
 {
     public interface ILedController
     {
-        void SetButtonLed(LedType type, bool turnOn);
-        void SetPowerSwitch(bool enable);
+        void SetLedControl(LedType type, LedOnOff OnOff);
+        LedOnOff GetLedControl(LedType type);
     }
 }

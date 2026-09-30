@@ -1,15 +1,19 @@
 {
   "Ui": {
-    "WindowStyle": "2",
-    "HideTaskbar": "0",
-    "PlaySoundEnable": "Yes",
+    "WindowStyle": "Normal",
+    "HideTaskbar": false,
+    "PlaySoundEnable": true,
     "OkWavPath": "Settings\\ok.wav",
     "NgWavPath": "Settings\\ng.wav",
     "PauseWavPath": "Settings\\pause.wav",
-    "DefaultPageSettings_Landscape": false,
-    "DefaultPageSettings_Margins_Left": 100,
-    "DefaultPageSettings_Margins_Right": 100,
-    "DefaultPageSettings_Margins_Top": 100,
-    "DefaultPageSettings_Margins_Bottom": 100
+    "DefaultPageSettings": {
+      "Landscape": true,
+      "Margins": {
+        "Left": 10,
+        "Right": 10,
+        "Top": 10,
+        "Bottom": 10
+      }
+    } 
   }
 }

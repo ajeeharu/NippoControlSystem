@@ -7,4 +7,9 @@ namespace NippoControlSystem.Domain.Interfaces.enums
         RedButton,      // 赤ボタン用
         GreenButton     // 緑ボタン用
     }
+    public enum LedOnOff
+    {
+        LedOn,           // LedOn
+        LedOff           // LedOff
+    }
 }

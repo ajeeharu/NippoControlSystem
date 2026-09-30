@@ -72,7 +72,10 @@ namespace NippoControlSystem.UI
             {
                 if (_mutex != null)
                 {
-                    _mutex.ReleaseMutex();
+                    if (createdNew) // 自身が所有権を獲得していた場合のみ解放
+                    {
+                        _mutex.ReleaseMutex();
+                    }
                     _mutex.Dispose();
                 }
             }

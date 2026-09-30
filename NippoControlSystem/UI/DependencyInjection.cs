@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NippoControlSystem.ApplicationService.Interfaces;
 using NippoControlSystem.ApplicationService.Services;
 using NippoControlSystem.Domain.Interfaces;
@@ -45,20 +43,5 @@ public static class DependencyInjection
         services.AddTransient<VersionView>();
 
         return services;
-    }
-
-    public static IHost CreateHostBuilder(string[] args)
-    {
-        var builder = Host.CreateApplicationBuilder(args);
-
-        // ログプロバイダーの設定
-        builder.Logging.ClearProviders();
-        builder.Logging.AddConsole();
-        builder.Logging.AddDebug();
-
-        // 共通アプリサービスのDI登録
-        builder.Services.AddApplicationServices();
-
-        return builder.Build();
     }
 }

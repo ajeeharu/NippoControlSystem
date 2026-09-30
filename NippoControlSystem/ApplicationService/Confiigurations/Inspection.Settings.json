@@ -1,0 +1,15 @@
+{
+  "Inspection": {
+    "InspectRetryMax": 10,
+    "InspectionTypeText": [ "通常検査", "一時停止", "繰り返し" ],
+    "AioMonitorExePath": "Tools/AioMonitor/AioMonitor.exe",
+    "AutoTimeOut": 2,
+    "CheckDatLmtFields": [ "-HiLMT", "-LoLMT" ],
+    "CheckDatLmt": [
+      [ 8.0, 2.0, 15.0, 0.2, 60.0, 60.0, 8.0, 60.0, 60.0, 0.2 ],
+      [ 4.0, 0.0, 10.0, 0.0, 0.3, 9.0, 6.0, 0.3, 0.3, 0.0 ],
+      [ 20.0, 2.0, 30.0, 0.2, 60.0, 60.0, 10.1, 60.0, 60.0, 0.2 ],
+      [ 8.0, 0.0, 20.0, 0.0, 0.3, 17.0, 8.1, 0.3, 0.3, 0.0 ]
+    ]
+  }
+}

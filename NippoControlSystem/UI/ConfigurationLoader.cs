@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using NippoControlSystem.ApplicationService.Confiigurations;
-using NippoControlSystem.Infrastructure.Confiigurations;
-using NippoControlSystem.UI.Confiigurations;
+using NippoControlSystem.ApplicationService.Configurations;
+using NippoControlSystem.Infrastructure.Configurations;
+using NippoControlSystem.UI.Configurations;
 using System.IO;
 
 namespace NippoControlSystem.UI
@@ -22,9 +22,10 @@ namespace NippoControlSystem.UI
             // 複数レイヤのJSONを順次読み込む
             var config = new ConfigurationBuilder()
                 .SetBasePath(basePath)
-                .AddJsonFile(Path.Combine("UI", "Configurations", "UI.settings.json"), optional: true, reloadOnChange: true)
-                .AddJsonFile(Path.Combine("ApplicationService", "Configurations", "ApplicationService.settings.json"), optional: true, reloadOnChange: true)
-                .AddJsonFile(Path.Combine("Infrastructure", "Configurations", "infrastructure.settings.json"), optional: true, reloadOnChange: true)
+                .AddJsonFile(Path.Combine("UI", "Configurations", "UI.Settings.json"), optional: true, reloadOnChange: true)
+                .AddJsonFile(Path.Combine("ApplicationService", "Configurations", "ApplicationService.Settings.json"), optional: true, reloadOnChange: true)
+                .AddJsonFile(Path.Combine("ApplicationService", "Configurations", "Inspection.Settings.json"), optional: true, reloadOnChange: true)
+                .AddJsonFile(Path.Combine("Infrastructure", "Configurations", "Infrastructure.Settings.json"), optional: true, reloadOnChange: true)
                 .Build();
 
             // セクションから各POCOクラスへバインド
@@ -35,8 +36,6 @@ namespace NippoControlSystem.UI
             aioSettings = config.GetSection("Aio").Get<AioSettings>() ?? new AioSettings();
             ai2DiSettings = config.GetSection("Ai2Di").Get<Ai2DiSettings>() ?? new Ai2DiSettings();
 
-            // 実行時パスをアタッチ
-            appInfoSettings.ApplicationFolder = basePath;
         }
     }
 }

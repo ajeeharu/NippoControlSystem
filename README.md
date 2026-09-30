@@ -16,26 +16,32 @@ NippoControlSystem/
 │   │   ├── DataInputViewModel.cs        # 検査データ入力画面のロジック
 │   │   └── SerialViewModel.cs           # シリアル通信・機器測定画面のロジック
 │   ├── Controls/                        # カスタムコントロール・UIコンポーネント
+│   ├── Configurations/                  # UI固有の初期値・表示設定値等
 │   ├── Properties/                      # リソース・アセンブリ情報等
 │   ├── Program.cs                       # アプリケーションのエントリーポイント
 │   └── DependencyInjection.cs           # DI（依存性注入）コンテナの設定・構成
 │
 ├── ApplicationService/                  # 【Application Layer】ユースケース・アプリケーションサービス
+│   ├── Configurations/                  # ユースケース・アプリ制御固有の設定・初期値
 │   ├── Dtos/                            # データ転送オブジェクト (DTO)
 │   ├── Interfaces/                      # アプリケーションサービスのインターフェース
+│   │   ├── Enums/                       # アプリケーションサービス層で使用する列挙型定義
+│   │   └── Models/                      # アプリケーションインターフェース用のモデル定義
 │   ├── Scenarios/                       # ユースケース・シナリオ実行ロジック
 │   └── Services/                        # アプリケーションサービス実装
 │
 ├── Domain/                              # 【Domain Layer】ビジネスロジックおよびコア抽象
-│   ├── Models/                          # ドメインデータモデル
+│   ├── Models/                          # 状態や結果を表すデータ構造
 │   │   └── MeasureCondition.cs          # 測定条件・検査項目モデル
+│   ├── Items/                           # 各検査項目のロジック
 │   ├── Interfaces/                      # ハードウェア・サービス抽象化インターフェース
+│   │   ├── Enums/                       # ドメイン層・ハードウェア制御インターフェース用列挙型定義
 │   │   └── ICaioNative.cs               # AIO/DIO制御用のネイティブインターフェース (enum定義含む)
-│   └── Services/                        # ドメインサービス（ドメイン固有のロジック・計算等）
+│   └── Services/                        # 検査項目に閉じない汎用サービス・周辺制御
 │
 └── Infrastructure/                      # 【Infrastructure Layer】外部連携・ファイル/ハード制御
     ├── Configuration/                   # アプリケーション設定・永続化
-    │   └── Settings.cs (Cyc.IO)         # XML/App.config 設定値保持・ファイル入出力
+    │   └── Settings.cs                  # XML/App.config 設定値保持・ファイル入出力
     ├── Devices/                         # 測定器・ハードウェアデバイス制御実装
     ├── Mocks/                           # テスト・デモ用モックデバイス/サービス実装
     ├── NativeLibs/                      # 外部 DLL ライブラリ連携
@@ -76,6 +82,9 @@ MVVMパターンに基づく表示ロジック・状態保持。
 * **`Controls/`**  :
  再利用可能なカスタムコントロールおよび表示用UIコンポーネント。
 
+* **`Configurations/`**  :
+画面表示初期値やUI層固有の設定・定数定義。
+
 * **`Properties/`**  :
  アプリケーションリソースやアセンブリ情報。
 
@@ -93,12 +102,19 @@ MVVMパターンに基づく表示ロジック・状態保持。
 
 ※ .NET標準の System.Windows.Forms.Application や System.Windows.Application クラスとの名前空間衝突を回避するため、フォルダー・レイヤー名を ApplicationService としています。
 
+* **`Configurations`**  : 
+アプリケーションサービスおよびユースケース動作制御用の初期値・設定パラメータ定義。
+
 * **`Dtos/`**  : 
 UI層とApplication層間でデータをやり取りするための軽量オブジェクト。
 
 * **`Interfaces/`**  :
  ユースケースやアプリケーションサービスの抽象インターフェース定義。
+  * **`Enums/`**  :
+  アプリケーションサービスのインターフェースや処理で使用する列挙型（区分・状態定義など）。
 
+  * **`Models/`**  :
+  アプリケーションサービスのインターフェース引数・返り値等で利活用するデータ構造・パラメータモデル。
 * **`Scenarios/`**  : 
 一連の検査手順や測定シーケンスなど、複数ステップにわたるユースケースのシナリオ実行ロジック。
 
@@ -117,7 +133,8 @@ UI層とApplication層間でデータをやり取りするための軽量オブ�
 
 * **`Interfaces/`**  :
  ハードウェア制御や外部サービスの抽象化インターフェース。
-
+* **`Enums/`**  :
+ハードウェア制御パラメータやドメイン抽象化インターフェースで使用する列挙型定義（例: AiRange 等）。
 * **`ICaioNative.cs`**  : 
 AIO/DIO 制御用ネイティブ DLL を抽象化するインターフェース。パラメータに enum (例: AiRange) を用いることで型安全な制御を実現。
 
@@ -170,3 +187,5 @@ OS 依存処理、物理ファイル I/O、ハードウェア DLL 通信など�
    ハードウェア制御インターフェースでは、マジックナンバーを排除し、`Domain` 層に定義した `enum` を使用して可読性と保守性を高める。
 3. **実機とモックの分離（DIによる切り替え）**
    開発・テスト時には Infrastructure/Mocks/ 内のモック実装を DI コンテナ（DependencyInjection.cs）経由で注入することで、ハードウェア非接続環境でもアプリケーション動作を検証可能とする。
+4. **ターゲット環境とビルド・パブリッシュ方針**
+ターゲット環境が Windows 10 x86 であることから、将来性も考慮して開発環境は x86 の .NET 10 を採用し、Publish 時は Single-file（EXE 一体型）として自己完結型パブリッシュを行うことで、ランタイム未アクセスの既存環境でも単体動作する構成でリリースする。
