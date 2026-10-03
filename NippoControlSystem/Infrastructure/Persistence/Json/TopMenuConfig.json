@@ -1,0 +1,32 @@
+{
+  "MenuMain": [
+    {
+      "MainID": 1,
+      "Title": "設定メニュー"
+    },
+    {
+      "MainID": 2,
+      "Title": "操作メニュー"
+    }
+  ],
+  "MenuSub": [
+    {
+      "MainID": 1,
+      "SubID": 1,
+      "SubTitle": "ポート設定",
+      "Folder": "Settings/Port"
+    },
+    {
+      "MainID": 1,
+      "SubID": 2,
+      "SubTitle": "システム設定",
+      "Folder": "Settings/System"
+    },
+    {
+      "MainID": 2,
+      "SubID": 1,
+      "SubTitle": "手動操作",
+      "Folder": "Operation/Manual"
+    }
+  ]
+}

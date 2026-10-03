@@ -39,11 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Infrastructure\Persistence\DataSetItems.designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataSetItems.xsd</DependentUpon>
-    </Compile>
     <Compile Update="UI\Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -59,10 +54,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Infrastructure\Persistence\DataSetItems.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSetItems.designer.cs</LastGenOutput>
-    </None>
     <None Include="UI\Confiigurations\UiSettings.cs" />
   </ItemGroup>
 

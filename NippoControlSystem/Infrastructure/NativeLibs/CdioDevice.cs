@@ -9,6 +9,9 @@ namespace NippoControlSystem.Infrastructure.NativeLibs
     {
         private const string LibraryName = "cdio.dll";
 
+        // スレッドセーフ確保用のセマフォ (同時実行数: 1)
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
         #region Native Imports (LibraryImport)
         [LibraryImport(LibraryName, EntryPoint = "DioInit", StringMarshalling = StringMarshalling.Utf8)]
         private static partial int NativeDioInit(string deviceName, out short id);
@@ -174,96 +177,405 @@ namespace NippoControlSystem.Infrastructure.NativeLibs
         #endregion
 
         #region Public Wrapper Methods
-        public CioDeviceErrorCode Init(string deviceName, out short id) => (CioDeviceErrorCode)NativeDioInit(deviceName, out id);
-        public CioDeviceErrorCode Exit(short id) => (CioDeviceErrorCode)NativeDioExit(id);
-        public CioDeviceErrorCode ResetDevice(short id) => (CioDeviceErrorCode)NativeDioResetDevice(id);
+        public CioDeviceErrorCode Init(string deviceName, out short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioInit(deviceName, out id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode Exit(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioExit(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode ResetDevice(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioResetDevice(id); }
+            finally { _semaphore.Release(); }
+        }
 
         public CioDeviceErrorCode GetErrorString(int errorCode, out string errorString)
         {
-            byte[] buffer = new byte[256];
-            int ret = NativeDioGetErrorString(errorCode, buffer);
-            errorString = ret == 0 ? Encoding.Default.GetString(buffer).TrimEnd('\0') : string.Empty;
-            return (CioDeviceErrorCode)ret;
+            _semaphore.Wait();
+            try
+            {
+                byte[] buffer = new byte[256];
+                int ret = NativeDioGetErrorString(errorCode, buffer);
+                errorString = ret == 0 ? Encoding.Default.GetString(buffer).TrimEnd('\0') : string.Empty;
+                return (CioDeviceErrorCode)ret;
+            }
+            finally { _semaphore.Release(); }
         }
 
-        public CioDeviceErrorCode SetDigitalFilter(short id, short filterValue) => (CioDeviceErrorCode)NativeDioSetDigitalFilter(id, filterValue);
-        public CioDeviceErrorCode GetDigitalFilter(short id, out short filterValue) => (CioDeviceErrorCode)NativeDioGetDigitalFilter(id, out filterValue);
+        public CioDeviceErrorCode SetDigitalFilter(short id, short filterValue)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioSetDigitalFilter(id, filterValue); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode SetIoDirection(short id, uint dwDir) => (CioDeviceErrorCode)NativeDioSetIoDirection(id, dwDir);
-        public CioDeviceErrorCode GetIoDirection(short id, out uint dwDir) => (CioDeviceErrorCode)NativeDioGetIoDirection(id, out dwDir);
-        public CioDeviceErrorCode SetIoDirectionEx(short id, uint dwDir) => (CioDeviceErrorCode)NativeDioSetIoDirectionEx(id, dwDir);
-        public CioDeviceErrorCode GetIoDirectionEx(short id, out uint dwDir) => (CioDeviceErrorCode)NativeDioGetIoDirectionEx(id, out dwDir);
-        public CioDeviceErrorCode Set8255Mode(short id, short chipNo, short ctrlWord) => (CioDeviceErrorCode)NativeDioSet8255Mode(id, chipNo, ctrlWord);
-        public CioDeviceErrorCode Get8255Mode(short id, short chipNo, out short ctrlWord) => (CioDeviceErrorCode)NativeDioGet8255Mode(id, chipNo, out ctrlWord);
+        public CioDeviceErrorCode GetDigitalFilter(short id, out short filterValue)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioGetDigitalFilter(id, out filterValue); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode InpByte(short id, short portNo, out byte data) => (CioDeviceErrorCode)NativeDioInpByte(id, portNo, out data);
-        public CioDeviceErrorCode InpBit(short id, short bitNo, out byte data) => (CioDeviceErrorCode)NativeDioInpBit(id, bitNo, out data);
-        public CioDeviceErrorCode OutByte(short id, short portNo, byte data) => (CioDeviceErrorCode)NativeDioOutByte(id, portNo, data);
-        public CioDeviceErrorCode OutBit(short id, short bitNo, byte data) => (CioDeviceErrorCode)NativeDioOutBit(id, bitNo, data);
-        public CioDeviceErrorCode EchoBackByte(short id, short portNo, out byte data) => (CioDeviceErrorCode)NativeDioEchoBackByte(id, portNo, out data);
-        public CioDeviceErrorCode EchoBackBit(short id, short bitNo, out byte data) => (CioDeviceErrorCode)NativeDioEchoBackBit(id, bitNo, out data);
+        public CioDeviceErrorCode SetIoDirection(short id, uint dwDir)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioSetIoDirection(id, dwDir); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode InpMultiByte(short id, short[] portNo, short portNum, byte[] data) => (CioDeviceErrorCode)NativeDioInpMultiByte(id, portNo, portNum, data);
-        public CioDeviceErrorCode InpMultiBit(short id, short[] bitNo, short bitNum, byte[] data) => (CioDeviceErrorCode)NativeDioInpMultiBit(id, bitNo, bitNum, data);
-        public CioDeviceErrorCode OutMultiByte(short id, short[] portNo, short portNum, byte[] data) => (CioDeviceErrorCode)NativeDioOutMultiByte(id, portNo, portNum, data);
-        public CioDeviceErrorCode OutMultiBit(short id, short[] bitNo, short bitNum, byte[] data) => (CioDeviceErrorCode)NativeDioOutMultiBit(id, bitNo, bitNum, data);
-        public CioDeviceErrorCode EchoBackMultiByte(short id, short[] portNo, short portNum, byte[] data) => (CioDeviceErrorCode)NativeDioEchoBackMultiByte(id, portNo, portNum, data);
-        public CioDeviceErrorCode EchoBackMultiBit(short id, short[] bitNo, short bitNum, byte[] data) => (CioDeviceErrorCode)NativeDioEchoBackMultiBit(id, bitNo, bitNum, data);
-        public CioDeviceErrorCode NotifyInterrupt(short id, short intBit, short logic, int hWnd) => (CioDeviceErrorCode)NativeDioNotifyInterrupt(id, intBit, logic, hWnd);
-        public CioDeviceErrorCode NotifyTrg(short id, short trgBit, short trgKind, int tim, int hWnd) => (CioDeviceErrorCode)NativeDioNotifyTrg(id, trgBit, trgKind, tim, hWnd);
-        public CioDeviceErrorCode StopNotifyTrg(short id, short trgBit) => (CioDeviceErrorCode)NativeDioStopNotifyTrg(id, trgBit);
+        public CioDeviceErrorCode GetIoDirection(short id, out uint dwDir)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioGetIoDirection(id, out dwDir); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetIoDirectionEx(short id, uint dwDir)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioSetIoDirectionEx(id, dwDir); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetIoDirectionEx(short id, out uint dwDir)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioGetIoDirectionEx(id, out dwDir); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode Set8255Mode(short id, short chipNo, short ctrlWord)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioSet8255Mode(id, chipNo, ctrlWord); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode Get8255Mode(short id, short chipNo, out short ctrlWord)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioGet8255Mode(id, chipNo, out ctrlWord); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode InpByte(short id, short portNo, out byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioInpByte(id, portNo, out data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode InpBit(short id, short bitNo, out byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioInpBit(id, bitNo, out data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode OutByte(short id, short portNo, byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioOutByte(id, portNo, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode OutBit(short id, short bitNo, byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioOutBit(id, bitNo, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode EchoBackByte(short id, short portNo, out byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioEchoBackByte(id, portNo, out data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode EchoBackBit(short id, short bitNo, out byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioEchoBackBit(id, bitNo, out data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode InpMultiByte(short id, short[] portNo, short portNum, byte[] data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioInpMultiByte(id, portNo, portNum, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode InpMultiBit(short id, short[] bitNo, short bitNum, byte[] data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioInpMultiBit(id, bitNo, bitNum, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode OutMultiByte(short id, short[] portNo, short portNum, byte[] data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioOutMultiByte(id, portNo, portNum, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode OutMultiBit(short id, short[] bitNo, short bitNum, byte[] data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioOutMultiBit(id, bitNo, bitNum, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode EchoBackMultiByte(short id, short[] portNo, short portNum, byte[] data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioEchoBackMultiByte(id, portNo, portNum, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode EchoBackMultiBit(short id, short[] bitNo, short bitNum, byte[] data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioEchoBackMultiBit(id, bitNo, bitNum, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode NotifyInterrupt(short id, short intBit, short logic, int hWnd)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioNotifyInterrupt(id, intBit, logic, hWnd); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode NotifyTrg(short id, short trgBit, short trgKind, int tim, int hWnd)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioNotifyTrg(id, trgBit, trgKind, tim, hWnd); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode StopNotifyTrg(short id, short trgBit)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioStopNotifyTrg(id, trgBit); }
+            finally { _semaphore.Release(); }
+        }
 
         public CioDeviceErrorCode GetDeviceInfo(string device, short infoType, out int param1, out int param2, out int param3)
-            => (CioDeviceErrorCode)NativeDioGetDeviceInfo(device, infoType, out param1, out param2, out param3);
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioGetDeviceInfo(device, infoType, out param1, out param2, out param3); }
+            finally { _semaphore.Release(); }
+        }
 
         public CioDeviceErrorCode QueryDeviceName(short index, out string deviceName, out string device)
         {
-            byte[] nameBuf = new byte[256];
-            byte[] devBuf = new byte[256];
-            int ret = NativeDioQueryDeviceName(index, nameBuf, devBuf);
-            if (ret == 0)
+            _semaphore.Wait();
+            try
             {
-                deviceName = Encoding.Default.GetString(nameBuf).TrimEnd('\0');
-                device = Encoding.Default.GetString(devBuf).TrimEnd('\0');
+                byte[] nameBuf = new byte[256];
+                byte[] devBuf = new byte[256];
+                int ret = NativeDioQueryDeviceName(index, nameBuf, devBuf);
+                if (ret == 0)
+                {
+                    deviceName = Encoding.Default.GetString(nameBuf).TrimEnd('\0');
+                    device = Encoding.Default.GetString(devBuf).TrimEnd('\0');
+                }
+                else
+                {
+                    deviceName = string.Empty;
+                    device = string.Empty;
+                }
+                return (CioDeviceErrorCode)ret;
             }
-            else
-            {
-                deviceName = string.Empty;
-                device = string.Empty;
-            }
-            return (CioDeviceErrorCode)ret;
+            finally { _semaphore.Release(); }
         }
 
-        public CioDeviceErrorCode GetDeviceType(string device, out short deviceType) => (CioDeviceErrorCode)NativeDioGetDeviceType(device, out deviceType);
-        public CioDeviceErrorCode GetMaxPorts(short id, out short inPortNum, out short outPortNum) => (CioDeviceErrorCode)NativeDioGetMaxPorts(id, out inPortNum, out outPortNum);
+        public CioDeviceErrorCode GetDeviceType(string device, out short deviceType)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioGetDeviceType(device, out deviceType); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode DmSetDirection(short id, short direction) => (CioDeviceErrorCode)NativeDioDmSetDirection(id, direction);
-        public CioDeviceErrorCode DmGetDirection(short id, out short direction) => (CioDeviceErrorCode)NativeDioDmGetDirection(id, out direction);
-        public CioDeviceErrorCode DmSetStandAlone(short id) => (CioDeviceErrorCode)NativeDioDmSetStandAlone(id);
+        public CioDeviceErrorCode GetMaxPorts(short id, out short inPortNum, out short outPortNum)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioGetMaxPorts(id, out inPortNum, out outPortNum); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetDirection(short id, short direction)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetDirection(id, direction); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmGetDirection(short id, out short direction)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmGetDirection(id, out direction); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetStandAlone(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetStandAlone(id); }
+            finally { _semaphore.Release(); }
+        }
+
         public CioDeviceErrorCode DmSetMaster(short id, short extSig1, short extSig2, short extSig3, short masterHalt, short slaveHalt)
-            => (CioDeviceErrorCode)NativeDioDmSetMaster(id, extSig1, extSig2, extSig3, masterHalt, slaveHalt);
-        public CioDeviceErrorCode DmSetSlave(short id, short extSig1, short extSig2, short extSig3, short masterHalt, short slaveHalt)
-            => (CioDeviceErrorCode)NativeDioDmSetSlave(id, extSig1, extSig2, extSig3, masterHalt, slaveHalt);
-        public CioDeviceErrorCode DmSetStartTrigger(short id, short direction, short start) => (CioDeviceErrorCode)NativeDioDmSetStartTrigger(id, direction, start);
-        public CioDeviceErrorCode DmSetStartPattern(short id, uint pattern, uint mask) => (CioDeviceErrorCode)NativeDioDmSetStartPattern(id, pattern, mask);
-        public CioDeviceErrorCode DmSetClockTrigger(short id, short direction, short clock) => (CioDeviceErrorCode)NativeDioDmSetClockTrigger(id, direction, clock);
-        public CioDeviceErrorCode DmSetInternalClock(short id, short direction, uint clock, short unit) => (CioDeviceErrorCode)NativeDioDmSetInternalClock(id, direction, clock, unit);
-        public CioDeviceErrorCode DmSetStopTrigger(short id, short direction, short stop) => (CioDeviceErrorCode)NativeDioDmSetStopTrigger(id, direction, stop);
-        public CioDeviceErrorCode DmSetStopNumber(short id, short direction, uint stopNumber) => (CioDeviceErrorCode)NativeDioDmSetStopNumber(id, direction, stopNumber);
-        public CioDeviceErrorCode DmFifoReset(short id, short reset) => (CioDeviceErrorCode)NativeDioDmFifoReset(id, reset);
-        public CioDeviceErrorCode DmSetBuffer(short id, short direction, IntPtr buffer, uint length, short isRing) => (CioDeviceErrorCode)NativeDioDmSetBuffer(id, direction, buffer, length, isRing);
-        public CioDeviceErrorCode DmSetTransferStartWait(short id, short time) => (CioDeviceErrorCode)NativeDioDmSetTransferStartWait(id, time);
-        public CioDeviceErrorCode DmTransferStart(short id, short direction) => (CioDeviceErrorCode)NativeDioDmTransferStart(id, direction);
-        public CioDeviceErrorCode DmTransferStop(short id, short direction) => (CioDeviceErrorCode)NativeDioDmTransferStop(id, direction);
-        public CioDeviceErrorCode DmGetStatus(short id, short direction, out uint status, out uint err) => (CioDeviceErrorCode)NativeDioDmGetStatus(id, direction, out status, out err);
-        public CioDeviceErrorCode DmGetCount(short id, short direction, out uint count, out uint carry) => (CioDeviceErrorCode)NativeDioDmGetCount(id, direction, out count, out carry);
-        public CioDeviceErrorCode DmGetWritePointer(short id, short direction, out uint writePointer, out uint count, out uint carry)
-            => (CioDeviceErrorCode)NativeDioDmGetWritePointer(id, direction, out writePointer, out count, out carry);
-        public CioDeviceErrorCode DmSetStopEvent(short id, short direction, int hWnd) => (CioDeviceErrorCode)NativeDioDmSetStopEvent(id, direction, hWnd);
-        public CioDeviceErrorCode DmSetCountEvent(short id, short direction, uint count, int hWnd) => (CioDeviceErrorCode)NativeDioDmSetCountEvent(id, direction, count, hWnd);
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetMaster(id, extSig1, extSig2, extSig3, masterHalt, slaveHalt); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode SetDemoByte(short id, short portNo, byte data) => (CioDeviceErrorCode)NativeDioSetDemoByte(id, portNo, data);
-        public CioDeviceErrorCode SetDemoBit(short id, short bitNo, byte data) => (CioDeviceErrorCode)NativeDioSetDemoBit(id, bitNo, data);
+        public CioDeviceErrorCode DmSetSlave(short id, short extSig1, short extSig2, short extSig3, short masterHalt, short slaveHalt)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetSlave(id, extSig1, extSig2, extSig3, masterHalt, slaveHalt); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetStartTrigger(short id, short direction, short start)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetStartTrigger(id, direction, start); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetStartPattern(short id, uint pattern, uint mask)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetStartPattern(id, pattern, mask); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetClockTrigger(short id, short direction, short clock)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetClockTrigger(id, direction, clock); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetInternalClock(short id, short direction, uint clock, short unit)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetInternalClock(id, direction, clock, unit); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetStopTrigger(short id, short direction, short stop)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetStopTrigger(id, direction, stop); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetStopNumber(short id, short direction, uint stopNumber)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetStopNumber(id, direction, stopNumber); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmFifoReset(short id, short reset)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmFifoReset(id, reset); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetBuffer(short id, short direction, IntPtr buffer, uint length, short isRing)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetBuffer(id, direction, buffer, length, isRing); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetTransferStartWait(short id, short time)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetTransferStartWait(id, time); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmTransferStart(short id, short direction)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmTransferStart(id, direction); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmTransferStop(short id, short direction)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmTransferStop(id, direction); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmGetStatus(short id, short direction, out uint status, out uint err)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmGetStatus(id, direction, out status, out err); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmGetCount(short id, short direction, out uint count, out uint carry)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmGetCount(id, direction, out count, out carry); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmGetWritePointer(short id, short direction, out uint writePointer, out uint count, out uint carry)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmGetWritePointer(id, direction, out writePointer, out count, out carry); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetStopEvent(short id, short direction, int hWnd)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetStopEvent(id, direction, hWnd); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode DmSetCountEvent(short id, short direction, uint count, int hWnd)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioDmSetCountEvent(id, direction, count, hWnd); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetDemoByte(short id, short portNo, byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioSetDemoByte(id, portNo, data); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetDemoBit(short id, short bitNo, byte data)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeDioSetDemoBit(id, bitNo, data); }
+            finally { _semaphore.Release(); }
+        }
         #endregion
     }
 }

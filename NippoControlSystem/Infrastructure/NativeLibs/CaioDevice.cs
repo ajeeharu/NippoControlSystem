@@ -9,6 +9,9 @@ namespace NippoControlSystem.Infrastructure.NativeLibs
     {
         private const string LibraryName = "caio.dll";
 
+        // スレッドセーフ確保用のセマフォ (同時実行数: 1)
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
         #region Native Imports (LibraryImport)
         [LibraryImport(LibraryName, EntryPoint = "AioInit", StringMarshalling = StringMarshalling.Utf8)]
         private static partial int NativeAioInit(string deviceName, out short id);
@@ -183,91 +186,426 @@ namespace NippoControlSystem.Infrastructure.NativeLibs
         #endregion
 
         #region Public Wrapper Methods
-        public CioDeviceErrorCode Init(string deviceName, out short id) => (CioDeviceErrorCode)NativeAioInit(deviceName, out id);
-        public CioDeviceErrorCode Exit(short id) => (CioDeviceErrorCode)NativeAioExit(id);
-        public CioDeviceErrorCode ResetDevice(short id) => (CioDeviceErrorCode)NativeAioResetDevice(id);
+        public CioDeviceErrorCode Init(string deviceName, out short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioInit(deviceName, out id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode Exit(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioExit(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode ResetDevice(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioResetDevice(id); }
+            finally { _semaphore.Release(); }
+        }
 
         public CioDeviceErrorCode GetErrorString(int errorCode, out string errorString)
         {
-            byte[] buffer = new byte[256];
-            int ret = NativeAioGetErrorString(errorCode, buffer);
-            errorString = ret == 0 ? Encoding.Default.GetString(buffer).TrimEnd('\0') : string.Empty;
-            return (CioDeviceErrorCode)ret;
+            _semaphore.Wait();
+            try
+            {
+                byte[] buffer = new byte[256];
+                int ret = NativeAioGetErrorString(errorCode, buffer);
+                errorString = ret == 0 ? Encoding.Default.GetString(buffer).TrimEnd('\0') : string.Empty;
+                return (CioDeviceErrorCode)ret;
+            }
+            finally { _semaphore.Release(); }
         }
 
         public CioDeviceErrorCode QueryDeviceName(short index, out string deviceName, out string device)
         {
-            byte[] nameBuf = new byte[256];
-            byte[] devBuf = new byte[256];
-            int ret = NativeAioQueryDeviceName(index, nameBuf, devBuf);
-            if (ret == 0)
+            _semaphore.Wait();
+            try
             {
-                deviceName = Encoding.Default.GetString(nameBuf).TrimEnd('\0');
-                device = Encoding.Default.GetString(devBuf).TrimEnd('\0');
+                byte[] nameBuf = new byte[256];
+                byte[] devBuf = new byte[256];
+                int ret = NativeAioQueryDeviceName(index, nameBuf, devBuf);
+                if (ret == 0)
+                {
+                    deviceName = Encoding.Default.GetString(nameBuf).TrimEnd('\0');
+                    device = Encoding.Default.GetString(devBuf).TrimEnd('\0');
+                }
+                else
+                {
+                    deviceName = string.Empty;
+                    device = string.Empty;
+                }
+                return (CioDeviceErrorCode)ret;
             }
-            else
-            {
-                deviceName = string.Empty;
-                device = string.Empty;
-            }
-            return (CioDeviceErrorCode)ret;
+            finally { _semaphore.Release(); }
         }
 
-        public CioDeviceErrorCode GetDeviceType(string device, out short deviceType) => (CioDeviceErrorCode)NativeAioGetDeviceType(device, out deviceType);
-        public CioDeviceErrorCode SetControlFilter(short id, short signal, float value) => (CioDeviceErrorCode)NativeAioSetControlFilter(id, signal, value);
-        public CioDeviceErrorCode GetControlFilter(short id, short signal, out float value) => (CioDeviceErrorCode)NativeAioGetControlFilter(id, signal, out value);
-        public CioDeviceErrorCode ResetProcess(short id) => (CioDeviceErrorCode)NativeAioResetProcess(id);
+        public CioDeviceErrorCode GetDeviceType(string device, out short deviceType)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetDeviceType(device, out deviceType); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode SingleAi(short id, short aiChannel, out int aiData) => (CioDeviceErrorCode)NativeAioSingleAi(id, aiChannel, out aiData);
-        public CioDeviceErrorCode SingleAiEx(short id, short aiChannel, out float aiData) => (CioDeviceErrorCode)NativeAioSingleAiEx(id, aiChannel, out aiData);
-        public CioDeviceErrorCode MultiAi(short id, short aiChannels, int[] aiData) => (CioDeviceErrorCode)NativeAioMultiAi(id, aiChannels, aiData);
-        public CioDeviceErrorCode MultiAiEx(short id, short aiChannels, float[] aiData) => (CioDeviceErrorCode)NativeAioMultiAiEx(id, aiChannels, aiData);
-        public CioDeviceErrorCode GetAiResolution(short id, out short aiResolution) => (CioDeviceErrorCode)NativeAioGetAiResolution(id, out aiResolution);
-        public CioDeviceErrorCode SetAiInputMethod(short id, short aiInputMethod) => (CioDeviceErrorCode)NativeAioSetAiInputMethod(id, aiInputMethod);
-        public CioDeviceErrorCode GetAiInputMethod(short id, out short aiInputMethod) => (CioDeviceErrorCode)NativeAioGetAiInputMethod(id, out aiInputMethod);
-        public CioDeviceErrorCode GetAiMaxChannels(short id, out short aiMaxChannels) => (CioDeviceErrorCode)NativeAioGetAiMaxChannels(id, out aiMaxChannels);
-        public CioDeviceErrorCode SetAiChannel(short id, short aiChannel, short enabled) => (CioDeviceErrorCode)NativeAioSetAiChannel(id, aiChannel, enabled);
-        public CioDeviceErrorCode GetAiChannel(short id, short aiChannel, out short enabled) => (CioDeviceErrorCode)NativeAioGetAiChannel(id, aiChannel, out enabled);
-        public CioDeviceErrorCode SetAiChannels(short id, short aiChannels) => (CioDeviceErrorCode)NativeAioSetAiChannels(id, aiChannels);
-        public CioDeviceErrorCode GetAiChannels(short id, out short aiChannels) => (CioDeviceErrorCode)NativeAioGetAiChannels(id, out aiChannels);
-        public CioDeviceErrorCode SetAiRange(short id, short aiChannel, short aiRange) => (CioDeviceErrorCode)NativeAioSetAiRange(id, aiChannel, aiRange);
-        public CioDeviceErrorCode SetAiRangeAll(short id, short aiRange) => (CioDeviceErrorCode)NativeAioSetAiRangeAll(id, aiRange);
-        public CioDeviceErrorCode GetAiRange(short id, short aiChannel, out short aiRange) => (CioDeviceErrorCode)NativeAioGetAiRange(id, aiChannel, out aiRange);
-        public CioDeviceErrorCode SetAiSamplingClock(short id, float aiSamplingClock) => (CioDeviceErrorCode)NativeAioSetAiSamplingClock(id, aiSamplingClock);
-        public CioDeviceErrorCode GetAiSamplingClock(short id, out float aiSamplingClock) => (CioDeviceErrorCode)NativeAioGetAiSamplingClock(id, out aiSamplingClock);
-        public CioDeviceErrorCode StartAi(short id) => (CioDeviceErrorCode)NativeAioStartAi(id);
-        public CioDeviceErrorCode StartAiSync(short id, int timeOut) => (CioDeviceErrorCode)NativeAioStartAiSync(id, timeOut);
-        public CioDeviceErrorCode StopAi(short id) => (CioDeviceErrorCode)NativeAioStopAi(id);
-        public CioDeviceErrorCode GetAiStatus(short id, out int aiStatus) => (CioDeviceErrorCode)NativeAioGetAiStatus(id, out aiStatus);
-        public CioDeviceErrorCode GetAiSamplingCount(short id, out int aiSamplingCount) => (CioDeviceErrorCode)NativeAioGetAiSamplingCount(id, out aiSamplingCount);
-        public CioDeviceErrorCode GetAiSamplingData(short id, ref int aiSamplingTimes, int[] aiData) => (CioDeviceErrorCode)NativeAioGetAiSamplingData(id, ref aiSamplingTimes, aiData);
-        public CioDeviceErrorCode GetAiSamplingDataEx(short id, ref int aiSamplingTimes, float[] aiData) => (CioDeviceErrorCode)NativeAioGetAiSamplingDataEx(id, ref aiSamplingTimes, aiData);
-        public CioDeviceErrorCode ResetAiStatus(short id) => (CioDeviceErrorCode)NativeAioResetAiStatus(id);
-        public CioDeviceErrorCode ResetAiMemory(short id) => (CioDeviceErrorCode)NativeAioResetAiMemory(id);
+        public CioDeviceErrorCode SetControlFilter(short id, short signal, float value)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetControlFilter(id, signal, value); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode SingleAo(short id, short aoChannel, int aoData) => (CioDeviceErrorCode)NativeAioSingleAo(id, aoChannel, aoData);
-        public CioDeviceErrorCode SingleAoEx(short id, short aoChannel, float aoData) => (CioDeviceErrorCode)NativeAioSingleAoEx(id, aoChannel, aoData);
-        public CioDeviceErrorCode MultiAo(short id, short aoChannels, int[] aoData) => (CioDeviceErrorCode)NativeAioMultiAo(id, aoChannels, aoData);
-        public CioDeviceErrorCode MultiAoEx(short id, short aoChannels, float[] aoData) => (CioDeviceErrorCode)NativeAioMultiAoEx(id, aoChannels, aoData);
-        public CioDeviceErrorCode GetAoResolution(short id, out short aoResolution) => (CioDeviceErrorCode)NativeAioGetAoResolution(id, out aoResolution);
-        public CioDeviceErrorCode SetAoChannels(short id, short aoChannels) => (CioDeviceErrorCode)NativeAioSetAoChannels(id, aoChannels);
-        public CioDeviceErrorCode GetAoChannels(short id, out short aoChannels) => (CioDeviceErrorCode)NativeAioGetAoChannels(id, out aoChannels);
-        public CioDeviceErrorCode SetAoRange(short id, short aoChannel, short aoRange) => (CioDeviceErrorCode)NativeAioSetAoRange(id, aoChannel, aoRange);
-        public CioDeviceErrorCode SetAoRangeAll(short id, short aoRange) => (CioDeviceErrorCode)NativeAioSetAoRangeAll(id, aoRange);
-        public CioDeviceErrorCode GetAoRange(short id, short aoChannel, out short aoRange) => (CioDeviceErrorCode)NativeAioGetAoRange(id, aoChannel, out aoRange);
-        public CioDeviceErrorCode SetAoSamplingClock(short id, float aoSamplingClock) => (CioDeviceErrorCode)NativeAioSetAoSamplingClock(id, aoSamplingClock);
-        public CioDeviceErrorCode GetAoSamplingClock(short id, out float aoSamplingClock) => (CioDeviceErrorCode)NativeAioGetAoSamplingClock(id, out aoSamplingClock);
-        public CioDeviceErrorCode StartAo(short id) => (CioDeviceErrorCode)NativeAioStartAo(id);
-        public CioDeviceErrorCode StopAo(short id) => (CioDeviceErrorCode)NativeAioStopAo(id);
-        public CioDeviceErrorCode GetAoStatus(short id, out int aoStatus) => (CioDeviceErrorCode)NativeAioGetAoStatus(id, out aoStatus);
-        public CioDeviceErrorCode ResetAoStatus(short id) => (CioDeviceErrorCode)NativeAioResetAoStatus(id);
+        public CioDeviceErrorCode GetControlFilter(short id, short signal, out float value)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetControlFilter(id, signal, out value); }
+            finally { _semaphore.Release(); }
+        }
 
-        public CioDeviceErrorCode InputDiBit(short id, short diBit, out short diData) => (CioDeviceErrorCode)NativeAioInputDiBit(id, diBit, out diData);
-        public CioDeviceErrorCode OutputDoBit(short id, short doBit, short doData) => (CioDeviceErrorCode)NativeAioOutputDoBit(id, doBit, doData);
-        public CioDeviceErrorCode InputDiByte(short id, short diPort, out short diData) => (CioDeviceErrorCode)NativeAioInputDiByte(id, diPort, out diData);
-        public CioDeviceErrorCode OutputDoByte(short id, short doPort, short doData) => (CioDeviceErrorCode)NativeAioOutputDoByte(id, doPort, doData);
-        public CioDeviceErrorCode SetDioDirection(short id, int dir) => (CioDeviceErrorCode)NativeAioSetDioDirection(id, dir);
-        public CioDeviceErrorCode GetDioDirection(short id, out int dir) => (CioDeviceErrorCode)NativeAioGetDioDirection(id, out dir);
+        public CioDeviceErrorCode ResetProcess(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioResetProcess(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SingleAi(short id, short aiChannel, out int aiData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSingleAi(id, aiChannel, out aiData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SingleAiEx(short id, short aiChannel, out float aiData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSingleAiEx(id, aiChannel, out aiData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode MultiAi(short id, short aiChannels, int[] aiData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioMultiAi(id, aiChannels, aiData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode MultiAiEx(short id, short aiChannels, float[] aiData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioMultiAiEx(id, aiChannels, aiData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiResolution(short id, out short aiResolution)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiResolution(id, out aiResolution); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAiInputMethod(short id, short aiInputMethod)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAiInputMethod(id, aiInputMethod); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiInputMethod(short id, out short aiInputMethod)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiInputMethod(id, out aiInputMethod); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiMaxChannels(short id, out short aiMaxChannels)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiMaxChannels(id, out aiMaxChannels); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAiChannel(short id, short aiChannel, short enabled)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAiChannel(id, aiChannel, enabled); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiChannel(short id, short aiChannel, out short enabled)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiChannel(id, aiChannel, out enabled); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAiChannels(short id, short aiChannels)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAiChannels(id, aiChannels); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiChannels(short id, out short aiChannels)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiChannels(id, out aiChannels); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAiRange(short id, short aiChannel, short aiRange)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAiRange(id, aiChannel, aiRange); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAiRangeAll(short id, short aiRange)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAiRangeAll(id, aiRange); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiRange(short id, short aiChannel, out short aiRange)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiRange(id, aiChannel, out aiRange); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAiSamplingClock(short id, float aiSamplingClock)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAiSamplingClock(id, aiSamplingClock); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiSamplingClock(short id, out float aiSamplingClock)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiSamplingClock(id, out aiSamplingClock); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode StartAi(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioStartAi(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode StartAiSync(short id, int timeOut)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioStartAiSync(id, timeOut); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode StopAi(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioStopAi(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiStatus(short id, out int aiStatus)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiStatus(id, out aiStatus); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiSamplingCount(short id, out int aiSamplingCount)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiSamplingCount(id, out aiSamplingCount); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiSamplingData(short id, ref int aiSamplingTimes, int[] aiData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiSamplingData(id, ref aiSamplingTimes, aiData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAiSamplingDataEx(short id, ref int aiSamplingTimes, float[] aiData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAiSamplingDataEx(id, ref aiSamplingTimes, aiData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode ResetAiStatus(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioResetAiStatus(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode ResetAiMemory(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioResetAiMemory(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SingleAo(short id, short aoChannel, int aoData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSingleAo(id, aoChannel, aoData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SingleAoEx(short id, short aoChannel, float aoData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSingleAoEx(id, aoChannel, aoData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode MultiAo(short id, short aoChannels, int[] aoData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioMultiAo(id, aoChannels, aoData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode MultiAoEx(short id, short aoChannels, float[] aoData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioMultiAoEx(id, aoChannels, aoData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAoResolution(short id, out short aoResolution)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAoResolution(id, out aoResolution); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAoChannels(short id, short aoChannels)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAoChannels(id, aoChannels); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAoChannels(short id, out short aoChannels)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAoChannels(id, out aoChannels); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAoRange(short id, short aoChannel, short aoRange)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAoRange(id, aoChannel, aoRange); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAoRangeAll(short id, short aoRange)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAoRangeAll(id, aoRange); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAoRange(short id, short aoChannel, out short aoRange)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAoRange(id, aoChannel, out aoRange); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetAoSamplingClock(short id, float aoSamplingClock)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetAoSamplingClock(id, aoSamplingClock); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAoSamplingClock(short id, out float aoSamplingClock)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAoSamplingClock(id, out aoSamplingClock); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode StartAo(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioStartAo(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode StopAo(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioStopAo(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetAoStatus(short id, out int aoStatus)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetAoStatus(id, out aoStatus); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode ResetAoStatus(short id)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioResetAoStatus(id); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode InputDiBit(short id, short diBit, out short diData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioInputDiBit(id, diBit, out diData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode OutputDoBit(short id, short doBit, short doData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioOutputDoBit(id, doBit, doData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode InputDiByte(short id, short diPort, out short diData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioInputDiByte(id, diPort, out diData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode OutputDoByte(short id, short doPort, short doData)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioOutputDoByte(id, doPort, doData); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode SetDioDirection(short id, int dir)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioSetDioDirection(id, dir); }
+            finally { _semaphore.Release(); }
+        }
+
+        public CioDeviceErrorCode GetDioDirection(short id, out int dir)
+        {
+            _semaphore.Wait();
+            try { return (CioDeviceErrorCode)NativeAioGetDioDirection(id, out dir); }
+            finally { _semaphore.Release(); }
+        }
         #endregion
     }
 }
