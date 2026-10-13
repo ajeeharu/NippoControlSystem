@@ -1,168 +1,118 @@
-﻿using NippoControlSystem.Domain.Interfaces;
+﻿using NippoControlSystem.ApplicationService.Configurations;
+using NippoControlSystem.Domain.Interfaces;
 using NippoControlSystem.Domain.Interfaces.enums;
-
 
 namespace NippoControlSystem.Infrastructure.Devices
 {
-    public class AnalogIO
+    public class AnalogIO : IDisposable
     {
-        //for CONTEC Digital I/O device
         private readonly ICaioDevice _aioDevice;
-        private bool m_AioEmu = false;
-        private bool m_Connected = false;
-        private bool m_Inited = false;
-        private short m_AIOid = -1;
+        private HardwareSettings _settings;
+        /// <summary>
+        ///  AIOid は、アナログモジュールのDevice IDを保持するための変数です。Init() メソッドで初期化され、Exit() メソッドで解放されます。
+        /// </summary>
+        private short m_AIOid;
         private string? m_LastErrorString = null;
-        private int m_AImax = 0;
-        private int m_AOmax = 0;
-        string? m_DeviceNameAIO = null;       //"AIO000";
-                                              //private string m_titleText = "Cyc.IO.AIO";      //タイトル
-
-        // コンストラクタで ICaioDevice を受け取る
-        public AnalogIO(ICaioDevice aioDevice)
+        const int MaxRetries = 5;
+        /// <summary>
+        /// コンストラクタで ICaioDevice と HardwareSettings を受け取る
+        /// </summary>
+        /// <param name="aioDevice"></param>
+        /// <param name="hardwareSettings"></param>
+        public AnalogIO(ICaioDevice aioDevice, HardwareSettings hardwareSettings)
         {
-            _aioDevice = aioDevice ?? throw new ArgumentNullException(nameof(aioDevice));
+            _aioDevice = aioDevice;
+            _settings = hardwareSettings;
 
-            AIO_LogLevel = Default.DIO_LogLevel;
-            m_AImax = Default.AImax;
-            m_AOmax = Default.AOmax;
-            m_DeviceNameAIO = Default.DeviceNameAIO;
-
-            this.Init();
+            Init();
+        }
+        /// <summary>
+        /// Dispose メソッドでリソースを解放する
+        /// </summary>
+        public void Dispose()
+        {
+            Exit();
+            GC.SuppressFinalize(this);
         }
 
-
-        Settings Default = Settings.GetInstance();
-        Log.LogLevel AIO_LogLevel = Log.LogLevel.LOG_INFO;
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Init()
+        // Init()
         public CioDeviceErrorCode Init()
         {
-            // Initialization handling
-            CioDeviceErrorCode Ret = 0;
-            if (m_AioEmu == false)
+            CioDeviceErrorCode Ret;
+            int retryCount = 0;
+            do
             {
-                if (m_AIOid != 0)
+                Ret = _aioDevice.Init(_settings.DeviceNameAIO, out m_AIOid);
+                // ログ（何回目のリトライでどのエラーが出たか記録）
+                GetErrorString($"_aioDevice.Init (Try: {retryCount + 1})", (int)Ret);
+                if (Ret == CioDeviceErrorCode.ERR_SUCCESS)
                 {
-                    _aioDevice.Exit(m_AIOid);
-                    m_AIOid = 0;
+                    break;
                 }
-                Ret = _aioDevice.Init(m_DeviceNameAIO, out m_AIOid);
-                GetErrorString("dio.Init", (int)Ret);
-            }
-
-            else
-            {
-            }
+                // ハードウェアの復帰やビジー解除を待つためなウェイト（例: 50ミリ秒）
+                System.Threading.Thread.Sleep(50);
+            } while (retryCount++ < MaxRetries);
             return Ret;
         }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Exit()
+        // Exit()
         public CioDeviceErrorCode Exit()
         {
-            // Exit handling of device
-            CioDeviceErrorCode Ret = 0;
-
-            if (m_AioEmu == false)
+            CioDeviceErrorCode Ret = CioDeviceErrorCode.ERR_SUCCESS;
+            if (m_AIOid != 0)
             {
-                if (m_AIOid != 0)
-                {
-                    Ret = _aioDevice.Exit(m_AIOid);
-
-                    GetErrorString("dio.Exit", (int)Ret);
-                    m_AIOid = 0;
-                }
-
-                else
-                {
-                    //m_AIOid
-                }
-            }
-            else
-            {
-                //m_AioEmu
+                Ret = _aioDevice.Exit(m_AIOid);
+                GetErrorString("_dioNative.Exit", (int)Ret);
+                m_AIOid = 0;
             }
             return Ret;
         }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //SetAiRangeAll()
+        // SetAiRangeAll()
         public CioDeviceErrorCode SetAiRangeAll(int AiRange)
         {
-            CioDeviceErrorCode Ret = 0;
-            if (m_AioEmu == false)
+            CioDeviceErrorCode Ret = CioDeviceErrorCode.ERR_SUCCESS;
+            Ret = _aioDevice.SetAiRangeAll(m_AIOid, (short)AiRange);
+            if (Ret != CioDeviceErrorCode.ERR_SUCCESS)
             {
-                //入力レンジの設定
-                Ret = _aioDevice.SetAiRangeAll(m_AIOid, (short)AiRange);   //AiRange = CaioConst.PM10
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.SetAiRangeAll", (int)Ret);
-                }
-            }
-            else
-            {
-                //m_AioEmu
+                GetErrorString("aio.SetAiRangeAll", (int)Ret);
             }
             return Ret;
         }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //MultiAi()
+        // MultiAi()
         public CioDeviceErrorCode MultiAi(float[] AiData)
         {
             short AiChannels = (short)AiData.Length;
-            CioDeviceErrorCode Ret = 0;
-            if (m_AioEmu == false)
+            CioDeviceErrorCode Ret = CioDeviceErrorCode.ERR_SUCCESS;
+
+            Ret = _aioDevice.MultiAiEx(m_AIOid, AiChannels, AiData);
+            if (Ret != CioDeviceErrorCode.ERR_SUCCESS)
             {
-                //入力レンジの設定
-                Ret = _aioDevice.MultiAiEx(m_AIOid, AiChannels, AiData);
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.MultiAi", (int)Ret);
-                }
-                for (int i = 0; i < AiChannels; i++)
-                {
-                    AiData[i] = (AiData[i] * Default.AiCalib_A[i] + Default.AiCalib_B[i]) * Default.AiMulti;
-                }
+                GetErrorString("aio.MultiAi", (int)Ret);
             }
-            else
+            for (int i = 0; i < AiChannels; i++)
             {
-                //m_AioEmu
-                for (int i = 0; i < AiChannels; i++)
-                {
-                    AiData[i] = 0.0f;
-                }
+                AiData[i] = (AiData[i] * _settings.AiCalib_A[i] + _settings.AiCalib_B[i]) * _settings.AiMulti;
             }
             return Ret;
         }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //SingleAoEx()
+        // SingleAoEx()
         public CioDeviceErrorCode SingleAoEx(int AiChannel, float AoData)
         {
-            CioDeviceErrorCode Ret = 0;
+            CioDeviceErrorCode Ret = CioDeviceErrorCode.ERR_SUCCESS;
             double AoDataCalib;
-            if (m_AioEmu == false)
+
+            AoDataCalib = (AoData * AoData * _settings.AoCalib_A[AiChannel] + AoData * _settings.AoCalib_B[AiChannel] + _settings.AoCalib_C[AiChannel]) / _settings.AoDiv;
+            Ret = _aioDevice.SingleAoEx(m_AIOid, (short)AiChannel, (float)AoDataCalib);
+            if (Ret != CioDeviceErrorCode.ERR_SUCCESS)
             {
-                //アナログ出力
-                AoDataCalib = (AoData * AoData * Default.AoCalib_A[AiChannel] + AoData * Default.AoCalib_B[AiChannel] + Default.AoCalib_C[AiChannel]) / Default.AoDiv;
-                Ret = _aioDevice.SingleAoEx(m_AIOid, (short)AiChannel, (float)AoDataCalib);
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.SingleAoEx", (int)Ret);
-                }
-            }
-            else
-            {
-                //m_AioEmu
+                GetErrorString("aio.SingleAoEx", (int)Ret);
             }
             return Ret;
         }
-
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //getGreenSw()
+        // getGreenSw()
         public int getGreenSw()
         {
             int Value = 0;
@@ -170,96 +120,95 @@ namespace NippoControlSystem.Infrastructure.Devices
             if (Ret != 0) Value = 0;
             return Value;
         }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //getRedSw()
+
+        // getRedSw()
         public int getRedSw()
         {
             int Value = 0;
             CioDeviceErrorCode Ret = InputDiBit(1, out Value);
-            if (Ret != 0) Value = 0;
+            if (Ret != CioDeviceErrorCode.ERR_SUCCESS) Value = 0;
             return Value;
         }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //InputDiBit()
+
+        // InputDiBit()
         public CioDeviceErrorCode InputDiBit(int DiBitNo, out int DiData)
         {
-            CioDeviceErrorCode Ret = 0;
+            CioDeviceErrorCode Ret = CioDeviceErrorCode.ERR_SUCCESS;
             short sDiData;
-            if (m_AioEmu == false)
+
+            Ret = _aioDevice.InputDiBit(m_AIOid, (short)DiBitNo, out sDiData);
+            DiData = sDiData == 0 ? 1 : 0;
+            if (Ret != CioDeviceErrorCode.ERR_SUCCESS)
             {
-                //デジタル入力
-                Ret = _aioDevice.InputDiBit(m_AIOid, (short)DiBitNo, out sDiData);
-                DiData = sDiData == 0 ? 1 : 0;
-                if (Ret != 0)
-                {
-                    GetErrorString("aio.InputDiBit", (int)Ret);
-                }
-            }
-            else
-            {
-                DiData = 0;
+                GetErrorString("aio.InputDiBit", (int)Ret);
             }
             return Ret;
         }
-        int PowerVoltEchoBackData = 0;
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Power12()
+
+        // setPowerVolt()
         public CioDeviceErrorCode setPowerVolt(int DoData)
         {
-            PowerVoltEchoBackData = DoData;
-            return OutputDoBit(0, DoData);  //ON=24V,  OFF=12V
+            return OutputDoBit(0, DoData);
         }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Power12()
-        public CioDeviceErrorCode SetPower12V()
+
+        public CioDeviceErrorCode setPower12V()
         {
-            return setPowerVolt(0);  //ON=24V,  OFF=12V
+            return setPowerVolt(0);
         }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //Power12()
-        public CioDeviceErrorCode SetPower24V()
+
+        public CioDeviceErrorCode setPower24V()
         {
-            return setPowerVolt(1);  //ON=24V,  OFF=12V
+            return setPowerVolt(1);
         }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //GreenLamp()
+
         public CioDeviceErrorCode setGreenLamp(int DoData)
         {
             return OutputDoBit(1, (short)(DoData == 0 ? 1 : 0));
         }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //RedLamp()
+
         public CioDeviceErrorCode setRedLamp(int DoData)
         {
             return OutputDoBit(2, (short)(DoData == 0 ? 1 : 0));
         }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //InspctLamp()
         public CioDeviceErrorCode setInspctLamp(int DoData)
         {
             return OutputDoBit(3, (short)(DoData == 0 ? 1 : 0));
         }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //OutputDoBit()
+        // OutputDoBit()
         public CioDeviceErrorCode OutputDoBit(int DoBitNo, int DoData)
         {
             CioDeviceErrorCode Ret = 0;
-            if (m_AioEmu == false)
+
+            Ret = _aioDevice.OutputDoBit(m_AIOid, (short)DoBitNo, (short)DoData);
+            if (Ret != 0)
             {
-                //デジタル出力
-                Ret = _aioDevice.OutputDoBit(m_AIOid, (short)DoBitNo, (short)DoData);
-                if (Ret != 0)
+                GetErrorString("aio.OutputDoBit", (int)Ret);
+            }
+            return Ret;
+        }
+
+        // GetErrorString()
+        public void GetErrorString(string funcName, int Ret)
+        {
+            if (Ret != 0)
+            {
+                if (Ret == -1)
                 {
-                    GetErrorString("aio.OutputDoBit", (int)Ret);
+                    m_LastErrorString = "アナログモジュールでエラーが発生しました。処理を終了します。\n" + funcName + " : " + System.Convert.ToString(Ret) + " : Driver not installed";
+                }
+                else
+                {
+                    string ErrorString;
+                    _aioDevice.GetErrorString(Ret, out ErrorString);
+                    m_LastErrorString = "アナログモジュールでエラーが発生しました。処理を終了します。\n" + funcName + " : " + System.Convert.ToString(Ret) + " : " + ErrorString;
                 }
             }
             else
             {
-                //m_AioEmu
+                m_LastErrorString = null;
             }
-            return Ret;
         }
     }
 }

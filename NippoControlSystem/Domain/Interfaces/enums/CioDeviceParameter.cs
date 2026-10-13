@@ -379,4 +379,38 @@
         DIODM_WRITE_ONCE = 0,
         DIODM_WRITE_RING = 1
     }
+    public enum IO_STATUS
+    {
+        oOP = 0,
+        oGN,
+        oHi,
+        iOP,
+        iGN,
+        iHi,
+        iDo,    //Di Open
+        iDh,    //Di 標準High
+        iDb,    //Di タイプB High
+        iDc,    //Di タイプC High
+        iDs,    //Di ステップ毎 High
+        iDp,    //Di ポート毎 High
+        iTo,
+        nOP,
+        nGN,
+        nHi,
+        nDo,
+        nDh,
+        nDb,
+        nDc,
+        nDs,
+        nDp,
+        nTo,
+        dat,
+        //dV, 
+        NoOP,
+        ERR,    //iOP時、Low+Low入力
+        iRD,    //DoEcho時、Read設定
+        iDRD,   //DoEcho時、iD指定
+    }
+
+
 }

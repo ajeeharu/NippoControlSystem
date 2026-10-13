@@ -14,10 +14,10 @@
         ERR_INI_REGISTRY = 4,       //	invalid registry accesse
 
         ERR_SYS_RECOVERED_FROM_STANDBY = 7,     //	Execute DioResetDevice function because the device has recovered from standby mode.
-        ERR_INI_NOT_FOUND_SYS_FILE = 8,     //	Because the Cdio.sys file is not found, it is not possible to initialize it.
-        ERR_INI_DLL_FILE_VERSION = 9,       //	Because version information on the Cdio.dll file cannot be acquired, it is not possible to initialize it.
-        ERR_INI_SYS_FILE_VERSION = 10,      //	Because version information on the Cdio.sys file cannot be acquired, it is not possible to initialize it.
-        ERR_INI_NO_MATCH_DRV_VERSION = 11,      //	Because version information on Cdio.dll and Cdio.sys is different, it is not possible to initialize it.
+        ERR_INI_NOT_FOUND_SYS_FILE = 8,     //	Because the C_dioNative.sys file is not found, it is not possible to initialize it.
+        ERR_INI_DLL_FILE_VERSION = 9,       //	Because version information on the C_dioNative.dll file cannot be acquired, it is not possible to initialize it.
+        ERR_INI_SYS_FILE_VERSION = 10,      //	Because version information on the C_dioNative.sys file cannot be acquired, it is not possible to initialize it.
+        ERR_INI_NO_MATCH_DRV_VERSION = 11,      //	Because version information on C_dioNative.dll and C_dioNative.sys is different, it is not possible to initialize it.
 
         //	DLL	Error
         //	Common
@@ -42,7 +42,7 @@
         ERR_SYS_NOT_SUPPORTED = 20001,  //	this board couldn't use this function
         ERR_SYS_BOARD_EXECUTING = 20002,    //	board is behaving, not execute
         ERR_SYS_USING_OTHER_PROCESS = 20003,    //	other process is using the device, not execute
-
+        ERR_SYS_PARAM = 20004, //	parameter is beyond the limit
         STATUS_SYS_USB_CRC = 20020, //	the last data packet received from end point exist CRC error
         STATUS_SYS_USB_BTSTUFF = 20021, //	the last data packet received from end point exist bit stuffing offense error
         STATUS_SYS_USB_DATA_TOGGLE_MISMATCH = 20022,    //	the last data packet received from end point exist toggle packet mismatch error
