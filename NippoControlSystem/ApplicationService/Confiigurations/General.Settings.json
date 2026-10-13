@@ -1,0 +1,30 @@
+{
+  "General": {
+    "ApplicationName": "配線チェッカー",
+    "ApplicationNameEn": "",
+    "ApplicationFolder": "",
+    "SettingsFolder": "",
+    "DefaultConfigFilename": "",
+    "MenuFolder": "Settings/",
+    "MenuExtension": ".hcm",
+    "DataFolder": "C:\\Checker2\\",
+    "DataExtension": ".csv",
+    "HistViewFolder": "HistView",
+    "MeasureConditionPath": "MeasureCondition.Config",
+    "ManualPath": "Settings\\操作説明書.pdf",
+    "LoggingLevel": 1,
+    "Serial": "4A0000001",
+    "SerialSuffixLength": 7,
+    "Item": "品名",
+    "MainNo": "仕様書番号",
+    "SubNo": "追番",
+    "SerialTitle": "製造番号",
+    "MachineNumber": "",
+    "CheckFileName": "Check.dat",
+    "ListFileName": "List.dat",
+    "HistFileName": "Hist.dat",
+    "PortFileName": "Port.dat",
+    "MenuCsvFileName": "Menu.csv",
+    "MenuDirPriority": "Yes"
+  }
+}

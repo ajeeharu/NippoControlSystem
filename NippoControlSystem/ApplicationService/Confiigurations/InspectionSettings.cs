@@ -2,13 +2,15 @@
 {
     public class InspectionSettings
     {
-        public int InspectRetryMax { get; set; } = 10;
-        public List<string> InspectionTypeText { get; set; } = new();
-        public string AioMonitorExePath { get; set; } = string.Empty;
-        public int AutoTimeOut { get; set; } = 2;
-        public List<string> CheckDatLmtFields { get; set; } = new();
+        // ガイドおよび各種状態定義（JSONから直接読み込み）
+        public string[] DioStatusGuide { get; set; }
+        public string[] DioStatus { get; set; }
+        public string[] DioStatusOld { get; set; }
 
-        // ジャグ配列 (float[][])
-        public float[][] CheckDatLmt { get; set; } = Array.Empty<float[]>();
+        public int InspectRetryMax { get; set; }
+        public string[] inspection_TypeText { get; set; }
+        public int AutoTimeOut { get; set; }
+        public string[] CheckDatLMTFields { get; set; }
+        public float[][] CheckDatLMT { get; set; }
     }
 }
