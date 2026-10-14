@@ -198,6 +198,12 @@
       62,
       55,
       63
-    ]
+    ],
+    "DI_BIT_GREEN_SWITCH": 0,
+    "DI_BIT_RED_SWITCH": 1,
+    "DO_BIT_SWITCHING_POWER": 0,
+    "DO_BIT_GREEN_LED": 1,
+    "DO_BIT_RED_LED": 2,
+    "DO_BIT_INSPECTION_LED": 3
   }
 }

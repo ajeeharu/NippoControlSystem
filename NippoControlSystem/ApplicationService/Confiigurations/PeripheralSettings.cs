@@ -24,14 +24,14 @@ namespace NippoControlSystem.ApplicationService.Configurations
     public class PeripheralSettings
     {
         // Windows
-        public string WindowStyle { get; set; }
-        public string HideTaskbar { get; set; }
+        public required string WindowStyle { get; set; }
+        public required string HideTaskbar { get; set; }
 
         // Wav
-        public string PlaySoundEnable { get; set; }
-        public string okWavlPath { get; set; }
-        public string ngWavlPath { get; set; }
-        public string pauseWavPath { get; set; }
+        public required string PlaySoundEnable { get; set; }
+        public required string okWavlPath { get; set; }
+        public required string ngWavlPath { get; set; }
+        public required string pauseWavPath { get; set; }
 
         // Print
         public bool DefaultPageSettings_Landscape { get; set; }
@@ -41,9 +41,9 @@ namespace NippoControlSystem.ApplicationService.Configurations
         public int DefaultPageSettings_Margins_Bottom { get; set; }
 
         // Color Styles
-        public niCellStyle[] CellStyles { get; set; }
+        public required niCellStyle[] CellStyles { get; set; }
 
         // External Monitor
-        public string AioMonitorExePath { get; set; }
+        public required string AioMonitorExePath { get; set; }
     }
 }

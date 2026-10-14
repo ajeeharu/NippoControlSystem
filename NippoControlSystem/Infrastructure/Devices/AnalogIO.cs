@@ -116,8 +116,8 @@ namespace NippoControlSystem.Infrastructure.Devices
         public int getGreenSw()
         {
             int Value = 0;
-            CioDeviceErrorCode Ret = InputDiBit(0, out Value);
-            if (Ret != 0) Value = 0;
+            CioDeviceErrorCode Ret = InputDiBit(_settings.DI_BIT_GREEN_SWITCH, out Value);
+            if (Ret != CioDeviceErrorCode.ERR_SUCCESS) Value = 0;
             return Value;
         }
 
@@ -125,13 +125,13 @@ namespace NippoControlSystem.Infrastructure.Devices
         public int getRedSw()
         {
             int Value = 0;
-            CioDeviceErrorCode Ret = InputDiBit(1, out Value);
+            CioDeviceErrorCode Ret = InputDiBit(_settings.DI_BIT_RED_SWITCH, out Value);
             if (Ret != CioDeviceErrorCode.ERR_SUCCESS) Value = 0;
             return Value;
         }
 
         // InputDiBit()
-        public CioDeviceErrorCode InputDiBit(int DiBitNo, out int DiData)
+        private CioDeviceErrorCode InputDiBit(int DiBitNo, out int DiData)
         {
             CioDeviceErrorCode Ret = CioDeviceErrorCode.ERR_SUCCESS;
             short sDiData;
@@ -148,7 +148,7 @@ namespace NippoControlSystem.Infrastructure.Devices
         // setPowerVolt()
         public CioDeviceErrorCode setPowerVolt(int DoData)
         {
-            return OutputDoBit(0, DoData);
+            return OutputDoBit(_settings.DO_BIT_SWITCHING_POWER, DoData);
         }
 
         public CioDeviceErrorCode setPower12V()
@@ -163,21 +163,21 @@ namespace NippoControlSystem.Infrastructure.Devices
 
         public CioDeviceErrorCode setGreenLamp(int DoData)
         {
-            return OutputDoBit(1, (short)(DoData == 0 ? 1 : 0));
+            return OutputDoBit(_settings.DO_BIT_GREEN_LED, (short)(DoData == 0 ? 1 : 0));
         }
 
         public CioDeviceErrorCode setRedLamp(int DoData)
         {
-            return OutputDoBit(2, (short)(DoData == 0 ? 1 : 0));
+            return OutputDoBit(_settings.DO_BIT_RED_LED, (short)(DoData == 0 ? 1 : 0));
         }
 
         public CioDeviceErrorCode setInspctLamp(int DoData)
         {
-            return OutputDoBit(3, (short)(DoData == 0 ? 1 : 0));
+            return OutputDoBit(_settings.DO_BIT_INSPECTION_LED, (short)(DoData == 0 ? 1 : 0));
         }
 
         // OutputDoBit()
-        public CioDeviceErrorCode OutputDoBit(int DoBitNo, int DoData)
+        private CioDeviceErrorCode OutputDoBit(int DoBitNo, int DoData)
         {
             CioDeviceErrorCode Ret = 0;
 
