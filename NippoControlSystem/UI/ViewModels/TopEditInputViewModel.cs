@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System;
 using System.ComponentModel;
 using System.IO;

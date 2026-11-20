@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
 using System.Data;
@@ -94,7 +94,7 @@ namespace NippoControlSystem.UI.ViewModels
             private set { if (_serialTitle != value) { _serialTitle = value; OnPropertyChanged(); } }
         }
 
-        public string GokiTitle
+        public string MachineNumber
         {
             get => _gokiTitle;
             private set { if (_gokiTitle != value) { _gokiTitle = value; OnPropertyChanged(); } }
@@ -231,7 +231,7 @@ namespace NippoControlSystem.UI.ViewModels
             SubNo = _defaultSettings.SubNo;
             Item = _defaultSettings.Item;
             SerialTitle = _defaultSettings.SerialTitle;
-            GokiTitle = _defaultSettings.GokiTitle;
+            MachineNumber = _defaultSettings.MachineNumber;
 
             // データセット作成
             MyDataSetItems = _mc.createDataSetItems(Folder, MainTitle, SubTitle);
@@ -272,16 +272,16 @@ namespace NippoControlSystem.UI.ViewModels
             string alltext = _mc.ReadAllText(HistoryFile, _mc.enc);
             string[] splitedText = alltext.Split([Environment.NewLine + Environment.NewLine], StringSplitOptions.RemoveEmptyEntries);
 
-            string histFolder = Path.Combine(_defaultSettings.ApplicationFloder, _defaultSettings.SettingsHolder, _defaultSettings.HistViewFolder);
+            string histFolder = Path.Combine(_defaultSettings.ApplicationFolder, _defaultSettings.SettingsFolder, _defaultSettings.HistViewFolder);
             if (!Directory.Exists(histFolder))
             {
                 Directory.CreateDirectory(histFolder);
             }
 
-            string checkdatFile = Path.Combine(histFolder, _defaultSettings.Checkdat);
-            string listdatFile = Path.Combine(histFolder, _defaultSettings.Listdat);
-            string portdatFile = Path.Combine(histFolder, _defaultSettings.Portdat);
-            string histdatFile = Path.Combine(histFolder, _defaultSettings.Histdat);
+            string checkdatFile = Path.Combine(histFolder, _defaultSettings.CheckFileName);
+            string listdatFile = Path.Combine(histFolder, _defaultSettings.ListFileName);
+            string portdatFile = Path.Combine(histFolder, _defaultSettings.PortFileName);
+            string histdatFile = Path.Combine(histFolder, _defaultSettings.HistFileName);
 
             if (splitedText.Length >= 4)
             {
@@ -297,10 +297,10 @@ namespace NippoControlSystem.UI.ViewModels
                 return false;
             }
 
-            _mc.loadCheckdat(MyDataSetItems.CheckDat, checkdatFile);
-            _mc.loadListdatFile(MyDataSetItems.ListDat, listdatFile);
-            _mc.loadPortdatFile(MyDataSetItems.PortDat, portdatFile);
-            _mc.loadListdatFile(MyDataSetItems.ListDatResult, histdatFile, true);
+            _mc.loadCheckFileName(MyDataSetItems.CheckDat, checkdatFile);
+            _mc.loadListFileNameFile(MyDataSetItems.ListDat, listdatFile);
+            _mc.loadPortFileNameFile(MyDataSetItems.PortDat, portdatFile);
+            _mc.loadListFileNameFile(MyDataSetItems.ListDatResult, histdatFile, true);
 
             for (int i = 0; i < MyDataSetItems.ListDat.Rows.Count; i++)
             {
@@ -426,7 +426,7 @@ namespace NippoControlSystem.UI.ViewModels
             _mc.InspecStat = MeasureCondition.enumInspectStat.Stat_STOP;
             try
             {
-                _dio.Exit();
+                __dioNative.Exit();
                 _aio.Exit();
             }
             catch (Exception ex)

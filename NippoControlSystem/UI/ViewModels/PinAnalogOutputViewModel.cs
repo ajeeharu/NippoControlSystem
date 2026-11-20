@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -44,7 +44,7 @@ namespace NippoControlSystem.UI.ViewModels
         }
 
         /// <summary>
-        /// アナログ出力スイッチ状態文字列 (AoSwichStat)
+        /// アナログ出力スイッチ状態文字列 (AoSwitchStatus)
         /// </summary>
         public string AoSw
         {
@@ -61,9 +61,9 @@ namespace NippoControlSystem.UI.ViewModels
         }
 
         /// <summary>
-        /// コンボボックス用の選択肢リスト (AoSwichGuide)
+        /// コンボボックス用の選択肢リスト (AoSwitchGuide)
         /// </summary>
-        public List<string> AoSwichGuideList => _defaultSettings.AoSwichGuide?.ToList() ?? [];
+        public List<string> AoSwitchGuideList => _defaultSettings.AoSwitchGuide?.ToList() ?? [];
 
         /// <summary>
         /// コンボボックスの選択インデックス
@@ -146,11 +146,11 @@ namespace NippoControlSystem.UI.ViewModels
         private void UpdateSelectedAoSwIndexFromStat()
         {
             int index = 0;
-            if (_defaultSettings.AoSwichStat != null)
+            if (_defaultSettings.AoSwitchStatus != null)
             {
-                for (int i = 0; i < _defaultSettings.AoSwichStat.Length; i++)
+                for (int i = 0; i < _defaultSettings.AoSwitchStatus.Length; i++)
                 {
-                    if (AoSw == _defaultSettings.AoSwichStat[i])
+                    if (AoSw == _defaultSettings.AoSwitchStatus[i])
                     {
                         index = i;
                         break;
@@ -182,13 +182,13 @@ namespace NippoControlSystem.UI.ViewModels
             }
 
             // コンボボックス選択値から AoSw を更新
-            if (SelectedAoSwIndex == -1 || _defaultSettings.AoSwichStat == null || SelectedAoSwIndex >= _defaultSettings.AoSwichStat.Length)
+            if (SelectedAoSwIndex == -1 || _defaultSettings.AoSwitchStatus == null || SelectedAoSwIndex >= _defaultSettings.AoSwitchStatus.Length)
             {
                 AoSw = null;
             }
             else
             {
-                AoSw = _defaultSettings.AoSwichStat[SelectedAoSwIndex];
+                AoSw = _defaultSettings.AoSwitchStatus[SelectedAoSwIndex];
             }
 
             // 検証成功時、ダイアログ閉じイベントを発行

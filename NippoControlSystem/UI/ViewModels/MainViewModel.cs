@@ -1,5 +1,6 @@
 ﻿using NippoControlSystem.Domain.Interfaces.enums;
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Domain.Utilities;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.Infrastructure.Persistence;
 using System.ComponentModel;
@@ -36,7 +37,7 @@ namespace NippoControlSystem.UI.ViewModels
         public string SubNo => _defaultSettings.SubNo;
         public string ItemName => _defaultSettings.Item;
         public string SerialTitle => _defaultSettings.SerialTitle;
-        public string GokiTitle => _defaultSettings.GokiTitle;
+        public string MachineNumber => _defaultSettings.MachineNumber;
 
         private string _serial;
         public string Serial
@@ -186,7 +187,7 @@ namespace NippoControlSystem.UI.ViewModels
             IsButtonsEnabled = true;
 
             // ボード初期化
-            CioDeviceErrorCode iRetDio = _dio.Init();
+            CioDeviceErrorCode iRetDio = __dioNative.Init();
             if (iRetDio != 0) GuideText = "DIOボードの初期化エラー";
 
             CioDeviceErrorCode iRetAio = _aio.Init();
@@ -222,7 +223,7 @@ namespace NippoControlSystem.UI.ViewModels
             // _soundService.StopSound();
 
             AllClear();
-            _dio.Exit();
+            __dioNative.Exit();
             _aio.Exit();
         }
         #endregion
@@ -341,7 +342,7 @@ namespace NippoControlSystem.UI.ViewModels
 
         public void OpenManual()
         {
-            string filePath = Path.Combine(_defaultSettings.ApplicationFloder, _defaultSettings.ManualPath);
+            string filePath = Path.Combine(_defaultSettings.ApplicationFolder, _defaultSettings.ManualPath);
             try
             {
                 Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
@@ -354,13 +355,13 @@ namespace NippoControlSystem.UI.ViewModels
 
         private void AllClear()
         {
-            //int iDoLength = (int)Cyc.IO.NippoDIO.IO_STAT.iTo - (int)Cyc.IO.NippoDIO.IO_STAT.iOP + 1;
+            //int iDoLength = (int)Cyc.IO.NippoDIO.IO_STATUS.iTo - (int)Cyc.IO.NippoDIO.IO_STATUS.iOP + 1;
             for (int i = 0; i < Default.DioNames.Length; i++)
             {
                 for (int j = 0; j < Default.DioNums[i]; j++)
                 {
                     //int iPOS = i * Default.DioNums[0] + j;
-                    //_nio_OUT(iPOS, Cyc.IO.NippoDIO.IO_STAT.oOP);
+                    //_nio_OUT(iPOS, Cyc.IO.NippoDIO.IO_STATUS.oOP);
                 }
             }
 
@@ -369,7 +370,7 @@ namespace NippoControlSystem.UI.ViewModels
                 _aio.SingleAoEx(j, 0f);
             }
 
-            for (int j = 0; j < Default.AoSwichNum; j++)
+            for (int j = 0; j < Default.AoSwitchNum; j++)
             {
                 _ai2di.NippoAIO_SW(j, 0);
             }
@@ -377,7 +378,7 @@ namespace NippoControlSystem.UI.ViewModels
             _aio.SetPower12V();
         }
 
-        //private void _nio_OUT(int pos, Cyc.IO.NippoDIO.IO_STAT stat)
+        //private void _nio_OUT(int pos, Cyc.IO.NippoDIO.IO_STATUS stat)
         //{
         //    // ニッポーDIOボード出力のヘルパーメソッド呼び出し
         //}

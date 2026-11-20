@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +29,7 @@ namespace NippoControlSystem.UI.ViewModels
         }
 
         /// <summary>
-        /// デジタル入出力ステータス文字列 (DioStat)[cite: 6]
+        /// デジタル入出力ステータス文字列 (DioStatus)[cite: 6]
         /// </summary>
         public string PinIO
         {
@@ -83,9 +83,9 @@ namespace NippoControlSystem.UI.ViewModels
         }
 
         /// <summary>
-        /// コンボボックス用の選択肢リスト (DioStatGuide)[cite: 6]
+        /// コンボボックス用の選択肢リスト (DioStatusGuide)[cite: 6]
         /// </summary>
-        public List<string> DioStatGuideList => _defaultSettings.DioStatGuide?.ToList() ?? [];
+        public List<string> DioStatusGuideList => _defaultSettings.DioStatusGuide?.ToList() ?? [];
 
         /// <summary>
         /// コンボボックスの選択インデックス[cite: 6]
@@ -163,12 +163,12 @@ namespace NippoControlSystem.UI.ViewModels
 
         private void UpdateSelectedPinIOIndexFromStat()
         {
-            int index = _defaultSettings.DioStat.Length - 1;
-            if (_defaultSettings.DioStat != null)
+            int index = _defaultSettings.DioStatus.Length - 1;
+            if (_defaultSettings.DioStatus != null)
             {
-                for (int i = 0; i < _defaultSettings.DioStat.Length; i++)
+                for (int i = 0; i < _defaultSettings.DioStatus.Length; i++)
                 {
-                    if (PinIO == _defaultSettings.DioStat[i])
+                    if (PinIO == _defaultSettings.DioStatus[i])
                     {
                         index = i;
                         break;
@@ -180,9 +180,9 @@ namespace NippoControlSystem.UI.ViewModels
 
         private void OnSelectedIndexChanged()
         {
-            if (SelectedPinIOIndex >= 0 && SelectedPinIOIndex < _defaultSettings.DioStat.Length)
+            if (SelectedPinIOIndex >= 0 && SelectedPinIOIndex < _defaultSettings.DioStatus.Length)
             {
-                _pinIO = _defaultSettings.DioStat[SelectedPinIOIndex];
+                _pinIO = _defaultSettings.DioStatus[SelectedPinIOIndex];
                 OnPropertyChanged(nameof(PinIO));
             }
             UpdateGroupEnableStates();
@@ -214,13 +214,13 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public void Submit()
         {
-            if (SelectedPinIOIndex == -1 || _defaultSettings.DioStat == null || SelectedPinIOIndex >= _defaultSettings.DioStat.Length)
+            if (SelectedPinIOIndex == -1 || _defaultSettings.DioStatus == null || SelectedPinIOIndex >= _defaultSettings.DioStatus.Length)
             {
                 PinIO = null;
             }
             else
             {
-                PinIO = _defaultSettings.DioStat[SelectedPinIOIndex];
+                PinIO = _defaultSettings.DioStatus[SelectedPinIOIndex];
                 switch (PinIO)
                 {
                     case "iDp":

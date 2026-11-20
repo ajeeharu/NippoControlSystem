@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -112,7 +112,7 @@ namespace NippoControlSystem.UI.ViewModels
             DataTable dtViewAO = DataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
-                int aoLoopCount = Math.Max(_defaultSettings.AoNum, _defaultSettings.AoSwichNum);
+                int aoLoopCount = Math.Max(_defaultSettings.AoNum, _defaultSettings.AoSwitchNum);
                 for (int j = 0; j < aoLoopCount; j++)
                 {
                     string fieldName = $"{_defaultSettings.AoName}-{(j + 1):0}";
@@ -188,7 +188,7 @@ namespace NippoControlSystem.UI.ViewModels
             DataTable dtViewAO = DataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
-                int aoLoopCount = Math.Max(_defaultSettings.AoNum, _defaultSettings.AoSwichNum);
+                int aoLoopCount = Math.Max(_defaultSettings.AoNum, _defaultSettings.AoSwitchNum);
                 for (int j = 0; j < aoLoopCount; j++)
                 {
                     string fieldName = $"{_defaultSettings.AoName}-{(j + 1):0}";

@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -185,14 +185,14 @@ namespace NippoControlSystem.UI.ViewModels
             DataTable? dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
-                for (int i = 0; i < _defaultSettings.AoSwichNum; i++)
+                for (int i = 0; i < _defaultSettings.AoSwitchNum; i++)
                 {
                     string iFieldName = $"{_defaultSettings.AoName}-{i + 1:0}";
                     if (i < _defaultSettings.AoNum && i < dtViewAO.Rows.Count)
                     {
                         dtListDatRow[iFieldName] = dtViewAO.Rows[i]["Value"];
                     }
-                    string iSwFieldName = $"{_defaultSettings.AoSwichName}-{i + 1:0}";
+                    string iSwFieldName = $"{_defaultSettings.AoSwitchName}-{i + 1:0}";
                     if (i < dtViewAO.Rows.Count)
                     {
                         dtListDatRow[iSwFieldName] = dtViewAO.Rows[i]["Enable"];
@@ -267,7 +267,7 @@ namespace NippoControlSystem.UI.ViewModels
             DataTable? dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
-                int loopCount = Math.Max(_defaultSettings.AoNum, _defaultSettings.AoSwichNum);
+                int loopCount = Math.Max(_defaultSettings.AoNum, _defaultSettings.AoSwitchNum);
                 for (int j = 0; j < loopCount; j++)
                 {
                     string iFieldName = $"{_defaultSettings.AoName}-{j + 1:0}";
@@ -351,7 +351,7 @@ namespace NippoControlSystem.UI.ViewModels
             DataTable? dtViewAO = MyDataSetItems.Tables[$"View_{_defaultSettings.AoName}"];
             if (dtViewAO != null)
             {
-                for (int i = 0; i < _defaultSettings.AoSwichNum; i++)
+                for (int i = 0; i < _defaultSettings.AoSwitchNum; i++)
                 {
                     string iFieldName = $"{_defaultSettings.AoName}-{i + 1:0}";
                     if (i < _defaultSettings.AoNum && i < dtViewAO.Rows.Count)
@@ -359,7 +359,7 @@ namespace NippoControlSystem.UI.ViewModels
                         dtViewAO.Rows[i]["Value"] = dtListDatRow[iFieldName];
                     }
 
-                    string iSwFieldName = $"{_defaultSettings.AoSwichName}-{i + 1:0}";
+                    string iSwFieldName = $"{_defaultSettings.AoSwitchName}-{i + 1:0}";
                     if (i < dtViewAO.Rows.Count)
                     {
                         dtViewAO.Rows[i]["Enable"] = dtListDatRow[iSwFieldName];

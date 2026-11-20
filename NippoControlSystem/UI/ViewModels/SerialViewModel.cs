@@ -1,4 +1,5 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Domain.Utilities;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.Infrastructure.Persistence;
 using System.ComponentModel;
@@ -103,7 +104,7 @@ namespace NippoControlSystem.UI.ViewModels
         /// <summary>
         /// 号機タイトル
         /// </summary>
-        public string GokiTitle
+        public string MachineNumber
         {
             get => _gokiTitle;
             private set { if (_gokiTitle != value) { _gokiTitle = value; OnPropertyChanged(); } }
@@ -167,7 +168,7 @@ namespace NippoControlSystem.UI.ViewModels
             var mc = MeasureCondition.GetInstance();
 
             SerialTitle = string.Format("{0}を入力して下さい。", defaultSettings.SerialTitle);
-            GokiTitle = string.Format("{0}を入力して下さい。", defaultSettings.GokiTitle);
+            MachineNumber = string.Format("{0}を入力して下さい。", defaultSettings.MachineNumber);
 
             SerialNo = mc.SerialNo ?? string.Empty;
             GoNo = mc.GoNo ?? string.Empty;
@@ -195,7 +196,7 @@ namespace NippoControlSystem.UI.ViewModels
             if (string.IsNullOrWhiteSpace(GoNo))
             {
                 RequestShowMessage?.Invoke(
-                    string.Format("{0}を入力して下さい。", defaultSettings.GokiTitle),
+                    string.Format("{0}を入力して下さい。", defaultSettings.MachineNumber),
                     defaultSettings.ApplicationName
                 );
                 return false;
@@ -208,7 +209,7 @@ namespace NippoControlSystem.UI.ViewModels
             Bitmap bm = RequestCaptureMainScreen?.Invoke();
             if (bm != null)
             {
-                string resultBitMapPath = Path.Combine(Folder ?? string.Empty, string.Format("A{0:yyyyMMdd_HHmmss}.bmp", mc.TestEndDT));
+                string resultBitMapPath = Path.Combine(Folder ?? string.Empty, string.Format("A{0:yyyyMMdd_HHmmss}.bmp", mc.TestEndDateTime));
                 try
                 {
                     bm.Save(resultBitMapPath);

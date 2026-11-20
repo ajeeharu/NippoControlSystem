@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -241,18 +241,18 @@ namespace NippoControlSystem.UI.ViewModels
         private void ProcessCopyFiles()
         {
             // --- 検査ファイル (list.dat) のコピー ---
-            string listSrc = Path.Combine(Folder, _defaultSettings.Listdat);
-            string listDest = Path.Combine(FolderCopyed, _defaultSettings.Listdat);
+            string listSrc = Path.Combine(Folder, _defaultSettings.ListFileName);
+            string listDest = Path.Combine(FolderCopyed, _defaultSettings.ListFileName);
 
             if (File.Exists(listSrc))
             {
                 CopyFileWithOverwritePrompt(listSrc, listDest, "検査ファイルが既にあります。\n\n上書きしますか？", () =>
                 {
-                    // --- 設定ファイル (Checkdat.dat) のコピー/生成 ---
-                    ProcessCheckdatCopy(() =>
+                    // --- 設定ファイル (CheckFileName.dat) のコピー/生成 ---
+                    ProcessCheckFileNameCopy(() =>
                     {
                         // --- ポート名ファイル (port.dat) のコピー ---
-                        ProcessPortdatCopy(() =>
+                        ProcessPortFileNameCopy(() =>
                         {
                             // 完了時に複製後の値をセットして画面を閉じる
                             MainTitle = MainTitleCopyed;
@@ -269,10 +269,10 @@ namespace NippoControlSystem.UI.ViewModels
             }
         }
 
-        private void ProcessCheckdatCopy(Action onCompleted)
+        private void ProcessCheckFileNameCopy(Action onCompleted)
         {
-            string checkSrc = Path.Combine(Folder, _defaultSettings.Checkdat);
-            string checkDest = Path.Combine(FolderCopyed, _defaultSettings.Checkdat);
+            string checkSrc = Path.Combine(Folder, _defaultSettings.CheckFileName);
+            string checkDest = Path.Combine(FolderCopyed, _defaultSettings.CheckFileName);
 
             if (File.Exists(checkSrc))
             {
@@ -285,16 +285,16 @@ namespace NippoControlSystem.UI.ViewModels
                     File.Delete(checkDest);
                 }
 
-                _mc.newCheckdatFile(checkDest, "未設定", MainTitleCopyed, SubTitleCopyed, "");
+                _mc.newCheckFileNameFile(checkDest, "未設定", MainTitleCopyed, SubTitleCopyed, "");
                 ShowMessage("複製元の設定ファイルが見つかりません。\n\n新規に作成しました。");
                 onCompleted?.Invoke();
             }
         }
 
-        private void ProcessPortdatCopy(Action onCompleted)
+        private void ProcessPortFileNameCopy(Action onCompleted)
         {
-            string portSrc = Path.Combine(Folder, _defaultSettings.Portdat);
-            string portDest = Path.Combine(FolderCopyed, _defaultSettings.Portdat);
+            string portSrc = Path.Combine(Folder, _defaultSettings.PortFileName);
+            string portDest = Path.Combine(FolderCopyed, _defaultSettings.PortFileName);
 
             if (File.Exists(portSrc))
             {

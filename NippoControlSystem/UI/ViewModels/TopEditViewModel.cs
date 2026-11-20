@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
@@ -154,7 +154,7 @@ namespace NippoControlSystem.UI.ViewModels
             if (DataSetTopMenu != null)
             {
                 DataSetTopMenu.AcceptChanges();
-                string menuCsvPath = Path.Combine(_defaultSettings.ApplicationFloder, _defaultSettings.MenuFolder, _defaultSettings.Menucsv);
+                string menuCsvPath = Path.Combine(_defaultSettings.ApplicationFolder, _defaultSettings.MenuFolder, _defaultSettings.MenuCsvFileName);
                 _mc.saveMenuCsv(DataSetTopMenu, menuCsvPath);
             }
             RequestCloseView?.Invoke();
@@ -451,7 +451,7 @@ namespace NippoControlSystem.UI.ViewModels
         public void OpenMenuCsv()
         {
             string filter = "hcmファイル(*.hcm;*.csv)|*.hcm;*.csv|すべてのファイル(*.*)|*.*";
-            string initDir = Path.Combine(_defaultSettings.ApplicationFloder, _defaultSettings.MenuFolder);
+            string initDir = Path.Combine(_defaultSettings.ApplicationFolder, _defaultSettings.MenuFolder);
 
             RequestOpenFileDialog?.Invoke(filter, initDir, filePath =>
             {
@@ -465,7 +465,7 @@ namespace NippoControlSystem.UI.ViewModels
         public void SaveMenuCsv()
         {
             string filter = "hcmファイル(*.hcm;*.csv)|*.hcm;*.csv|すべてのファイル(*.*)|*.*";
-            string initDir = Path.Combine(_defaultSettings.ApplicationFloder, _defaultSettings.MenuFolder);
+            string initDir = Path.Combine(_defaultSettings.ApplicationFolder, _defaultSettings.MenuFolder);
 
             RequestSaveFileDialog?.Invoke(filter, initDir, filePath =>
             {
@@ -539,7 +539,7 @@ namespace NippoControlSystem.UI.ViewModels
             if (subRow == null) return;
 
             string folder = subRow["Folder"]?.ToString();
-            string listDatFile = Path.Combine(folder, _defaultSettings.Listdat);
+            string listDatFile = Path.Combine(folder, _defaultSettings.ListFileName);
 
             if (!File.Exists(listDatFile))
             {
@@ -571,21 +571,21 @@ namespace NippoControlSystem.UI.ViewModels
             if (errMsg != "") return FalseAndLog(mainTitle, subTitle, outFolder, errMsg);
 
             string outFullPass = Path.Combine(outFolder, mainTitle, subTitle) + Path.DirectorySeparatorChar;
-            string checkDatFile = Path.Combine(folder, _defaultSettings.Checkdat);
-            string listDatFile = Path.Combine(folder, _defaultSettings.Listdat);
-            string portDatFile = Path.Combine(folder, _defaultSettings.Portdat);
+            string checkDatFile = Path.Combine(folder, _defaultSettings.CheckFileName);
+            string listDatFile = Path.Combine(folder, _defaultSettings.ListFileName);
+            string portDatFile = Path.Combine(folder, _defaultSettings.PortFileName);
 
-            errMsg = _mc.convToOldVerCheckdat(checkDatFile, outFullPass + _defaultSettings.Checkdat);
+            errMsg = _mc.convToOldVerCheckFileName(checkDatFile, outFullPass + _defaultSettings.CheckFileName);
             if (!string.IsNullOrEmpty(errMsg)) return FalseAndLog(mainTitle, subTitle, outFolder, errMsg);
 
-            File.Move(outFullPass + _defaultSettings.Checkdat + _mc.Part, outFullPass + _defaultSettings.Checkdat);
+            File.Move(outFullPass + _defaultSettings.CheckFileName + _mc.Part, outFullPass + _defaultSettings.CheckFileName);
 
-            File.Copy(portDatFile, outFullPass + _defaultSettings.Portdat, true);
+            File.Copy(portDatFile, outFullPass + _defaultSettings.PortFileName, true);
 
-            errMsg = _mc.convToOldVerListdat(listDatFile, outFullPass + _defaultSettings.Listdat);
+            errMsg = _mc.convToOldVerListFileName(listDatFile, outFullPass + _defaultSettings.ListFileName);
             if (!string.IsNullOrEmpty(errMsg)) return FalseAndLog(mainTitle, subTitle, outFolder, errMsg);
 
-            File.Move(outFullPass + _defaultSettings.Listdat + _mc.Part, outFullPass + _defaultSettings.Listdat);
+            File.Move(outFullPass + _defaultSettings.ListFileName + _mc.Part, outFullPass + _defaultSettings.ListFileName);
 
             return true;
         }
@@ -603,9 +603,9 @@ namespace NippoControlSystem.UI.ViewModels
         {
             string outFullPass = Path.Combine(outFolder, mainTitle, subTitle) + Path.DirectorySeparatorChar;
 
-            string checkDatFile = Path.Combine(folder, _defaultSettings.Checkdat);
-            string listDatFile = Path.Combine(folder, _defaultSettings.Listdat);
-            string portDatFile = Path.Combine(folder, _defaultSettings.Portdat);
+            string checkDatFile = Path.Combine(folder, _defaultSettings.CheckFileName);
+            string listDatFile = Path.Combine(folder, _defaultSettings.ListFileName);
+            string portDatFile = Path.Combine(folder, _defaultSettings.PortFileName);
 
             if (!File.Exists(checkDatFile)) return $"NoFile - Check.dat ({checkDatFile})";
             if (!File.Exists(listDatFile)) return $"NoFile - List.dat ({listDatFile})";
@@ -613,9 +613,9 @@ namespace NippoControlSystem.UI.ViewModels
 
             Directory.CreateDirectory(outFullPass);
 
-            if (File.Exists(outFullPass + _defaultSettings.Checkdat)) File.Delete(outFullPass + _defaultSettings.Checkdat);
-            if (File.Exists(outFullPass + _defaultSettings.Listdat)) File.Delete(outFullPass + _defaultSettings.Listdat);
-            if (File.Exists(outFullPass + _defaultSettings.Portdat)) File.Delete(outFullPass + _defaultSettings.Portdat);
+            if (File.Exists(outFullPass + _defaultSettings.CheckFileName)) File.Delete(outFullPass + _defaultSettings.CheckFileName);
+            if (File.Exists(outFullPass + _defaultSettings.ListFileName)) File.Delete(outFullPass + _defaultSettings.ListFileName);
+            if (File.Exists(outFullPass + _defaultSettings.PortFileName)) File.Delete(outFullPass + _defaultSettings.PortFileName);
 
             return "";
         }

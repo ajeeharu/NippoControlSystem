@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using System;
 using System.ComponentModel;
@@ -213,15 +213,15 @@ namespace NippoControlSystem.UI.ViewModels
                     MyDataSetItems.CheckDat.Rows[0]["Volt"] = newVolt;
                     DataRow dtCheckDatRow = MyDataSetItems.CheckDat.Rows[_itemFound];
 
-                    int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
+                    int iDo_Length = (int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.iOP + 1;
                     int mVoltIdx = (newVolt == "1" ? 2 : 0); // 0:12V, 2:24V
 
                     for (int i = 0; i < iDo_Length; i++)
                     {
-                        string dtCheckDatFieldsHi = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[0];
+                        string dtCheckDatFieldsHi = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[0];
                         dtCheckDatRow[dtCheckDatFieldsHi] = _defaultSettings.CheckDatLMT[mVoltIdx][i].ToString("F1");
 
-                        string dtCheckDatFieldsLo = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[1];
+                        string dtCheckDatFieldsLo = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + _defaultSettings.CheckDatLMTFields[1];
                         dtCheckDatRow[dtCheckDatFieldsLo] = _defaultSettings.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");
                     }
                 }
@@ -372,13 +372,13 @@ namespace NippoControlSystem.UI.ViewModels
         /// </summary>
         public void SaveAndClose()
         {
-            string portPath = Path.Combine(Folder, _defaultSettings.Portdat);
-            string listPath = Path.Combine(Folder, _defaultSettings.Listdat);
-            string checkPath = Path.Combine(Folder, _defaultSettings.Checkdat);
+            string portPath = Path.Combine(Folder, _defaultSettings.PortFileName);
+            string listPath = Path.Combine(Folder, _defaultSettings.ListFileName);
+            string checkPath = Path.Combine(Folder, _defaultSettings.CheckFileName);
 
-            bool isChanged = _measureCondition.checkChangedPortdatFile(MyDataSetItems.PortDat, portPath)
+            bool isChanged = _measureCondition.checkChangedPortFileNameFile(MyDataSetItems.PortDat, portPath)
                           || _measureCondition.checkChangedInspectItem(MyDataSetItems.ListDat, listPath)
-                          || _measureCondition.checkChangedCheckdat(MyDataSetItems.CheckDat, checkPath);
+                          || _measureCondition.checkChangedCheckFileName(MyDataSetItems.CheckDat, checkPath);
 
             if (!isChanged)
             {
@@ -421,10 +421,10 @@ namespace NippoControlSystem.UI.ViewModels
                     }
 
                     // データの永続化
-                    _measureCondition.savePortdatFile(MyDataSetItems.PortDat, portPath);
-                    _measureCondition.clearListdatLMT(MyDataSetItems.ListDat);
+                    _measureCondition.savePortFileNameFile(MyDataSetItems.PortDat, portPath);
+                    _measureCondition.clearListFileNameLMT(MyDataSetItems.ListDat);
                     _measureCondition.saveInspectItem(MyDataSetItems.ListDat, listPath);
-                    _measureCondition.saveCheckdat(MyDataSetItems.CheckDat, checkPath);
+                    _measureCondition.saveCheckFileName(MyDataSetItems.CheckDat, checkPath);
 
                     RequestCloseView?.Invoke(DialogResult.OK);
                 }

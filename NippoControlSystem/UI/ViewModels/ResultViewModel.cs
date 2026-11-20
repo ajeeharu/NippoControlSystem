@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -275,7 +275,7 @@ namespace NippoControlSystem.UI.ViewModels
             if (DataSetItems.Tables.Contains(aoTableName))
             {
                 DataTable dtViewAO = DataSetItems.Tables[aoTableName];
-                int maxAo = Math.Max(defaultSettings.AoNum, defaultSettings.AoSwichNum);
+                int maxAo = Math.Max(defaultSettings.AoNum, defaultSettings.AoSwitchNum);
                 for (int j = 0; j < maxAo; j++)
                 {
                     string fieldName = $"{defaultSettings.AoName}-{j + 1:0}";
@@ -351,7 +351,7 @@ namespace NippoControlSystem.UI.ViewModels
             if (DataSetItems.Tables.Contains(aoTableName))
             {
                 DataTable dtViewAO = DataSetItems.Tables[aoTableName];
-                for (int i = 0; i < defaultSettings.AoSwichNum; i++)
+                for (int i = 0; i < defaultSettings.AoSwitchNum; i++)
                 {
                     int ii = i + 1;
                     string aoFieldName = $"{defaultSettings.AoName}-{ii:0}";
@@ -360,7 +360,7 @@ namespace NippoControlSystem.UI.ViewModels
                         dtViewAO.Rows[i]["Value"] = dtListDatRow[aoFieldName];
                     }
 
-                    string swFieldName = $"{defaultSettings.AoSwichName}-{ii:0}";
+                    string swFieldName = $"{defaultSettings.AoSwitchName}-{ii:0}";
                     if (dtListDatRow.Table.Columns.Contains(swFieldName))
                     {
                         dtViewAO.Rows[i]["Enable"] = dtListDatRow[swFieldName];

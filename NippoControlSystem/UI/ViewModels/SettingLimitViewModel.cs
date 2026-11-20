@@ -1,4 +1,4 @@
-﻿using NippoControlSystem.Infrastructure.Configuration;
+﻿using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
 using System.Data;
@@ -184,14 +184,14 @@ namespace NippoControlSystem.UI.ViewModels
             LblItem = defaultSettings.Item;     // "品名"
 
             // セルスタイルの配色設定
-            int baseOffset = (int)NippoDIO.IO_STAT.oOP;
-            ForeColorIDo = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDo - baseOffset].ForeColor;
-            ForeColorIDh = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDh - baseOffset].ForeColor;
-            ForeColorIDb = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDb - baseOffset].ForeColor;
-            ForeColorIDc = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDc - baseOffset].ForeColor;
-            ForeColorIDs = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDs - baseOffset].ForeColor;
-            ForeColorIDp = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iDp - baseOffset].ForeColor;
-            ForeColorITo = defaultSettings.CellStyles[(int)NippoDIO.IO_STAT.iTo - baseOffset].ForeColor;
+            int baseOffset = (int)NippoDIO.IO_STATUS.oOP;
+            ForeColorIDo = defaultSettings.CellStyles[(int)NippoDIO.IO_STATUS.iDo - baseOffset].ForeColor;
+            ForeColorIDh = defaultSettings.CellStyles[(int)NippoDIO.IO_STATUS.iDh - baseOffset].ForeColor;
+            ForeColorIDb = defaultSettings.CellStyles[(int)NippoDIO.IO_STATUS.iDb - baseOffset].ForeColor;
+            ForeColorIDc = defaultSettings.CellStyles[(int)NippoDIO.IO_STATUS.iDc - baseOffset].ForeColor;
+            ForeColorIDs = defaultSettings.CellStyles[(int)NippoDIO.IO_STATUS.iDs - baseOffset].ForeColor;
+            ForeColorIDp = defaultSettings.CellStyles[(int)NippoDIO.IO_STATUS.iDp - baseOffset].ForeColor;
+            ForeColorITo = defaultSettings.CellStyles[(int)NippoDIO.IO_STATUS.iTo - baseOffset].ForeColor;
         }
 
         /// <summary>
@@ -242,17 +242,17 @@ namespace NippoControlSystem.UI.ViewModels
             VoltText = newVoltStr;
             dtCheckDatRow["Volt"] = newVolt;
 
-            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.iOP + 1;
             int mVoltIdx = (newVolt == "1" ? 2 : 0); // 0:12V, 2:24V
 
             for (int i = 0; i < iDo_Length; i++)
             {
                 // Hi 限界値設定
-                string hiField = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[0];
+                string hiField = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[0];
                 dtCheckDatRow[hiField] = defaultSettings.CheckDatLMT[mVoltIdx][i].ToString("F1");
 
                 // Lo 限界値設定
-                string loField = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[1];
+                string loField = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + defaultSettings.CheckDatLMTFields[1];
                 dtCheckDatRow[loField] = defaultSettings.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");
             }
 
