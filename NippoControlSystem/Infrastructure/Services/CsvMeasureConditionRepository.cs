@@ -1,6 +1,6 @@
-﻿using NippoControlSystem.Domain.Models;
-using NippoControlSystem.Domain.Repositories;
-using NippoControlSystem.Infrastructure.Formatters;
+﻿using NippoControlSystem.Domain.Interfaces;
+using NippoControlSystem.Domain.Models;
+using NippoControlSystem.Domain.Utilities;
 using System.Data;
 using System.IO;
 using System.Text;
@@ -14,16 +14,16 @@ namespace NippoControlSystem.Infrastructure.Repositories
 
         public void SaveResultLog(MeasureLogRecord record, string folderPath)
         {
-            string resultCsvPath = Path.Combine(folderPath, string.Format("{0:yyyy}-log.csv", record.TestEndDT));
+            string resultCsvPath = Path.Combine(folderPath, string.Format("{0:yyyy}-log.csv", record.TestEndDateTime));
 
             var lineValues = new[]
             {
-                CsvFormatter.EncloseDoubleQuotes(string.Format("{0:yyyy.MM.dd HH:mm:ss}", record.TestEndDT)),
+                CsvFormatter.EncloseDoubleQuotes(string.Format("{0:yyyy.MM.dd HH:mm:ss}", record.TestEndDateTime)),
                 CsvFormatter.EncloseDoubleQuotes(record.SerialNo),
                 CsvFormatter.EncloseDoubleQuotes(record.GoNo),
                 CsvFormatter.EncloseDoubleQuotes(record.Zuban),
                 CsvFormatter.EncloseDoubleQuotes(record.Edaban),
-                CsvFormatter.EncloseDoubleQuotes(record.InspecStartStatString),
+                CsvFormatter.EncloseDoubleQuotes(record.InspectionStartStatusString),
                 CsvFormatter.EncloseDoubleQuotes(record.IsPass ? "Pass" : "Fail")
             };
 

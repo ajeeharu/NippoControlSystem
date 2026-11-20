@@ -46,7 +46,6 @@ namespace NippoControlSystem.ApplicationService.Common
                     }
                 }
             }
-
             return results;
         }
         /// <summary>

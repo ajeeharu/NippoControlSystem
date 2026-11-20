@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>
+    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
     <OutputType>WinExe</OutputType>
     <PlatformTarget>x86</PlatformTarget>
     <Platforms>x86</Platforms>
@@ -12,7 +13,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!-- <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion> -->
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
 
     <!-- EXE一体化（.NETランタイムおよびマネージドDLLのみ統合） -->
     <PublishSingleFile>true</PublishSingleFile>
@@ -39,6 +40,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Infrastructure\Persistence\Xsd\DataSetItems.designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataSetItems.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="Infrastructure\Persistence\Xsd\DataSetTopMenu.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataSetTopMenu.xsd</DependentUpon>
+    </Compile>
     <Compile Update="UI\Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -54,10 +65,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="UI\Confiigurations\UiSettings.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- ネイティブ DLL をビルド/発行先の EXE 直下に外部ファイルとしてコピー -->
     <Content Include="Infrastructure\NativeLibs\*.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -68,6 +75,17 @@
 
   <ItemGroup>
     <Folder Include="Domain\Items\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Infrastructure\Persistence\Xsd\DataSetItems.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetItems.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Infrastructure\Persistence\Xsd\DataSetTopMenu.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetTopMenu.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

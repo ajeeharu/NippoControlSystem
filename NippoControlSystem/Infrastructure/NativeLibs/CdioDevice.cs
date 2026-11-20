@@ -7,7 +7,7 @@ namespace NippoControlSystem.Infrastructure.NativeLibs
 {
     public unsafe partial class CdioDevice : ICdioDevice
     {
-        private const string LibraryName = "cdio.dll";
+        private const string LibraryName = "c_dioNative.dll";
 
         // スレッドセーフ確保用のセマフォ (同時実行数: 1)
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);

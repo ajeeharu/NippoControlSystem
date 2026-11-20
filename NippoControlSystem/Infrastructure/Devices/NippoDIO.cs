@@ -1,180 +1,127 @@
-﻿using NippoControlSystem.Domain.Interfaces.enums;
+﻿using NippoControlSystem.ApplicationService.Configurations;
+using NippoControlSystem.Domain.Interfaces.enums;
 
 namespace NippoControlSystem.Infrastructure.Devices
 {
-    public class NippoDIO
+    public class NippoDIO : IDisposable
     {
-        public enum IO_STAT //2016/11/11 IO_STATをDioStatに合わせる
-        {
-            oOP = 0,
-            oGN,
-            oHi,
-            iOP,
-            iGN,
-            iHi,
-            iDo,    //Di Open
-            iDh,    //Di 標準High
-            iDb,    //Di タイプB High
-            iDc,    //Di タイプC High
-            iDs,    //Di ステップ毎 High
-            iDp,    //Di ポート毎 High
-            iTo,
-            nOP,
-            nGN,
-            nHi,
-            nDo,
-            nDh,
-            nDb,
-            nDc,
-            nDs,
-            nDp,
-            nTo,
-            dat,
-            //dV, 
-            NoOP,
-            ERR,    //iOP時、Low+Low入力
-            iRD,    //DoEcho時、Read設定
-            iDRD,   //DoEcho時、iD指定
-        }
-        public enum ERR_STAT
-        {
-            NO_ERROR = 0,  //No error
-            POINT_NO_OVER,    //PointNo Over
-            IO_STAT_ERROR,
-            DIO_ERROR,
-        }
-
-        Settings Default = Settings.GetInstance();
-        DigitalIO dio = null;
-        //private int[] m_DImax = null;
-        private int m_DO_Pmax = 0;
-
-        //Cyc.IO.Log.LogLevel NippoDIOLoglevel = Cyc.IO.Log.LogLevel.LOG_ALERT;
+        private readonly DigitalIO _dio;
+        private readonly HardwareSettings _settings;
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //変数
         //以下の初期値は、Defaultで上書きされます。
-        //int NUM_DI_BIT_OF_POINT = 0;  //DIの１ポイント当たりのBIT数
-        int NUM_DO_BIT_OF_POINT = 4;    //DOの１ポイント当たりのBIT数
-        int MAX_POINT = 256;            //(SUM( m_DOmax ) - m_AO_USE_IN_DO) / NUM_DO_BIT_OF_POINT
+        private const int NUM_DO_BIT_OF_POINT = 4;    //DOの１ポイント当たりのBIT数
+        private const int MAX_POINT = 256;            //(SUM( m_DOmax ) - m_AO_USE_IN_DO) / NUM_DO_BIT_OF_POINT
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //メンバ変数：設定格納変数
-        private static NippoDIO m_instance = null;
-        public static NippoDIO GetInstance()
+        /// <summary>
+        /// コンストラクター
+        /// </summary>
+        /// <param name="dio"></param>
+        /// <param name="dioNative"></param>
+        /// <param name="settings"></param>
+        public NippoDIO(DigitalIO dio, HardwareSettings settings)
         {
-            if (m_instance == null)
-            {
-                m_instance = new NippoDIO();
-            }
-            return m_instance;
-        }
+            _dio = dio;
+            _settings = settings;
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //コンストラクタ
-        public NippoDIO()
+            _dio.Init();
+        }
+        public void Dispose()
         {
-            // 
-            // TODO: コンストラクタ ロジックをここに追加してください。
-            //
-            dio = DigitalIO.GetInstance();
-            dio.Init();
-            //m_DImax = dio.DImax;
-            m_DO_Pmax = dio.DO_Pmax;
-            //m_AO_USE_IN_DO = dio.AO_USE_IN_DO;
+            GC.SuppressFinalize(this);
         }
-
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //NippoDIO_OUT()：Nippo仕様のIOボードへ出力する
         //iPointNo = 0 ～ 256 ポイント番号
         //iStat = OPEN、LOW、HIGH
-        public ERR_STAT NippoDIO_OUT(int iPointNo, IO_STAT iStat)
+        public CioDeviceErrorCode NippoDIO_OUT(int iPointNo, IO_STATUS iStatus)
         {
             int iUnit = -1;
             int iBitNo = -1;
             int iPointNo2 = iPointNo * NUM_DO_BIT_OF_POINT;
             int[] oData = new int[NUM_DO_BIT_OF_POINT];
             CioDeviceErrorCode dioErr = CioDeviceErrorCode.ERR_SUCCESS;
-            ERR_STAT thisStat = ERR_STAT.NO_ERROR;
+            CioDeviceErrorCode thisStat = CioDeviceErrorCode.ERR_SUCCESS;
             if (iPointNo >= 0 && iPointNo < MAX_POINT)
             {
                 //実際に出力を行うOutMultiBit(int iUnit, int iBitNo, int[] iData)
-                iUnit = iPointNo2 / m_DO_Pmax; //DOは、各ボード共同じ点数を想定
-                iBitNo = iPointNo2 % m_DO_Pmax;
-                thisStat = ERR_STAT.NO_ERROR;
+                iUnit = iPointNo2 / _settings.DO_Pmax; ; //DOは、各ボード共同じ点数を想定
+                iBitNo = iPointNo2 % _settings.DO_Pmax; ;
+                thisStat = CioDeviceErrorCode.ERR_SUCCESS;
                 oData[0] = 0;
                 oData[1] = 0;
                 oData[2] = 0;
                 oData[3] = 0;
-                switch (iStat)
+                switch (iStatus)
                 {
-                    case IO_STAT.oOP:
-                    case IO_STAT.iTo:   //20180912
+                    case IO_STATUS.oOP:
+                    case IO_STATUS.iTo:   //20180912
                         //oData[0] = 0;
                         //oData[1] = 0;
                         //oData[2] = 0;
                         //oData[3] = 0;
                         break;
 
-                    case IO_STAT.iOP:
-                    case IO_STAT.iGN:
-                    case IO_STAT.iHi:
-                    case IO_STAT.nOP:
-                    case IO_STAT.nGN:
-                    case IO_STAT.nHi:
-                    case IO_STAT.iRD://20180717
+                    case IO_STATUS.iOP:
+                    case IO_STATUS.iGN:
+                    case IO_STATUS.iHi:
+                    case IO_STATUS.nOP:
+                    case IO_STATUS.nGN:
+                    case IO_STATUS.nHi:
+                    case IO_STATUS.iRD://20180717
                         //oData[0] = 0;
                         //oData[1] = 0;
                         oData[2] = 1;
                         oData[3] = 1;
                         break;
 
-                    case IO_STAT.iDo:
-                    case IO_STAT.iDh:
-                    case IO_STAT.iDb:
-                    case IO_STAT.iDc:
-                    case IO_STAT.iDs:
-                    case IO_STAT.iDp:
-                    //case IO_STAT.iTo:   //20170126
-                    case IO_STAT.nDo:
-                    case IO_STAT.nDh:
-                    case IO_STAT.nDb:
-                    case IO_STAT.nDc:
-                    case IO_STAT.nDs:
-                    case IO_STAT.nDp:
-                    case IO_STAT.nTo:
-                    case IO_STAT.dat:
-                    //case IO_STAT.dV:
-                    case IO_STAT.iDRD:   //20180717
+                    case IO_STATUS.iDo:
+                    case IO_STATUS.iDh:
+                    case IO_STATUS.iDb:
+                    case IO_STATUS.iDc:
+                    case IO_STATUS.iDs:
+                    case IO_STATUS.iDp:
+                    //case IO_STATUS.iTo:   //20170126
+                    case IO_STATUS.nDo:
+                    case IO_STATUS.nDh:
+                    case IO_STATUS.nDb:
+                    case IO_STATUS.nDc:
+                    case IO_STATUS.nDs:
+                    case IO_STATUS.nDp:
+                    case IO_STATUS.nTo:
+                    case IO_STATUS.dat:
+                    //case IO_STATUS.dV:
+                    case IO_STATUS.iDRD:   //20180717
                         //oData[0] = 0;
                         //oData[1] = 0;
                         //oData[2] = 0;
                         oData[3] = 1;
                         break;
-                    case IO_STAT.oGN:
+                    case IO_STATUS.oGN:
                         //oData[0] = 0;
                         oData[1] = 1;
                         //oData[2] = 0;
                         //oData[3] = 0;
                         break;
-                    case IO_STAT.oHi:
+                    case IO_STATUS.oHi:
                         oData[0] = 1;
                         //oData[1] = 0;
                         //oData[2] = 0;
                         //oData[3] = 0;
                         break;
                     default:
-                        thisStat = ERR_STAT.IO_STAT_ERROR;
+                        thisStat = CioDeviceErrorCode.ERR_SYS_PARAM;
                         break;
                 }
 
-                if (thisStat == ERR_STAT.NO_ERROR)
+                if (thisStat == CioDeviceErrorCode.ERR_SUCCESS)
                 {
-                    dioErr = dio.OutMultiBit(iUnit, iBitNo, oData);
+                    dioErr = _dio.OutMultiBit(iUnit, iBitNo, oData);
 
                     if (dioErr != (int)CioDeviceErrorCode.ERR_SUCCESS)
                     {
-                        thisStat = ERR_STAT.DIO_ERROR;
+                        thisStat = CioDeviceErrorCode.ERR_SYS_BIT_DATA;
                     }
                 }
 
@@ -182,7 +129,7 @@ namespace NippoControlSystem.Infrastructure.Devices
             }
             else
             {
-                return ERR_STAT.POINT_NO_OVER;
+                return CioDeviceErrorCode.ERR_SYS_PARAM;
             }
         }
 
@@ -190,7 +137,7 @@ namespace NippoControlSystem.Infrastructure.Devices
         //NippoDIO_Echo()：Nippo仕様のIOボードから出力のエコーを得る
         //iPointNo = 0 ～ 256 ポイント番号
         //iStat = OPEN、LOW、HIGH
-        public int NippoDIO_Echo(int iPointNo, out IO_STAT iStat)
+        public int NippoDIO_Echo(int iPointNo, out IO_STATUS iStat)
         {
             int iUnit = -1;
             int iBitNo = -1;
@@ -199,19 +146,19 @@ namespace NippoControlSystem.Infrastructure.Devices
             CioDeviceErrorCode dioErr = CioDeviceErrorCode.ERR_SUCCESS;
             int iOutSwData = 0;
             int iInSwData = 0;
-            ERR_STAT thisStat = ERR_STAT.NO_ERROR;
+            CioDeviceErrorCode thisStat = CioDeviceErrorCode.ERR_SUCCESS;
 
-            iStat = IO_STAT.ERR;
+            iStat = IO_STATUS.ERR;
 
             if (iPointNo >= 0 && iPointNo < MAX_POINT)
             {
                 //実際に出力を行うOutMultiBit(int iUnit, int iBitNo, int[] iData)
-                iUnit = iPointNo2 / m_DO_Pmax; //DOは、各ボード共同じ点数を想定
-                iBitNo = iPointNo2 % m_DO_Pmax;
-                thisStat = ERR_STAT.NO_ERROR;
+                iUnit = iPointNo2 / _settings.DO_Pmax; ; //DOは、各ボード共同じ点数を想定
+                iBitNo = iPointNo2 % _settings.DO_Pmax; ;
+                thisStat = CioDeviceErrorCode.ERR_SUCCESS;
                 //
-                dioErr = dio.EchoBackMultiBit(iUnit, iBitNo, iData);
-                //dioErr2 = dio.EchoBackBit(DO_SW_UNITNO , iPointNo % 32, out iSwData);ボード１枚時の調整用
+                dioErr = _dio.EchoBackMultiBit(iUnit, iBitNo, iData);
+                //dioErr2 = _dioNative.EchoBackBit(DO_SW_UNITNO , iPointNo % 32, out iSwData);ボード１枚時の調整用
                 if (dioErr == CioDeviceErrorCode.ERR_SUCCESS)
                 {
 
@@ -222,20 +169,20 @@ namespace NippoControlSystem.Infrastructure.Devices
                         {
                             if (iData[1] == 0 && iData[2] == 0 && iData[3] == 0)
                             {
-                                iStat = IO_STAT.oHi;
+                                iStat = IO_STATUS.oHi;
                             }
                             //else {
-                            //    iStat = IO_STAT.ERR;
+                            //    iStat = IO_STATUS.ERR;
                             //}
                         }
                         else if (iData[1] == 1)
                         {
                             if (iData[0] == 0 && iData[2] == 0 && iData[3] == 0)
                             {
-                                iStat = IO_STAT.oGN;
+                                iStat = IO_STATUS.oGN;
                             }
                             //else {
-                            //    iStat = IO_STAT.ERR;
+                            //    iStat = IO_STATUS.ERR;
                             //}
                         }
                         else if (iData[3] == 1)     //iHi or iDh
@@ -244,38 +191,38 @@ namespace NippoControlSystem.Infrastructure.Devices
                             {
                                 if (iData[2] == 1)
                                 {
-                                    iStat = IO_STAT.iRD;
+                                    iStat = IO_STATUS.iRD;
                                 }
                                 else
                                 {
-                                    iStat = IO_STAT.iDRD;
+                                    iStat = IO_STATUS.iDRD;
                                 }
                             }
                             //else {
-                            //    iStat = IO_STAT.ERR;
+                            //    iStat = IO_STATUS.ERR;
                             //}
                         }
                         else
                         {
                             if (iData[2] == 0)
                             {
-                                iStat = IO_STAT.oOP;
+                                iStat = IO_STATUS.oOP;
                             }
                             //else {
-                            //    iStat = IO_STAT.ERR;
+                            //    iStat = IO_STATUS.ERR;
                             //}
                         }
                     }
                 }
                 else
                 {
-                    thisStat = ERR_STAT.DIO_ERROR;
+                    thisStat = CioDeviceErrorCode.ERR_SYS_BIT_DATA;
                 }
                 return (int)thisStat;
             }
             else
             {
-                return (int)ERR_STAT.POINT_NO_OVER;
+                return (int)CioDeviceErrorCode.ERR_SYS_PARAM;
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using NippoControlSystem.ApplicationService.Configurations;
-using NippoControlSystem.Infrastructure.Configurations;
+using NippoControlSystem.ApplicationService.Confiigurations;
 using NippoControlSystem.UI.Configurations;
 using System.IO;
 
@@ -9,7 +9,7 @@ namespace NippoControlSystem.UI
     public class ConfigurationLoader
     {
         public UiSettings uiSettings { get; }
-        public AppInfoSettings appInfoSettings { get; }
+        public GeneralSettings appInfoSettings { get; }
         public InspectionSettings inspectionSettings { get; }
         public DioSettings dioSettings { get; }
         public AioSettings aioSettings { get; }
@@ -30,7 +30,7 @@ namespace NippoControlSystem.UI
 
             // セクションから各POCOクラスへバインド
             uiSettings = config.GetSection("Ui").Get<UiSettings>() ?? new UiSettings();
-            appInfoSettings = config.GetSection("AppInfo").Get<AppInfoSettings>() ?? new AppInfoSettings();
+            appInfoSettings = config.GetSection("AppInfo").Get<GeneralSettings>() ?? new GeneralSettings();
             inspectionSettings = config.GetSection("Inspection").Get<InspectionSettings>() ?? new InspectionSettings();
             dioSettings = config.GetSection("Dio").Get<DioSettings>() ?? new DioSettings();
             aioSettings = config.GetSection("Aio").Get<AioSettings>() ?? new AioSettings();

@@ -1,14 +1,21 @@
-﻿using System;
+﻿using NippoControlSystem.ApplicationService.Interfaces;
 using System.IO;
-using System.Windows.Forms;
-using NippoControlSystem.ApplicationService.Interfaces;
 
 namespace NippoControlSystem.ApplicationService.Services
 {
     public class NavigationService(IServiceProvider serviceProvider) : INavigationService
     {
         private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TForm">表示したいダイアログ（フォーム）の型</typeparam>
+        /// <param name="isModal">モーダル（モダールダイアログ）として表示するか、
+        ///   モードレス（通常ウィンドウ）として表示するかを切り替え</param>
+        /// <param name="configureView">ダイアログを表示する直前に、
+        /// 　フォームの設定やデータの受け渡しを行うためのコールバック関数（ラムダ式）</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public DialogResult NavigateTo<TForm>(bool isModal = true, Action<TForm>? configureView = null) where TForm : Form
         {
             if (_serviceProvider.GetService(typeof(TForm)) is TForm form)
@@ -31,7 +38,16 @@ namespace NippoControlSystem.ApplicationService.Services
 
             throw new InvalidOperationException($"Form '{typeof(TForm).Name}' がDIコンテナに登録されていないか、取得できませんでした。");
         }
-
+        /// <summary>
+        /// 　Dialog表示
+        /// </summary>
+        /// <typeparam name="TForm">表示したいダイアログ（フォーム）の型</typeparam>
+        /// <param name="owner">呼び出し元のフォーム（オーナーウィンドウ）を指定
+        /// 　「オーナーを一時的に隠す」制御を行っている、nullの場合は隠す処理をskip</param>
+        /// <param name="configureView">ダイアログを表示する直前に、
+        /// 　フォームの設定やデータの受け渡しを行うためのコールバック関数（ラムダ式）</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public DialogResult NavigateAndHideOwner<TForm>(Form? owner, Action<TForm>? configureView = null) where TForm : Form
         {
             if (_serviceProvider.GetService(typeof(TForm)) is TForm form)
