@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -138,7 +138,7 @@ namespace NippoControlSystem.UI.Views
             {
                 //mc.DataSetTopMenu = (DataSetTopMenu)myDataSetTopMenu.Copy();
                 myDataSetTopMenu.AcceptChanges();
-                string menuCsvPass = Default.ApplicationFloder + Default.MenuFolder + Default.Menucsv;
+                string menuCsvPass = Default.ApplicationFolder + Default.MenuFolder + Default.MenuCsvFileName;
                 mc.saveMenuCsv(myDataSetTopMenu, menuCsvPass);
             }
             System.Diagnostics.Debug.WriteLine("button_SaveClose_Click");
@@ -636,7 +636,7 @@ namespace NippoControlSystem.UI.Views
             //最初に選択するフォルダを指定する
             //RootFolder以下にあるフォルダである必要がある
             //fbd.SelectedPath = @"C:\Windows";
-            //fbd.SelectedPath = Default.ApplicationFloder + Default.DataFloder;
+            //fbd.SelectedPath = Default.ApplicationFolder + Default.DataFloder;
             fbd.SelectedPath = Default.DataFolder;  //2
             //ユーザーが新しいフォルダを作成できるようにする
             //デフォルトでTrue
@@ -675,11 +675,11 @@ namespace NippoControlSystem.UI.Views
             //はじめのファイル名を指定する
             //はじめに「ファイル名」で表示される文字列を指定する
             //ofd.FileName = "default.html";
-            ofd.FileName = Default.Menucsv;
+            ofd.FileName = Default.MenuCsvFileName;
             //はじめに表示されるフォルダを指定する
             //指定しない（空の文字列）の時は、現在のディレクトリが表示される
             //ofd.InitialDirectory = @"C:\";
-            ofd.InitialDirectory = Default.ApplicationFloder + Default.MenuFolder;
+            ofd.InitialDirectory = Default.ApplicationFolder + Default.MenuFolder;
             //[ファイルの種類]に表示される選択肢を指定する
             //指定しないとすべてのファイルが表示される
             ofd.Filter =
@@ -719,9 +719,9 @@ namespace NippoControlSystem.UI.Views
 
             //はじめのファイル名を指定する
             //sfd.FileName = "新しいファイル.html";
-            sfd.FileName = Default.Menucsv;
+            sfd.FileName = Default.MenuCsvFileName;
             //はじめに表示されるフォルダを指定する
-            sfd.InitialDirectory = Default.ApplicationFloder + Default.MenuFolder;
+            sfd.InitialDirectory = Default.ApplicationFolder + Default.MenuFolder;
             //[ファイルの種類]に表示される選択肢を指定する
             sfd.Filter =
                 "hcmファイル(*.hcm;*.csv)|*.hcm;*.csv|すべてのファイル(*.*)|*.*";   //hcm:配線チェッカーメニュー
@@ -833,7 +833,7 @@ namespace NippoControlSystem.UI.Views
             //最初に選択するフォルダを指定する
             //RootFolder以下にあるフォルダである必要がある
             //fbd.SelectedPath = @"C:\Windows";
-            //fbd.SelectedPath = Default.ApplicationFloder + Default.DataFloder;
+            //fbd.SelectedPath = Default.ApplicationFolder + Default.DataFloder;
             fbd.SelectedPath = Default.DataFolder;  //1
             //ユーザーが新しいフォルダを作成できるようにする
             //デフォルトでTrue
@@ -889,53 +889,53 @@ namespace NippoControlSystem.UI.Views
         {
             //新設定ファイルを旧設定ファイルに書き出す。
             string oFulPass = oFolder + System.IO.Path.DirectorySeparatorChar + iMainTitle + System.IO.Path.DirectorySeparatorChar + iSubTitle + System.IO.Path.DirectorySeparatorChar;
-            if (System.IO.File.Exists(oFulPass + Default.Checkdat))
+            if (System.IO.File.Exists(oFulPass + Default.CheckFileName))
             {
-                DialogResult dr = System.Windows.Forms.MessageBox.Show(string.Format("{0}が存在します。上書きしますか？", oFulPass + Default.Checkdat), Default.ApplicationName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                DialogResult dr = System.Windows.Forms.MessageBox.Show(string.Format("{0}が存在します。上書きしますか？", oFulPass + Default.CheckFileName), Default.ApplicationName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
                 if (dr == System.Windows.Forms.DialogResult.Cancel) return "Cancel";
             }
-            if (System.IO.File.Exists(oFulPass + Default.Listdat))
+            if (System.IO.File.Exists(oFulPass + Default.ListFileName))
             {
-                DialogResult dr = System.Windows.Forms.MessageBox.Show(string.Format("{0}が存在します。上書きしますか？", oFulPass + Default.Listdat), Default.ApplicationName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                DialogResult dr = System.Windows.Forms.MessageBox.Show(string.Format("{0}が存在します。上書きしますか？", oFulPass + Default.ListFileName), Default.ApplicationName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
                 if (dr == System.Windows.Forms.DialogResult.Cancel) return "Cancel";
             }
-            if (System.IO.File.Exists(oFulPass + Default.Portdat))
+            if (System.IO.File.Exists(oFulPass + Default.PortFileName))
             {
-                DialogResult dr = System.Windows.Forms.MessageBox.Show(string.Format("{0}が存在します。上書きしますか？", oFulPass + Default.Portdat), Default.ApplicationName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                DialogResult dr = System.Windows.Forms.MessageBox.Show(string.Format("{0}が存在します。上書きしますか？", oFulPass + Default.PortFileName), Default.ApplicationName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
                 if (dr == System.Windows.Forms.DialogResult.Cancel) return "Cancel";
             }
 
-            string CheckdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Checkdat;
-            string ListdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Listdat;
-            string PortdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Portdat;
-            if (!System.IO.File.Exists(CheckdatFile))
+            string CheckFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName;
+            string ListFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.ListFileName;
+            string PortFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.PortFileName;
+            if (!System.IO.File.Exists(CheckFileNameFile))
             {
-                System.Windows.Forms.MessageBox.Show(string.Format("Check.datファイルが見つかりません。({0})", CheckdatFile), Default.ApplicationName);
+                System.Windows.Forms.MessageBox.Show(string.Format("Check.datファイルが見つかりません。({0})", CheckFileNameFile), Default.ApplicationName);
                 return "NoFile - Check.dat";
             }
-            if (!System.IO.File.Exists(ListdatFile))
+            if (!System.IO.File.Exists(ListFileNameFile))
             {
-                System.Windows.Forms.MessageBox.Show(string.Format("List.datファイルが見つかりません。({0})", ListdatFile), Default.ApplicationName);
+                System.Windows.Forms.MessageBox.Show(string.Format("List.datファイルが見つかりません。({0})", ListFileNameFile), Default.ApplicationName);
                 return "NoFile - List.dat";
             }
-            if (!System.IO.File.Exists(PortdatFile))
+            if (!System.IO.File.Exists(PortFileNameFile))
             {
-                System.Windows.Forms.MessageBox.Show(string.Format("Port.datファイルが見つかりません。({0})", PortdatFile), Default.ApplicationName);
+                System.Windows.Forms.MessageBox.Show(string.Format("Port.datファイルが見つかりません。({0})", PortFileNameFile), Default.ApplicationName);
                 return "NoFile - Port.dat";
             }
 
 
-            if (System.IO.File.Exists(oFulPass + Default.Checkdat))
+            if (System.IO.File.Exists(oFulPass + Default.CheckFileName))
             {
-                System.IO.File.Delete(oFulPass + Default.Checkdat);
+                System.IO.File.Delete(oFulPass + Default.CheckFileName);
             }
-            if (System.IO.File.Exists(oFulPass + Default.Listdat))
+            if (System.IO.File.Exists(oFulPass + Default.ListFileName))
             {
-                System.IO.File.Delete(oFulPass + Default.Listdat);
+                System.IO.File.Delete(oFulPass + Default.ListFileName);
             }
-            if (System.IO.File.Exists(oFulPass + Default.Portdat))
+            if (System.IO.File.Exists(oFulPass + Default.PortFileName))
             {
-                System.IO.File.Delete(oFulPass + Default.Portdat);
+                System.IO.File.Delete(oFulPass + Default.PortFileName);
             }
 
             //Folderを作成 Home
@@ -965,30 +965,30 @@ namespace NippoControlSystem.UI.Views
             //?iFolder="C:\\Users\\Nippo_Shibukawa\\Documents\\Application Floder\\Checker\\329-00620\\T"
             //?oFolder="C:\\Users\\Nippo_Shibukawa\\Documents\\Application Floder\\OldVer"
             string oFulPass = oFolder + System.IO.Path.DirectorySeparatorChar + iMainTitle + System.IO.Path.DirectorySeparatorChar + iSubTitle + System.IO.Path.DirectorySeparatorChar;
-            string CheckdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Checkdat;
-            string ListdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Listdat;
-            string PortdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Portdat;
+            string CheckFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName;
+            string ListFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.ListFileName;
+            string PortFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.PortFileName;
 
             errmsg = folderCheck(iMainTitle, iSubTitle, iFolder, oFolder);
             if (errmsg == "")
             {
-                //Checkdatはそのままコピー
+                //CheckFileNameはそのままコピー
                 //第3項にTrueを指定すると、コピー先が存在している時、上書きする
                 //上書きするファイルが読み取り専用などで上書きできない場合は、
                 //  UnauthorizedAccessExceptionが発生
-                //System.IO.File.Copy(CheckdatFile, oFulPass + Default.Checkdat, true);
-                errmsg = mc.convToOldVerCheckdat(CheckdatFile, oFulPass + Default.Checkdat);
-                System.IO.File.Move(oFulPass + Default.Checkdat + mc.Part, oFulPass + Default.Checkdat);    //.partを取る
+                //System.IO.File.Copy(CheckFileNameFile, oFulPass + Default.CheckFileName, true);
+                errmsg = mc.convToOldVerCheckFileName(CheckFileNameFile, oFulPass + Default.CheckFileName);
+                System.IO.File.Move(oFulPass + Default.CheckFileName + mc.Part, oFulPass + Default.CheckFileName);    //.partを取る
                 if (errmsg == "")
                 {
-                    //Portdatはそのままコピー
+                    //PortFileNameはそのままコピー
                     //第3項にTrueを指定すると、コピー先が存在している時、上書きする
                     //上書きするファイルが読み取り専用などで上書きできない場合は、
                     //  UnauthorizedAccessExceptionが発生
-                    System.IO.File.Copy(PortdatFile, oFulPass + Default.Portdat, true);
+                    System.IO.File.Copy(PortFileNameFile, oFulPass + Default.PortFileName, true);
 
-                    errmsg = mc.convToOldVerListdat(ListdatFile, oFulPass + Default.Listdat);
-                    System.IO.File.Move(oFulPass + Default.Listdat + mc.Part, oFulPass + Default.Listdat);
+                    errmsg = mc.convToOldVerListFileName(ListFileNameFile, oFulPass + Default.ListFileName);
+                    System.IO.File.Move(oFulPass + Default.ListFileName + mc.Part, oFulPass + Default.ListFileName);
                 }
             }
             if (errmsg == "")
@@ -1038,24 +1038,24 @@ namespace NippoControlSystem.UI.Views
                 iSubTitle = dataGridView_Edaban.CurrentRow.Cells["ColumnSubTitle"].Value.ToString();
                 iFolder = dataGridView_Edaban.CurrentRow.Cells["ColumnFolder"].Value.ToString();
 
-                string CheckdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Checkdat;
-                string ListdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Listdat;
-                string PortdatFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.Portdat;
+                string CheckFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName;
+                string ListFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.ListFileName;
+                string PortFileNameFile = iFolder + System.IO.Path.DirectorySeparatorChar + Default.PortFileName;
 
-                if (!System.IO.File.Exists(ListdatFile))
+                if (!System.IO.File.Exists(ListFileNameFile))
                 {
-                    System.Windows.Forms.MessageBox.Show(string.Format("List.datファイルが見つかりません。({0})", ListdatFile), Default.ApplicationName);
+                    System.Windows.Forms.MessageBox.Show(string.Format("List.datファイルが見つかりません。({0})", ListFileNameFile), Default.ApplicationName);
                     return;
                 }
 
 
                 if (iTem.Equals(mnuFile.DropDownItems[2]))
                 {
-                    returnStat = mc.executeiDhiDb(ListdatFile);
+                    returnStat = mc.executeiDhiDb(ListFileNameFile);
                 }
                 else if (iTem.Equals(mnuFile.DropDownItems[3]))
                 {
-                    returnStat = mc.executeiDbiDh(ListdatFile);
+                    returnStat = mc.executeiDbiDh(ListFileNameFile);
                 }
                 if (returnStat == true)
                 {

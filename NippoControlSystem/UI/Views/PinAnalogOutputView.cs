@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.UI.Views;
 using System;
 using System.Collections.Generic;
@@ -80,9 +80,9 @@ namespace NippoControlSystem.UI.Views
             this.label_NoticeVolt.Text = string.Format("出力電圧({0}～{1}V)", Default.AoVoltMin, Default.AoVoltMax);
             //comboBoxの定義
             comboBox_PinAO.Items.Clear();
-            for (int i = 0; i < Default.AoSwichGuide.Length; i++)
+            for (int i = 0; i < Default.AoSwitchGuide.Length; i++)
             {
-                comboBox_PinAO.Items.Add(Default.AoSwichGuide[i]);
+                comboBox_PinAO.Items.Add(Default.AoSwitchGuide[i]);
             }
 
             //ここは毎回実行
@@ -92,15 +92,15 @@ namespace NippoControlSystem.UI.Views
             Update_PinAO();
             //this.comboBox_PinIO.SelectionStart = 0;
             //this.comboBox_PinIO.SelectionLength = 0;
-            //this.comboBox_PinAO.SelectedIndex = (this.textBox_PinAO.Text == Default.AoSwichStat[0] ? 0 : 1);
+            //this.comboBox_PinAO.SelectedIndex = (this.textBox_PinAO.Text == Default.AoSwitchStatus[0] ? 0 : 1);
         }
 
         private void Update_PinAO()
         {
             int SelectedIndex = 0;
-            for (int i = 0; i < Default.AoSwichStat.Length; i++)
+            for (int i = 0; i < Default.AoSwitchStatus.Length; i++)
             {
-                if (this.m_AoSw == Default.AoSwichStat[i])
+                if (this.m_AoSw == Default.AoSwitchStatus[i])
                 {
                     SelectedIndex = i;
                 }
@@ -145,7 +145,7 @@ namespace NippoControlSystem.UI.Views
 
         private void comboBox_PinAO_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //this.textBox_PinAO.Text = Default.AoSwichStat[this.comboBox_PinAO.SelectedIndex];
+            //this.textBox_PinAO.Text = Default.AoSwitchStatus[this.comboBox_PinAO.SelectedIndex];
             //this.textBox_PinAO.Focus(); //Focusをしないと、DataSetが更新されない
             //this.comboBox_PinAO.Focus();
         }
@@ -181,7 +181,7 @@ namespace NippoControlSystem.UI.Views
             }
             else
             {
-                this.m_AoSw = Default.AoSwichStat[this.comboBox_PinAO.SelectedIndex];
+                this.m_AoSw = Default.AoSwitchStatus[this.comboBox_PinAO.SelectedIndex];
             }
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;

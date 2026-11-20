@@ -36,7 +36,7 @@
             this.listBox_SubNo = new System.Windows.Forms.ListBox();
             this.menuSubBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuMainBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.DataSetTopMenu = new NippoControlSystem.DataSetTopMenu();
+            //this.DataSetTopMenu = new NippoControlSystem.DataSetTopMenu();
             this.listBox_MainNo = new System.Windows.Forms.ListBox();
             this.button_frmSetting = new System.Windows.Forms.Button();
             this.button_Exit = new System.Windows.Forms.Button();
@@ -50,10 +50,10 @@
             this.lblMainNo = new System.Windows.Forms.Label();
             this.timerInitalUpdate = new System.Windows.Forms.Timer(this.components);
             this.button_AnalogMonitor = new System.Windows.Forms.Button();
-            this.buttonHistory = new System.Windows.Forms.Button();
+            this.button_History = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.menuSubBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuMainBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DataSetTopMenu)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.DataSetTopMenu)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_Filter
@@ -84,7 +84,7 @@
             this.button_ViewManual.TabIndex = 20;
             this.button_ViewManual.Text = "操作マニュアル(&M)";
             this.button_ViewManual.UseVisualStyleBackColor = false;
-            this.button_ViewManual.Click += new System.EventHandler(this.button_ViewManual_Click);
+            this.button_ViewManual.Click += new System.EventHandler(this.OpenManual_Click);
             // 
             // listBox_SubNo
             // 
@@ -102,6 +102,7 @@
             this.listBox_SubNo.TabIndex = 15;
             this.ToolTip1.SetToolTip(this.listBox_SubNo, "選択してください。");
             this.listBox_SubNo.ValueMember = "SubID";
+            this.listBox_SubNo.SelectedIndexChanged += new System.EventHandler(this.listBox_SubNo_SelectedIndexChanged);
             this.listBox_SubNo.DoubleClick += new System.EventHandler(this.ExecuteInspection_OnSubNoDoubleClick);
             // 
             // menuSubBindingSource
@@ -112,12 +113,12 @@
             // menuMainBindingSource
             // 
             this.menuMainBindingSource.DataMember = "menuMain";
-            this.menuMainBindingSource.DataSource = this.DataSetTopMenu;
+            //this.menuMainBindingSource.DataSource = this.DataSetTopMenu;
             // 
             // DataSetTopMenu
             // 
-            this.DataSetTopMenu.DataSetName = "DataSetTopMenu";
-            this.DataSetTopMenu.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            //this.DataSetTopMenu.DataSetName = "DataSetTopMenu";
+            //this.DataSetTopMenu.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // listBox_MainNo
             // 
@@ -135,7 +136,7 @@
             this.listBox_MainNo.TabIndex = 14;
             this.ToolTip1.SetToolTip(this.listBox_MainNo, "選択してください。");
             this.listBox_MainNo.ValueMember = "MainID";
-            this.listBox_MainNo.SelectedIndexChanged += new System.EventHandler(this.SyncMainNoSelection_SelectedIndexChanged);
+            this.listBox_MainNo.SelectedIndexChanged += new System.EventHandler(this.listBox_MainNo_SelectedIndexChanged);
             // 
             // button_frmSetting
             // 
@@ -293,20 +294,20 @@
             this.button_AnalogMonitor.Visible = false;
             this.button_AnalogMonitor.Click += new System.EventHandler(this.LaunchAnalogAioMonitor_Click);
             // 
-            // buttonHistory
+            // button_History
             // 
-            this.buttonHistory.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonHistory.Cursor = System.Windows.Forms.Cursors.Default;
-            this.buttonHistory.Font = new System.Drawing.Font("ＭＳ Ｐゴシック", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.buttonHistory.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonHistory.Location = new System.Drawing.Point(463, 159);
-            this.buttonHistory.Name = "buttonHistory";
-            this.buttonHistory.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.buttonHistory.Size = new System.Drawing.Size(169, 65);
-            this.buttonHistory.TabIndex = 29;
-            this.buttonHistory.Text = "検査履歴(&D)";
-            this.buttonHistory.UseVisualStyleBackColor = false;
-            this.buttonHistory.Click += new System.EventHandler(this.OpenHistory_Click);
+            this.button_History.BackColor = System.Drawing.SystemColors.Control;
+            this.button_History.Cursor = System.Windows.Forms.Cursors.Default;
+            this.button_History.Font = new System.Drawing.Font("ＭＳ Ｐゴシック", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.button_History.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_History.Location = new System.Drawing.Point(463, 159);
+            this.button_History.Name = "button_History";
+            this.button_History.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.button_History.Size = new System.Drawing.Size(169, 65);
+            this.button_History.TabIndex = 29;
+            this.button_History.Text = "検査履歴(&D)";
+            this.button_History.UseVisualStyleBackColor = false;
+            this.button_History.Click += new System.EventHandler(this.OpenHistory_Click);
             // 
             // frmOpenning
             // 
@@ -315,7 +316,7 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(662, 587);
             this.ControlBox = false;
-            this.Controls.Add(this.buttonHistory);
+            this.Controls.Add(this.button_History);
             this.Controls.Add(this.button_AnalogMonitor);
             this.Controls.Add(this.textBox_Filter);
             this.Controls.Add(this.button_ViewManual);
@@ -343,7 +344,7 @@
             this.Load += new System.EventHandler(this.Initialize_Load);
             ((System.ComponentModel.ISupportInitialize)(this.menuSubBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuMainBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DataSetTopMenu)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.DataSetTopMenu)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -366,10 +367,10 @@
         public System.Windows.Forms.Label Label3;
         public System.Windows.Forms.Label lblSubNo;
         public System.Windows.Forms.Label lblMainNo;
-        private DataSetTopMenu DataSetTopMenu;
+        //private DataSetTopMenu DataSetTopMenu;
         private System.Windows.Forms.Timer timerInitalUpdate;
         public System.Windows.Forms.Button button_AnalogMonitor;
-        public System.Windows.Forms.Button buttonHistory;
+        public System.Windows.Forms.Button button_History;
         private System.Windows.Forms.BindingSource menuSubBindingSource;
         private System.Windows.Forms.BindingSource menuMainBindingSource;
     }

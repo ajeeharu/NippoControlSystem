@@ -12,7 +12,7 @@ namespace NippoControlSystem.UI.Views
     class Views
     {
         // 現在のフォームを引数として渡して新しいフォームを開く
-        MainView m_frmMain = null;
+        InspectionViewOriginal m_frmMain = null;
         DataInputView m_frmDataInput = null;
         DebugView m_frmDebug = null;
         DebugNoView m_frmDebugNo = null;
@@ -61,7 +61,7 @@ namespace NippoControlSystem.UI.Views
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         //プロパティ fmMain
-        public MainView fmMain
+        public InspectionViewOriginal fmMain
         {
             get { return m_frmMain; }
             set { m_frmMain = value; }

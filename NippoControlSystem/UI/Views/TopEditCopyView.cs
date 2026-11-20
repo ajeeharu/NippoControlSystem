@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using System;
 using System.Collections.Generic;
@@ -172,22 +172,22 @@ namespace NippoControlSystem.UI.Views
             //DataTable dtSubMain = myDataSetTopMenu.menuSub;
             //コピーを実施、元ファイルがあること、先ファイルがあるときは、確認する
             //検査ファイル(list.dat)
-            if (System.IO.File.Exists(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Listdat))
+            if (System.IO.File.Exists(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.ListFileName))
             {
-                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Listdat))
+                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.ListFileName))
                 {
                     DialogResult dr = System.Windows.Forms.MessageBox.Show("検査ファイルが既にあります。\n\n上書きしますか？", Default.ApplicationName, MessageBoxButtons.YesNo);
                     if (dr == System.Windows.Forms.DialogResult.Yes)
                     {
                         //上書きは、既にファイルを削除してから、コピーする
-                        System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Listdat);
-                        System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Listdat, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Listdat);
+                        System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.ListFileName);
+                        System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.ListFileName, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.ListFileName);
                     }
                 }
                 else
                 {
                     //複製元にあり、コピー先にないときは、普通にコピーする
-                    System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Listdat, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Listdat);
+                    System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.ListFileName, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.ListFileName);
                 }
             }
             else
@@ -195,55 +195,55 @@ namespace NippoControlSystem.UI.Views
                 System.Windows.Forms.MessageBox.Show(string.Format("複製元の検査ファイルが見つかりません。\n\nコピーできませんでした。"), Default.ApplicationName);
             }
 
-            //設定ファイル(Checkdat.dat)
-            if (System.IO.File.Exists(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Checkdat))
+            //設定ファイル(CheckFileName.dat)
+            if (System.IO.File.Exists(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName))
             {
-                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Checkdat))
+                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName))
                 {
                     DialogResult dr = System.Windows.Forms.MessageBox.Show("設定ファイルが既にあります。\n\n上書きしますか？", Default.ApplicationName, MessageBoxButtons.YesNo);
                     if (dr == System.Windows.Forms.DialogResult.Yes)
                     {
                         //上書きは、既にファイルを削除してから、コピーする
-                        System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Checkdat);
-                        System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Checkdat, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Checkdat);
+                        System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName);
+                        System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName);
                     }
                 }
                 else
                 {
                     //複製元にあり、コピー先にないときは、普通にコピーする
-                    System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Checkdat, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Checkdat);
+                    System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName);
                 }
             }
             else
             {
-                //設定ファイル(Checkdat.dat)がないときは、新規に作成する
+                //設定ファイル(CheckFileName.dat)がないときは、新規に作成する
                 //既にあれば、まず削除する
-                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Checkdat))
+                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName))
                 {
-                    System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Checkdat);
+                    System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName);
                 }
                 //新規に作成する
-                mc.newCheckdatFile(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Checkdat, "未設定", textBox_Zuban_Copyed.Text, textBox_Edaban_Copyed.Text, "");
+                mc.newCheckFileNameFile(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName, "未設定", textBox_Zuban_Copyed.Text, textBox_Edaban_Copyed.Text, "");
                 //メッセージを表示
                 System.Windows.Forms.MessageBox.Show(string.Format("複製元の設定ファイルが見つかりません。\n\n新規に作成しました。"), Default.ApplicationName);
             }
 
             //ポート名ファイル(port.dat)
-            if (System.IO.File.Exists(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Portdat))
+            if (System.IO.File.Exists(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.PortFileName))
             {
-                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Portdat))
+                if (System.IO.File.Exists(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.PortFileName))
                 {
                     DialogResult dr = System.Windows.Forms.MessageBox.Show("ポート名ファイルが既にあります。\n\n上書きしますか？", Default.ApplicationName, MessageBoxButtons.YesNo);
                     if (dr == System.Windows.Forms.DialogResult.Yes)
                     {
-                        System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Portdat);
-                        System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Portdat, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Portdat);
+                        System.IO.File.Delete(Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.PortFileName);
+                        System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.PortFileName, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.PortFileName);
                     }
                 }
                 else
                 {
                     //複製元にあり、コピー先にないときは、普通にコピーする
-                    System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.Portdat, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.Portdat);
+                    System.IO.File.Copy(Folder_Parent + System.IO.Path.DirectorySeparatorChar + Default.PortFileName, Folder_Copyed + System.IO.Path.DirectorySeparatorChar + Default.PortFileName);
                 }
             }
             else

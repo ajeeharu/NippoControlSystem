@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.UI.Views;
 using System;
 using System.Collections.Generic;

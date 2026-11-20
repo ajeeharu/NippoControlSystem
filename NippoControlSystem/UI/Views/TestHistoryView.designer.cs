@@ -938,8 +938,8 @@
             this.Name = "frmHistView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "配線チェッカー（検査履歴）";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InspectionMainFormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.InspectionMainFormClosed);
             this.Load += new System.EventHandler(this.frmHistView_Load);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceCheckDat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataSetItems)).EndInit();

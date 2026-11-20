@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using System;
 using System.Collections.Generic;
@@ -89,7 +89,7 @@ namespace NippoControlSystem.UI.Views
             //DataSet
             DataTable dtCheckDat = myDataSetItems.CheckDat;
 
-            //Checkdat
+            //CheckFileName
             this.bindingSourceCheckDat.DataSource = myDataSetItems;
             //this.bindingSource1.DataMember = "CheckDat";
             int itemFound = this.bindingSourceCheckDat.Find("Title", myDataSetItems.CheckDat.Rows[0]["Title"]);
@@ -113,13 +113,13 @@ namespace NippoControlSystem.UI.Views
             }
 
             //Color 20180830
-            this.label_iDo電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDo - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDh電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDh - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDb電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDb - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDc電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDc - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDs電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDp電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDp - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iTo電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDo電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDo - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iDh電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDh - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iDb電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDb - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iDc電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDc - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iDs電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDs - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iDp電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDp - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iTo電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
 
             this.dataSetItemsBindingSource.DataSource = myDataSetItems;
 
@@ -173,16 +173,16 @@ namespace NippoControlSystem.UI.Views
             myDataSetItems.CheckDat.Rows[0]["Volt"] = newVolt;
             DataRow dtCheckDatRow = myDataSetItems.CheckDat.Rows[itemFound];
 
-            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.iOP + 1;
             //12V 24V
             int mVoltIdx = (newVolt == "1" ? 2 : 0); //0:12V 2:24V
 
             string dtCheckDatFields = null;
             for (int i = 0; i < iDo_Length; i++)
             {
-                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
+                dtCheckDatFields = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx][i].ToString("F1");    //iOP-HiLMT～iTo-HiLMT
-                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
+                dtCheckDatFields = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");    //iOP-LoLMT～iTo-LoLMT
             }
         }

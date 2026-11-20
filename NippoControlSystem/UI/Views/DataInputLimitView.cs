@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.UI.Controls;
 using System.ComponentModel;
@@ -114,7 +114,7 @@ namespace NippoControlSystem.UI.Views
             //dataGridView_GND[6] = this.dataGridView_GndDG;
             //dataGridView_GND[7] = this.dataGridView_GndDH;
 
-            //Checkdat
+            //CheckFileName
             this.bindingSourceCheckDat.DataSource = myDataSetItems;
 
             //DataSourceを定義する
@@ -180,9 +180,9 @@ namespace NippoControlSystem.UI.Views
             }
 
             //Color
-            this.label_iDb電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDb - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDc電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDc - (int)NippoDIO.IO_STAT.oOP].ForeColor;
-            this.label_iDs電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.oOP].ForeColor;
+            this.label_iDb電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDb - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iDc電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDc - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
+            this.label_iDs電流下限値.ForeColor = Default.CellStyles[(int)NippoDIO.IO_STATUS.iDs - (int)NippoDIO.IO_STATUS.oOP].ForeColor;
 
             //this.Refresh();
             this.TimerReadSw.Enabled = true;
@@ -237,7 +237,7 @@ namespace NippoControlSystem.UI.Views
             ////dtView_AO
             //{
             //    DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-            //    for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwichNum); j++)    //32loop
+            //    for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwitchNum); j++)    //32loop
             //    {
             //        int ii = j + 1;
             //        string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);
@@ -312,41 +312,41 @@ namespace NippoControlSystem.UI.Views
                 textBox_iDs電流上限値.Text = dtListDatRow["iDs-HiLMT"].ToString();
             }
 
-            string[] CheckDatLMTLo = new string[(int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1];
-            string[] CheckDatLMTHi = new string[(int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1];
+            string[] CheckDatLMTLo = new string[(int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.iOP + 1];
+            string[] CheckDatLMTHi = new string[(int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.iOP + 1];
             string CheckDatiDsLo = "";
             string CheckDatiDsHi = "";
             //LMT
-            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.iOP + 1;
             string dtCheckDatFields;
             for (int i = 0; i < iDo_Length; i++)
             {
-                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
+                dtCheckDatFields = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
                 CheckDatLMTHi[i] = (myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString());    //iOP-HiLMT～iTo-HiLMT
-                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
+                dtCheckDatFields = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
                 CheckDatLMTLo[i] = (myDataSetItems.CheckDat.Rows[0][dtCheckDatFields].ToString());    //iOP-LoLMT～iTo-LoLMT
-                if (i == ((int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP))
+                if (i == ((int)NippoDIO.IO_STATUS.iDs - (int)NippoDIO.IO_STATUS.iOP))
                 {
                     CheckDatiDsHi = CheckDatLMTHi[i];   //各Step毎のiDs-HiLMT、iDs-LoLMTが空欄に備えて、初期値を保存しておく
                     CheckDatiDsLo = CheckDatLMTLo[i];
                 }
             }
-            //iDs ステップ毎の上下限値を設定,Nullの時は、Checkdatの初期値を設定
+            //iDs ステップ毎の上下限値を設定,Nullの時は、CheckFileNameの初期値を設定
             if (string.IsNullOrEmpty(dtListDatRow["iDs-LoLMT"].ToString()))
             {
-                CheckDatLMTLo[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = CheckDatiDsLo;
+                CheckDatLMTLo[(int)NippoDIO.IO_STATUS.iDs - (int)NippoDIO.IO_STATUS.iOP] = CheckDatiDsLo;
             }
             else
             {
-                CheckDatLMTLo[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = (dtListDatRow["iDs-LoLMT"].ToString());  //iDs-LoLMT
+                CheckDatLMTLo[(int)NippoDIO.IO_STATUS.iDs - (int)NippoDIO.IO_STATUS.iOP] = (dtListDatRow["iDs-LoLMT"].ToString());  //iDs-LoLMT
             }
             if (string.IsNullOrEmpty(dtListDatRow["iDs-HiLMT"].ToString()))
             {
-                CheckDatLMTHi[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = CheckDatiDsHi;
+                CheckDatLMTHi[(int)NippoDIO.IO_STATUS.iDs - (int)NippoDIO.IO_STATUS.iOP] = CheckDatiDsHi;
             }
             else
             {
-                CheckDatLMTHi[(int)NippoDIO.IO_STAT.iDs - (int)NippoDIO.IO_STAT.iOP] = (dtListDatRow["iDs-HiLMT"].ToString());  //iDs-HiLMT
+                CheckDatLMTHi[(int)NippoDIO.IO_STATUS.iDs - (int)NippoDIO.IO_STATUS.iOP] = (dtListDatRow["iDs-HiLMT"].ToString());  //iDs-HiLMT
             }
 
             for (int i = 0; i < Default.DioNames.Length; i++)     // { "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH" }
@@ -363,42 +363,42 @@ namespace NippoControlSystem.UI.Views
                         string LmtL = ""; ;
 
                         dtView_DIOLMT.Rows[j]["MeasValue"] = DoStat;
-                        NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStat]; //現在の設定
+                        NippoDIO.IO_STATUS statCurr = (NippoDIO.IO_STATUS)mc.dicDioStatus[DoStat]; //現在の設定
                         switch (statCurr)
                         {
-                            case NippoDIO.IO_STAT.iOP:
-                            case NippoDIO.IO_STAT.iGN:
-                            case NippoDIO.IO_STAT.iHi:
-                            case NippoDIO.IO_STAT.iDo:
-                            case NippoDIO.IO_STAT.iDh:
-                            case NippoDIO.IO_STAT.iDb:
-                            case NippoDIO.IO_STAT.iDc:
-                            case NippoDIO.IO_STAT.iDs:
-                            case NippoDIO.IO_STAT.iTo:
-                                LmtH = CheckDatLMTHi[(int)statCurr - (int)NippoDIO.IO_STAT.iOP];
-                                LmtL = CheckDatLMTLo[(int)statCurr - (int)NippoDIO.IO_STAT.iOP];
+                            case NippoDIO.IO_STATUS.iOP:
+                            case NippoDIO.IO_STATUS.iGN:
+                            case NippoDIO.IO_STATUS.iHi:
+                            case NippoDIO.IO_STATUS.iDo:
+                            case NippoDIO.IO_STATUS.iDh:
+                            case NippoDIO.IO_STATUS.iDb:
+                            case NippoDIO.IO_STATUS.iDc:
+                            case NippoDIO.IO_STATUS.iDs:
+                            case NippoDIO.IO_STATUS.iTo:
+                                LmtH = CheckDatLMTHi[(int)statCurr - (int)NippoDIO.IO_STATUS.iOP];
+                                LmtL = CheckDatLMTLo[(int)statCurr - (int)NippoDIO.IO_STATUS.iOP];
                                 break;
 
-                            case NippoDIO.IO_STAT.nHi:
-                            case NippoDIO.IO_STAT.nOP:
-                            case NippoDIO.IO_STAT.nGN:
-                            case NippoDIO.IO_STAT.nDo:
-                            case NippoDIO.IO_STAT.nDh:
-                            case NippoDIO.IO_STAT.nDb:
-                            case NippoDIO.IO_STAT.nDc:
-                            case NippoDIO.IO_STAT.nDs:
-                            case NippoDIO.IO_STAT.nTo:
-                                LmtH = CheckDatLMTHi[(int)statCurr - (int)NippoDIO.IO_STAT.nOP];
-                                LmtL = CheckDatLMTLo[(int)statCurr - (int)NippoDIO.IO_STAT.nOP];
+                            case NippoDIO.IO_STATUS.nHi:
+                            case NippoDIO.IO_STATUS.nOP:
+                            case NippoDIO.IO_STATUS.nGN:
+                            case NippoDIO.IO_STATUS.nDo:
+                            case NippoDIO.IO_STATUS.nDh:
+                            case NippoDIO.IO_STATUS.nDb:
+                            case NippoDIO.IO_STATUS.nDc:
+                            case NippoDIO.IO_STATUS.nDs:
+                            case NippoDIO.IO_STATUS.nTo:
+                                LmtH = CheckDatLMTHi[(int)statCurr - (int)NippoDIO.IO_STATUS.nOP];
+                                LmtL = CheckDatLMTLo[(int)statCurr - (int)NippoDIO.IO_STATUS.nOP];
                                 break;
 
-                            case NippoDIO.IO_STAT.iDp:
-                            case NippoDIO.IO_STAT.nDp:
+                            case NippoDIO.IO_STATUS.iDp:
+                            case NippoDIO.IO_STATUS.nDp:
                                 LmtH = (dtListDatRow[iFeildName + "H"].ToString());  //iOP-HiLMT
                                 LmtL = (dtListDatRow[iFeildName + "L"].ToString());  //iOP-LoLMT
                                 break;
 
-                            case NippoDIO.IO_STAT.dat:
+                            case NippoDIO.IO_STATUS.dat:
                                 LmtH = "";
                                 LmtL = "";
                                 break;
@@ -476,7 +476,7 @@ namespace NippoControlSystem.UI.Views
             {
                 if (e.Value == null) return;    //20180731
                 string Value = e.Value.ToString();
-                DoStat = getDioStat(dataGridView1, e.RowIndex);
+                DoStat = getDioStatus(dataGridView1, e.RowIndex);
                 string[] DoStatSplit = DoStat.Split(':');
                 DoStat = (DoStatSplit.Length >= 1) ? DoStatSplit[0] : "";
                 if (Value.Length > 0)
@@ -532,14 +532,14 @@ namespace NippoControlSystem.UI.Views
                     //    dataGridView1[e.ColumnIndex, e.RowIndex].Style.Font = fontRegularlstyle;
                     //}
                     string DoStatLocal = Value;
-                    if (mc.dicDioStat.ContainsKey(DoStatLocal))
+                    if (mc.dicDioStatus.ContainsKey(DoStatLocal))
                     {
-                        NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStatLocal]; //現在の設定
+                        NippoDIO.IO_STATUS statCurr = (NippoDIO.IO_STATUS)mc.dicDioStatus[DoStatLocal]; //現在の設定
 
-                        int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STAT.oOP;
-                        if (CellStylesIdx >= (int)NippoDIO.IO_STAT.nOP)
+                        int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STATUS.oOP;
+                        if (CellStylesIdx >= (int)NippoDIO.IO_STATUS.nOP)
                         {
-                            CellStylesIdx -= ((int)NippoDIO.IO_STAT.nOP - 3);
+                            CellStylesIdx -= ((int)NippoDIO.IO_STATUS.nOP - 3);
                         }
                         //if (Default.CellStyles[CellStylesIdx].ForeColor != Color.Black)
                         //{
@@ -578,7 +578,7 @@ namespace NippoControlSystem.UI.Views
         }
 
 
-        private string getDioStat(DataGridView dataGridView1, int RowIndex)
+        private string getDioStatus(DataGridView dataGridView1, int RowIndex)
         {
             string iFeildName;
             string DoStat = "";

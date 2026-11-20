@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Data;
-using System.ComponentModel;
-
-#pragma warning disable
+﻿#pragma warning disable
 #nullable disable // C# 8.0以降のNull許容警告も消す場合
 
 namespace NippoControlSystem.UI.Views
 {
-    public partial class MainView : Form
+    public partial class InspectionMainView : Form
     {
-        //　------　MVVMパターン用にリファクタリングしたコード　------
-
-        //　------　MVVM化のためにリファクタリングする前のコード　------
 
         private System.Media.SoundPlayer player = null;
 
@@ -25,7 +13,7 @@ namespace NippoControlSystem.UI.Views
         {
             if (Default.PlaySoundEnable[0] == 'Y')
             {
-                PlaySound(Default.ApplicationFloder + Default.okWavlPath);
+                PlaySound(Default.ApplicationFolder + Default.okWavlPath);
             }
         }
 
@@ -34,7 +22,7 @@ namespace NippoControlSystem.UI.Views
         {
             if (Default.PlaySoundEnable[0] == 'Y')
             {
-                PlaySound(Default.ApplicationFloder + Default.ngWavlPath);
+                PlaySound(Default.ApplicationFolder + Default.ngWavlPath);
             }
         }
 
@@ -44,14 +32,14 @@ namespace NippoControlSystem.UI.Views
             if (Default.PlaySoundEnable[0] == 'Y')
             {
 
-                string wavPath = Default.ApplicationFloder + Default.SettingsHolder + WavFileName;
+                string wavPath = Default.ApplicationFolder + Default.SettingsFolder + WavFileName;
                 if (WavFileName != null && System.IO.File.Exists(wavPath))
                 {
                     PlaySound(wavPath);
                 }
                 else
                 {
-                    PlaySound(Default.ApplicationFloder + Default.pauseWavPath);
+                    PlaySound(Default.ApplicationFolder + Default.pauseWavPath);
                 }
             }
         }
@@ -61,7 +49,7 @@ namespace NippoControlSystem.UI.Views
         {
             if (Default.PlaySoundEnable[0] == 'Y')
             {
-                PlaySound(Default.ApplicationFloder + Default.pauseWavPath);
+                PlaySound(Default.ApplicationFolder + Default.pauseWavPath);
             }
         }
 

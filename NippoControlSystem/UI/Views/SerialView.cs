@@ -1,4 +1,5 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Domain.Utilities;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.Infrastructure.Persistence;
 using NippoControlSystem.UI.Controls;
@@ -87,10 +88,10 @@ namespace NippoControlSystem.UI.Views
             Console.WriteLine(System.Configuration.ConfigurationManager.AppSettings["loc_frmSerial"]);
             Views.DesktopLocation((Form)this, System.Configuration.ConfigurationManager.AppSettings["loc_frmSerial"]);
 
-            //this.Text = string.Format("{0} と {1} の入力", Default.SerialTitle, Default.GokiTitle);
-            this.Text = string.Format("検査結果保存", Default.SerialTitle, Default.GokiTitle);
+            //this.Text = string.Format("{0} と {1} の入力", Default.SerialTitle, Default.MachineNumber);
+            this.Text = string.Format("検査結果保存", Default.SerialTitle, Default.MachineNumber);
             this.lblSerialTitle.Text = string.Format("{0}を入力して下さい。", Default.SerialTitle); //製造番号
-            this.lblGoTitle.Text = string.Format("{0}を入力して下さい。", Default.GokiTitle); //号機
+            this.lblGoTitle.Text = string.Format("{0}を入力して下さい。", Default.MachineNumber); //号機
 
             this.textBox_Serial.Text = mc.SerialNo; //製造番号
             this.textBox_Serial.SelectionStart = 0;
@@ -110,14 +111,14 @@ namespace NippoControlSystem.UI.Views
             }
             if (string.IsNullOrEmpty(this.textBox_GoNo.Text))
             {
-                System.Windows.Forms.MessageBox.Show(string.Format("{0}を入力して下さい。", Default.GokiTitle), Default.ApplicationName);
+                System.Windows.Forms.MessageBox.Show(string.Format("{0}を入力して下さい。", Default.MachineNumber), Default.ApplicationName);
                 return;
             }
             mc.SerialNo = this.textBox_Serial.Text;
             mc.GoNo = this.textBox_GoNo.Text;
 
             Bitmap bm = screen.CaptureControl(mForms.fmMain);
-            string resultBitMapPass = string.Format("{0}A{1:yyyyMMdd_HHmmss}.bmp", this.Folder + System.IO.Path.DirectorySeparatorChar, mc.TestEndDT);
+            string resultBitMapPass = string.Format("{0}A{1:yyyyMMdd_HHmmss}.bmp", this.Folder + System.IO.Path.DirectorySeparatorChar, mc.TestEndDateTime);
             bm.Save(resultBitMapPass);
 
             saveResults();

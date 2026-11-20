@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.UI.Controls;
 using System.ComponentModel;
@@ -104,7 +104,7 @@ namespace NippoControlSystem.UI.Views
             this.lblSubNo.Text = Default.SubNo;     //"追番";
             this.lblItem.Text = Default.Item;  //品名
             this.lblSerialTitle.Text = Default.SerialTitle; //製造番号
-            this.lblGoTitle.Text = Default.GokiTitle; //号機
+            this.lblGoTitle.Text = Default.MachineNumber; //号機
             //pictureBoxMeter
             pictureBoxMeter = new PictureBox[8];
             pictureBoxMeter[0] = this.pictureBox1;
@@ -179,30 +179,30 @@ namespace NippoControlSystem.UI.Views
             {
             }
             //string Folder = Default.DataFolder + Default.HistViewFolder + System.IO.Path.DirectorySeparatorChar;    //3
-            string Folder = Default.ApplicationFloder + Default.SettingsHolder + Default.HistViewFolder + System.IO.Path.DirectorySeparatorChar;    //3
+            string Folder = Default.ApplicationFolder + Default.SettingsFolder + Default.HistViewFolder + System.IO.Path.DirectorySeparatorChar;    //3
             if (!System.IO.Directory.Exists(Folder))
                 System.IO.Directory.CreateDirectory(Folder);
 
-            string CheckdatFile = Folder + Default.Checkdat;
-            string ListdatFile = Folder + Default.Listdat;
-            string PortdatFile = Folder + Default.Portdat;
-            string HistdatFile = Folder + Default.Histdat;
+            string CheckFileNameFile = Folder + Default.CheckFileName;
+            string ListFileNameFile = Folder + Default.ListFileName;
+            string PortFileNameFile = Folder + Default.PortFileName;
+            string HistFileNameFile = Folder + Default.HistFileName;
 
-            System.IO.File.WriteAllText(HistdatFile, SplitedText[0], mc.enc);    //HistdatFile
-            System.IO.File.WriteAllText(ListdatFile, SplitedText[1], mc.enc);    //ListdatFile
-            System.IO.File.WriteAllText(PortdatFile, SplitedText[2], mc.enc);    //PortdatFile
-            System.IO.File.WriteAllText(CheckdatFile, SplitedText[3], mc.enc);    //CheckdatFile
+            System.IO.File.WriteAllText(HistFileNameFile, SplitedText[0], mc.enc);    //HistFileNameFile
+            System.IO.File.WriteAllText(ListFileNameFile, SplitedText[1], mc.enc);    //ListFileNameFile
+            System.IO.File.WriteAllText(PortFileNameFile, SplitedText[2], mc.enc);    //PortFileNameFile
+            System.IO.File.WriteAllText(CheckFileNameFile, SplitedText[3], mc.enc);    //CheckFileNameFile
 
-            if (!System.IO.File.Exists(CheckdatFile))
+            if (!System.IO.File.Exists(CheckFileNameFile))
             {
-                System.Windows.Forms.MessageBox.Show(string.Format("Check.datファイルが見つかりません。({0})", CheckdatFile), Default.ApplicationName);
+                System.Windows.Forms.MessageBox.Show(string.Format("Check.datファイルが見つかりません。({0})", CheckFileNameFile), Default.ApplicationName);
                 this.Close();
             }
-            mc.loadCheckdat(myDataSetItems.CheckDat, CheckdatFile);
-            mc.loadListdatFile(myDataSetItems.ListDat, ListdatFile);
-            mc.loadPortdatFile(myDataSetItems.PortDat, PortdatFile);
-            //Checkdat
-            mc.loadListdatFile(myDataSetItems.ListDatResult, HistdatFile, true);    //20180731 HostView 
+            mc.loadCheckFileName(myDataSetItems.CheckDat, CheckFileNameFile);
+            mc.loadListFileNameFile(myDataSetItems.ListDat, ListFileNameFile);
+            mc.loadPortFileNameFile(myDataSetItems.PortDat, PortFileNameFile);
+            //CheckFileName
+            mc.loadListFileNameFile(myDataSetItems.ListDatResult, HistFileNameFile, true);    //20180731 HostView 
             for (int i = 0; i < myDataSetItems.ListDat.Rows.Count; i++)
             {
                 myDataSetItems.ListDat.Rows[i]["Result"] = myDataSetItems.ListDatResult[i]["Result"];
@@ -345,12 +345,12 @@ namespace NippoControlSystem.UI.Views
         {
         }
 
-        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        private void InspectionMainFormClosing(object sender, FormClosingEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("frmMain_FormClosing");
+            System.Diagnostics.Debug.WriteLine("InspectionMainFormClosing");
         }
 
-        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+        private void InspectionMainFormClosed(object sender, FormClosedEventArgs e)
         {
             //stat clear
             mc.InspecStat = MeasureCondition.enumInspectStat.Stat_STOP;
@@ -359,7 +359,7 @@ namespace NippoControlSystem.UI.Views
             this.timerReadSw.Enabled = false;
             this.timerInspect.Enabled = false;
             //Dio close
-            dio.Exit();
+            _dioNative.Exit();
             _aio.Exit();
         }
 

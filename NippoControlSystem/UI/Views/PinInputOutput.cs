@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -120,9 +120,9 @@ namespace NippoControlSystem.UI.Views
             this.Text = "デジタル入出力";
             //comboBoxの定義
             comboBox_PinIO.Items.Clear();
-            for (int i = 0; i < Default.DioStatGuide.Length; i++)
+            for (int i = 0; i < Default.DioStatusGuide.Length; i++)
             {
-                comboBox_PinIO.Items.Add(Default.DioStatGuide[i]);
+                comboBox_PinIO.Items.Add(Default.DioStatusGuide[i]);
             }
 
             //ドロップダウンリストの表示項目数を変更する
@@ -141,10 +141,10 @@ namespace NippoControlSystem.UI.Views
         private void Update_PinIO()
         {
             System.Diagnostics.Debug.WriteLine(string.Format("Update_PinIO()"));
-            int SelectedIndex = Default.DioStat.Length - 1;
-            for (int i = 0; i < Default.DioStat.Length; i++)
+            int SelectedIndex = Default.DioStatus.Length - 1;
+            for (int i = 0; i < Default.DioStatus.Length; i++)
             {
-                if (this.m_PinIO == Default.DioStat[i])
+                if (this.m_PinIO == Default.DioStatus[i])
                 {
                     SelectedIndex = i;
                     this.comboBox_PinIO.SelectedIndex = SelectedIndex;
@@ -185,7 +185,7 @@ namespace NippoControlSystem.UI.Views
             }
             else
             {
-                this.m_PinIO = Default.DioStat[this.comboBox_PinIO.SelectedIndex];
+                this.m_PinIO = Default.DioStatus[this.comboBox_PinIO.SelectedIndex];
                 switch (this.m_PinIO)
                 {
                     case "iDp":
@@ -218,7 +218,7 @@ namespace NippoControlSystem.UI.Views
 
         private void comboBox_PinIO_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.m_PinIO = Default.DioStat[this.comboBox_PinIO.SelectedIndex];
+            this.m_PinIO = Default.DioStatus[this.comboBox_PinIO.SelectedIndex];
             switch (this.m_PinIO)
             {
                 case "iDp":

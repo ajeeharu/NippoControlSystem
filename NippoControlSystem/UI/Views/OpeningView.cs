@@ -1,179 +1,248 @@
-using NippoControlSystem.ApplicationService.Confiigurations;
+ï»¿using NippoControlSystem.ApplicationService.Configurations;
+using NippoControlSystem.ApplicationService.Dtos;
+using NippoControlSystem.ApplicationService.Interfaces;
+using NippoControlSystem.ApplicationService.Services;
 using NippoControlSystem.UI.ViewModels;
+using System.IO;
+using System.Runtime.Versioning;
 
 namespace NippoControlSystem.UI.Views
 {
+    [SupportedOSPlatform("windows")]
     public partial class OpeningView : Form
     {
         private readonly OpeningViewModel _viewModel;
-        private readonly AppInfoSettings _config;
-
-        // DIƒRƒ“ƒeƒiŒo—R‚Å ViewModel ‚ğó‚¯æ‚é
-        public OpeningView(OpeningViewModel viewModel, AppInfoSettings applicationConfig)
+        private readonly INavigationService _navigationService;
+        private readonly MessageBoxDialogService _messageBoxDialogService;
+        public OpeningView(
+            OpeningViewModel viewModel,
+            INavigationService navigationService,
+            GeneralSettings appInfoSettings,
+            MessageBoxDialogService messageBoxDialogService)
         {
             InitializeComponent();
             _viewModel = viewModel;
-            _config = applicationConfig;
-            _viewModel.CurrentView = this;       // ViewModel ‚Ö‚Ì CurrentView İ’è
-        }
+            _navigationService = navigationService;
+            _messageBoxDialogService = messageBoxDialogService;
 
+            // --- ã“ã“ã¯åˆæœŸåŒ–æ™‚ã«1å›ã ã‘è¡Œãˆã°OK ---
+            listBox_MainNo.DisplayMember = "MainTitle";
+            listBox_MainNo.ValueMember = "MainId";
+
+            // ãƒªã‚¹ãƒˆã®åˆæœŸãƒ‡ãƒ¼ã‚¿ã‚’æµã—è¾¼ã‚€
+            listBox_MainNo.DataSource = _viewModel.MenuDataBinding.MainMenus;
+        }
         /// <summary>
-        /// ‰æ–Êƒ[ƒh‚É ViewModel ‚Ì‰Šú‰»ˆ—‚ğ”ñ“¯Šú‚ÅÀs‚µ‚Ü‚·B
+        /// ç”»é¢ãƒ­ãƒ¼ãƒ‰æ™‚ã« ViewModel ã®åˆæœŸåŒ–å‡¦ç†ã‚’éåŒæœŸã§å®Ÿè¡Œã—ã¾ã™ã€‚
         /// </summary>
         private async void Initialize_Load(object sender, EventArgs e)
         {
-            // ViewModel ‚Ì‰Šú‰»ƒRƒ}ƒ“ƒh‚ğÀs
+            // ViewModel ã®åˆæœŸåŒ–ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œ
             if (_viewModel.InitializeCommand.CanExecute(null))
             {
                 await _viewModel.InitializeCommand.ExecuteAsync(null);
             }
-        }
+            //Locationã‚’è¨­å®šã€ConfigurationManagerã¯ã€System.Configuration.dll ã¸ã®å‚ç…§è¨­å®šãŒå¿…è¦
+            Console.WriteLine(System.Configuration.ConfigurationManager.AppSettings["loc_frmOpenning"]);
+            Views.DesktopLocation((Form)this, System.Configuration.ConfigurationManager.AppSettings["loc_frmOpenning"]);
 
+            //CurrentDir,ãƒ•ã‚©ãƒ«ãƒ€ã®æŒ‡å®šã§ã€çµ¶å¯¾ãƒ‘ã‚¹ã§ãªã„ã¨ãã‚¨ãƒ©ãƒ¼ã«ã™ã‚‹ãŸã‚ã€SystemRootã«ç§»å‹•ã€\sssã¯ã€C:\sssã«ä½œã‚‰ã‚Œã‚‹20161027
+            System.IO.Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("SystemRoot") ?? string.Empty);      //"C:\\WINDOWS"
+            lblVersion.Text = string.Format("Ver {0}", Application.ProductVersion);
+
+            //ã“ã“ã‹ã‚‰ã¯Formã®æ›´æ–°
+            lblMainNo.Text = _viewModel.GeneralSettings.MainNo;   //"ä»•æ§˜æ›¸ç•ªå·";
+            lblSubNo.Text = _viewModel.GeneralSettings.SubNo;     //"è¿½ç•ª";
+
+            //ãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤º
+            menuMainBindingSource.DataSource = _viewModel.MenuDataBinding;
+            menuMainBindingSource.Filter = null;
+
+            //æ™‚é–“ã®ã‹ã‹ã‚‹åˆæœŸåŒ–å‡¦ç†ã‚’èµ·å‹•
+            timerInitalUpdate.Enabled = true;
+        }
         /// <summary>
-        /// uŒŸ¸vƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚Ìˆ—‚ğs‚¢‚Ü‚·B
+        /// ã€Œçµ‚äº†ã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã«ç”»é¢ã‚’é–‰ã˜ã¾ã™ã€‚
         /// </summary>
-        private void ExecuteInspection_Click(object sender, EventArgs e)
+        private void CloseScreen_Click(object sender, EventArgs e)
         {
-            SyncSelectedValuesToViewModel();
-
-            if (_viewModel.OpenMainViewCommand.CanExecute(null))
-            {
-                _viewModel.OpenMainViewCommand.Execute(null);
-            }
+            this.Close();
         }
         /// <summary>
-        /// uŒŸ¸’è‹`‚Ì•ÒWvƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚Ìˆ—‚ğs‚¢‚Ü‚·B
-        /// </summary>
-        private void EditSetting_Click(object sender, EventArgs e)
-        {
-            SyncSelectedValuesToViewModel();
-
-            if (_viewModel.OpenSettingViewCommand.CanExecute(null))
-            {
-                _viewModel.OpenSettingViewCommand.Execute(null);
-            }
-        }
-        /// <summary>
-        /// u‚±‚Ì‰æ–Ê‚Ì•ÒWvƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚Ìˆ—‚ğs‚¢‚Ü‚·B
-        /// </summary>
-        private void EditTopView_Click(object sender, EventArgs e)
-        {
-            SyncSelectedValuesToViewModel();
-
-            if (_viewModel.OpenTopEditViewCommand.CanExecute(null))
-            {
-                _viewModel.OpenTopEditViewCommand.Execute(null);
-            }
-        }
-        /// <summary>
-        /// uŒŸ¸—š—ğvƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚Ìˆ—‚ğs‚¢‚Ü‚·B
-        /// </summary>
-        private void OpenHistory_Click(object sender, EventArgs e)
-        {
-            SyncSelectedValuesToViewModel();
-
-            if (_viewModel.OpenHistoryViewCommand.CanExecute(null))
-            {
-                _viewModel.OpenHistoryViewCommand.Execute(null);
-            }
-        }
-        /// <summary>
-        /// ƒo[ƒWƒ‡ƒ“•\¦ƒ‰ƒxƒ‹ƒNƒŠƒbƒN‚Ìˆ—‚ğs‚¢‚Ü‚·B
+        /// ãƒãƒ¼ã‚¸ãƒ§ãƒ³è¡¨ç¤ºãƒ©ãƒ™ãƒ«ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
         private void OpenVersion_Click(object sender, EventArgs e)
         {
-            if (_viewModel.OpenVersionViewCommand.CanExecute(null))
+            // 1. ç”»é¢é·ç§»ï¼ˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¸¡ã—ã¯ä¸è¦ï¼‰
+            _navigationService.NavigateTo<VersionView>(isModal: true);
+        }
+        /// <summary>
+        /// ã€Œãƒãƒ‹ãƒ¥ã‚¢ãƒ«è¡¨ç¤ºã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
+        /// </summary>
+        private void OpenManual_Click(object sender, EventArgs e)
+        {
+            //string filePath = @"D:\ogura\å·¥ç•ª\P16010063_é…ç·šãƒã‚§ãƒƒã‚«ãƒ¼\åˆ¶å¾¡\Project\wChecker\Manual.pdf";
+            string filePath = _viewModel.GeneralSettings.ApplicationFolder + _viewModel.GeneralSettings.ManualPath;
+            string option = "";
+
+            try
             {
-                _viewModel.OpenVersionViewCommand.Execute(null);
+                // ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°æœ‰ã‚Šã§å®Ÿè¡Œ
+                System.Diagnostics.Process p = System.Diagnostics.Process.Start(filePath, option);
+            }
+            catch (Exception ee)
+            {
+                _messageBoxDialogService.ShowMessage(string.Format("æ“ä½œãƒãƒ‹ãƒ¥ã‚¢ãƒ«ã‚’è¡¨ç¤ºã§ãã¾ã›ã‚“ã€‚\n\nè¡¨ç¤ºãƒ•ã‚¡ã‚¤ãƒ«ï¼š{0}\nç†ç”±ï¼š{1}", filePath, ee.Message), _viewModel.GeneralSettings.ApplicationName);
+            }
+        }
+        /// <summary>
+        /// ã€Œæ¤œæŸ»å®šç¾©ã®ç·¨é›†ã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
+        /// </summary>
+        private void EditSetting_Click(object sender, EventArgs e)
+        {
+            // 1. ãƒ•ã‚©ãƒ«ãƒ€ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯ã¨ AppState ã¸ã®ä¿å­˜ã‚’å®Ÿè¡Œ
+            if (!_viewModel.ValidateAndPrepareForEditSettingsView()) return;
+
+            // 2. æ¤œè¨¼OKãªã‚‰ç”»é¢é·ç§»ï¼ˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¸¡ã—ã¯ä¸è¦ï¼‰
+            _navigationService.NavigateAndHideOwner<SettingView>(this);
+        }
+        /// <summary>
+        /// ã€Œã“ã®ç”»é¢ã®ç·¨é›†ã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
+        /// </summary>
+        private void EditTopView_Click(object sender, EventArgs e)
+        {
+            // 1. ãƒ•ã‚©ãƒ«ãƒ€ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯ã¨ AppState ã¸ã®ä¿å­˜ã‚’å®Ÿè¡Œ
+            if (!_viewModel.ValidateAndPrepareFolders()) return;
+
+            // 2. æ¤œè¨¼OKãªã‚‰ç”»é¢é·ç§»ï¼ˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¸¡ã—ã¯ä¸è¦ï¼‰
+            _navigationService.NavigateAndHideOwner<TopEditView>(this);
+
+        }
+        /// <summary>
+        /// ã€Œæ¤œæŸ»ã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
+        /// </summary>
+        private void ExecuteInspection_Click(object sender, EventArgs e)
+        {
+            // 1. ãƒ•ã‚©ãƒ«ãƒ€ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯ã¨ AppState ã¸ã®ä¿å­˜ã‚’å®Ÿè¡Œ
+            if (!_viewModel.ValidateAndPrepareFolders()) return;
+
+            // 2. æ¤œè¨¼OKãªã‚‰ç”»é¢é·ç§»ï¼ˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¸¡ã—ã¯ä¸è¦ï¼‰
+            _navigationService.NavigateAndHideOwner<InspectionMainView>(this);
+        }
+        // ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®é¸æŠãŒå¤‰æ›´ã•ã‚ŒãŸã¨ãã®ã‚¤ãƒ™ãƒ³ãƒˆ
+        private void listBox_MainNo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox_MainNo.SelectedItem is BindMainMenuDto selectedMain)
+            {
+                // 1. ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ãƒªã‚¹ãƒˆã‚’ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã¾ã¾ãƒã‚¤ãƒ³ãƒ‰
+                listBox_SubNo.DataSource = selectedMain.SubMenus;
+                listBox_SubNo.DisplayMember = "SubTitle";
+                listBox_SubNo.ValueMember = "SubId";
+
+                // 2. ViewModelã¸ã€Œé¸æŠã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã€ã¨ã€Œãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®IDã€ã‚’æ­£ã—ãæ¸¡ã™
+                _viewModel.UpdateMainMenuSelection(listBox_MainNo.SelectedIndex, selectedMain.MainId);
+            }
+            else
+            {
+                // é¸æŠè§£é™¤æ™‚ã®å‡¦ç†
+                listBox_SubNo.DataSource = null;
+                _viewModel.UpdateMainMenuSelection(BindMainMenuDto.Unselected, BindMainMenuDto.Unselected);
             }
         }
 
-        /// <summary>
-        /// ƒŠƒXƒgƒ{ƒbƒNƒX‚Ìƒ_ƒuƒ‹ƒNƒŠƒbƒN‚ÉŒŸ¸ˆ—‚ğÀs‚µ‚Ü‚·B
-        /// </summary>
-        private void ExecuteInspection_OnSubNoDoubleClick(object sender, EventArgs e)
+        // ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®é¸æŠãŒå¤‰æ›´ã•ã‚ŒãŸã¨ãã®ã‚¤ãƒ™ãƒ³ãƒˆ
+        private void listBox_SubNo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ExecuteInspection_Click(sender, e);
+            // â˜… ListBox ã‹ã‚‰ã€ŒBindSubMenuDto ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€ã‚’ç›´æ¥å–å¾—ã™ã‚‹
+            if (listBox_SubNo.SelectedItem is BindSubMenuDto selectedSub)
+            {
+                // â‘  è¦ªã®IDã‚’æ­£ã—ã„ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‹ã‚‰å–å¾—ã™ã‚‹ï¼ˆä¾‹: listBox_MainNo ã‹ã‚‰é¸æŠä¸­ã®ãƒ¡ã‚¤ãƒ³IDã‚’å–ã‚‹ãªã©ï¼‰
+                // â€»ã‚‚ã—è¦ªãŒåˆ¥ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãªã‚‰ã€ãã‚Œã«åˆã‚ã›ãŸãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ï¼ˆSelectedValueãªã©ï¼‰ã‚’æŒ‡å®šã—ã¾ã™
+                if (listBox_MainNo.SelectedValue is int mainId)
+                {
+                    // â‘¡ ã‚µãƒ–å´ã®é¸æŠã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æ­£ã—ãå–å¾—ã™ã‚‹
+                    int selectedSubIndex = listBox_SubNo.SelectedIndex;
+
+                    // ViewModel ã®çŠ¶æ…‹ã‚’ã¾ã¨ã‚ã¦æ›´æ–°
+                    _viewModel.UpdateSubMenuSelection(mainId, selectedSubIndex, selectedSub);
+                }
+            }
+            else
+            {
+                // é¸æŠè§£é™¤ï¼ˆæœªé¸æŠï¼‰çŠ¶æ…‹ã«ãªã£ãŸã¨ãã®å‡¦ç†
+                if (listBox_MainNo.SelectedValue is int mainId)
+                {
+                    _viewModel.UpdateSubMenuSelection(mainId, BindSubMenuDto.Unselected, null);
+                }
+            }
         }
         /// <summary>
-        /// ƒƒCƒ“”Ô†‚Ì‘I‘ğ•ÏX‚É ViewModel ‚Ö‘I‘ğ’l‚ğ“¯Šú‚µ‚Ü‚·B
+        /// ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ç”¨ãƒ†ã‚­ã‚¹ãƒˆå¤‰æ›´æ™‚ã« ViewModel ã¸å‡¦ç†ã‚’å§”è­²ã—ã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®çµã‚Šè¾¼ã¿ã¨å†æç”»ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
-        private void SyncMainNoSelection_SelectedIndexChanged(object sender, EventArgs e)
+        private void FilterMenu_TextChanged(object sender, EventArgs e)
         {
-            SyncSelectedValuesToViewModel();
+            // 1. å…¥åŠ›å€¤ã‚’ ViewModel ã¸åæ˜ 
+            _viewModel.FilterText = textBox_Filter.Text;
+
+            // 2. ViewModel å´ã®ãƒ­ã‚¸ãƒƒã‚¯ã§ BindingSource ã‚’ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°
+            _viewModel.ApplyMenuFilter(menuMainBindingSource);
+
+            // 3. è¡¨ç¤ºã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®å†æç”»
+            listBox_MainNo.Refresh();
+            listBox_SubNo.Refresh();
         }
         /// <summary>
-        /// ‰æ–ÊI—¹iƒtƒH[ƒ€ƒNƒ[ƒYj‚Ìˆ—‚ğs‚¢‚Ü‚·B
+        /// ã€Œã‚¢ãƒŠãƒ­ã‚°ãƒ¢ãƒ‹ã‚¿ãƒ¼ã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã«ã‚¢ãƒŠãƒ­ã‚°å…¥å‡ºåŠ›ãƒ¢ãƒ‹ã‚¿ãƒ¼ã‚’èµ·å‹•ã—ã¾ã™ã€‚
+        /// </summary>
+        private void LaunchAnalogAioMonitor_Click(object sender, EventArgs e)
+        {
+            // ãƒªã‚¹ãƒˆã§é¸æŠã•ã‚ŒãŸ SubID ã®å€¤ã‚’å–å¾—ã—ã¦ ViewModel å´ã®èµ·å‹•ãƒ­ã‚¸ãƒƒã‚¯ã‚’å®Ÿè¡Œ
+            object? selectedSubId = listBox_SubNo.SelectedValue;
+
+            bool isSuccess = _viewModel.LaunchAnalogAioMonitor(selectedSubId);
+
+            if (!isSuccess)
+            {
+                // Properties.Settings.Default ã‚’ä½¿ç”¨ã™ã‚‹ã‹ã€ç›´æ¥æ–‡å­—åˆ—ã‚’æŒ‡å®š
+                _messageBoxDialogService.ShowMessage(string.Format("é¸æŠã•ã‚ŒãŸSubIDãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚{0}", _viewModel.GeneralSettings.ApplicationName));
+                Close();
+            }
+        }
+        /// <summary>
+        /// ç”»é¢çµ‚äº†ï¼ˆãƒ•ã‚©ãƒ¼ãƒ ã‚¯ãƒ­ãƒ¼ã‚ºï¼‰æ™‚ã®å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
-            // ˆ—‚ğ ViewModel ‚ÖˆÏ÷
+            // å‡¦ç†ã‚’ ViewModel ã¸å§”è­²
             _viewModel.CleanupResources();
         }
         /// <summary>
-        /// ‰æ–Ê‚ª•Â‚¶‚ç‚ê‚é’¼‘O‚Ìˆ—‚¨‚æ‚ÑƒƒOo—Í‚ğs‚¢‚Ü‚·B
+        /// ç”»é¢ãŒé–‰ã˜ã‚‰ã‚Œã‚‹ç›´å‰ã®å‡¦ç†ãŠã‚ˆã³ãƒ­ã‚°å‡ºåŠ›ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
         public void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("OpenViewClosing");
         }
         /// <summary>
-        /// uI—¹vƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚É‰æ–Ê‚ğ•Â‚¶‚Ü‚·B
+        /// ã€Œæ¤œæŸ»å±¥æ­´ã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
-        private void CloseScreen_Click(object sender, EventArgs e)
+        private void OpenHistory_Click(object sender, EventArgs e)
         {
-            this.Close();
-        }
+            // 1. ãƒ•ã‚©ãƒ«ãƒ€ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯ã¨ AppState ã¸ã®ä¿å­˜ã‚’å®Ÿè¡Œ
+            if (!_viewModel.ValidateAndPrepareFolders()) return;
+            string? historyFile = _navigationService.ShowOpenFileDialog(_viewModel.GeneralSettings.HistViewFolder
+                , "æ¤œæŸ»çµæœãƒ•ã‚¡ã‚¤ãƒ«(A*.csv)|A*.csv|ã™ã¹ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«(*.*)|*.*");
+            if (string.IsNullOrEmpty(historyFile) || !File.Exists(historyFile)) return;
 
-        /// <summary>
-        /// uƒ}ƒjƒ…ƒAƒ‹•\¦vƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚Ìˆ—‚ğs‚¢‚Ü‚·B
-        /// </summary>
-        private void button_ViewManual_Click(object sender, EventArgs e)
-        {
-            _viewModel.OpenManual();
-        }
-        /// <summary>
-        /// ƒtƒBƒ‹ƒ^[—pƒeƒLƒXƒg•ÏX‚É ViewModel ‚Öˆ—‚ğˆÏ÷‚µAƒƒjƒ…[‚Ìi‚è‚İ‚ÆÄ•`‰æ‚ğs‚¢‚Ü‚·B
-        /// </summary>
-        private void FilterMenu_TextChanged(object sender, EventArgs e)
-        {
-            // 1. “ü—Í’l‚ğ ViewModel ‚Ö”½‰f
-            _viewModel.FilterText = this.textBox_Filter.Text;
-
-            // 2. ViewModel ‘¤‚ÌƒƒWƒbƒN‚Å BindingSource ‚ğƒtƒBƒ‹ƒ^ƒŠƒ“ƒO
-            _viewModel.ApplyMenuFilter(this.menuMainBindingSource);
-
-            // 3. •\¦ƒRƒ“ƒgƒ[ƒ‹‚ÌÄ•`‰æ
-            this.listBox_MainNo.Refresh();
-            this.listBox_SubNo.Refresh();
+            // 2. æ¤œè¨¼OKãªã‚‰ç”»é¢é·ç§»ï¼ˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¸¡ã—ã¯ä¸è¦ï¼‰
+            _navigationService.NavigateAndHideOwner<TestHistoryView>(this);
         }
         /// <summary>
-        /// uƒAƒiƒƒOƒ‚ƒjƒ^[vƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚ÉƒAƒiƒƒO“üo—Íƒ‚ƒjƒ^[‚ğ‹N“®‚µ‚Ü‚·B
+        /// ãƒªã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã®ãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯æ™‚ã«æ¤œæŸ»å‡¦ç†ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
         /// </summary>
-        private void LaunchAnalogAioMonitor_Click(object sender, EventArgs e)
+        private void ExecuteInspection_OnSubNoDoubleClick(object sender, EventArgs e)
         {
-            // ƒŠƒXƒg‚Å‘I‘ğ‚³‚ê‚½ SubID ‚Ì’l‚ğæ“¾‚µ‚Ä ViewModel ‘¤‚Ì‹N“®ƒƒWƒbƒN‚ğÀs
-            object selectedSubId = listBox_SubNo.SelectedValue;
-
-            bool isSuccess = _viewModel.LaunchAnalogAioMonitor(selectedSubId);
-
-            if (!isSuccess)
-            {
-                // Properties.Settings.Default ‚ğg—p‚·‚é‚©A’¼Ú•¶š—ñ‚ğw’è
-                System.Windows.Forms.MessageBox.Show("‘I‘ğ‚³‚ê‚½SubID‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB", _config.ApplicationName);
-                this.Close();
-            }
-        }
-        /// <summary>
-        /// View ã‚Ì ListBox ‘I‘ğ’l‚ğ ViewModel ‚ÌƒvƒƒpƒeƒB‚Ö“¯Šú‚µ‚Ü‚·
-        /// </summary>
-        private void SyncSelectedValuesToViewModel()
-        {
-            _viewModel.SelectedMainTitle = listBox_MainNo.Text?.ToString();
-            _viewModel.SelectedSubTitle = listBox_SubNo.Text?.ToString();
-            _viewModel.SelectedSubId = listBox_SubNo.SelectedValue?.ToString();
-            _viewModel.SelectedMainIndex = listBox_MainNo.SelectedIndex;
-            _viewModel.SelectedSubIndex = listBox_SubNo.SelectedIndex;
+            ExecuteInspection_Click(sender, e);
         }
     }
 }

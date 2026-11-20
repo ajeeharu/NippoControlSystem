@@ -66,7 +66,7 @@
             this.ColumnTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnMainID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuMainBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.dataSetTopMenu = new NippoControlSystem.DataSetTopMenu();
+            //this.dataSetTopMenu = new NippoControlSystem.DataSetTopMenu();
             this.dataGridView_Edaban = new System.Windows.Forms.DataGridView();
             this.ColumnSubTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnFolder = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -77,7 +77,7 @@
             this.MainMenu1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Zuban)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuMainBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataSetTopMenu)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.dataSetTopMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Edaban)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuSubBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -436,12 +436,12 @@
             // menuMainBindingSource
             // 
             this.menuMainBindingSource.DataMember = "menuMain";
-            this.menuMainBindingSource.DataSource = this.dataSetTopMenu;
+            //this.menuMainBindingSource.DataSource = this.dataSetTopMenu;
             // 
             // dataSetTopMenu
             // 
-            this.dataSetTopMenu.DataSetName = "DataSetTopMenu";
-            this.dataSetTopMenu.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            //this.dataSetTopMenu.DataSetName = "DataSetTopMenu";
+            //this.dataSetTopMenu.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // dataGridView_Edaban
             // 
@@ -522,7 +522,7 @@
             // menuSubBindingSource
             // 
             this.menuSubBindingSource.DataMember = "menuMain";
-            this.menuSubBindingSource.DataSource = this.dataSetTopMenu;
+            //this.menuSubBindingSource.DataSource = this.dataSetTopMenu;
             // 
             // frmTopEdit
             // 
@@ -549,7 +549,7 @@
             this.MainMenu1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Zuban)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuMainBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataSetTopMenu)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.dataSetTopMenu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Edaban)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuSubBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -584,7 +584,7 @@
         private System.Windows.Forms.DataGridView dataGridView_Zuban;
         private System.Windows.Forms.DataGridView dataGridView_Edaban;
         private System.Windows.Forms.BindingSource menuSubBindingSource;
-        private DataSetTopMenu dataSetTopMenu;
+        //private DataSetTopMenu dataSetTopMenu;
         private System.Windows.Forms.BindingSource menuMainBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnTitle;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnMainID;

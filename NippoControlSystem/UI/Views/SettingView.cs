@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using NippoControlSystem.UI.Views;
 using NippoControlSystem.Infrastructure.Devices;
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 
 #pragma warning disable
 #nullable disable // C# 8.0à»ç~ÇÃNullãñóeåxçêÇ‡è¡Ç∑èÍçá
@@ -89,7 +89,7 @@ namespace NippoControlSystem.UI.Views
             //DataSet
             DataTable dtCheckDat = myDataSetItems.CheckDat;
 
-            //Checkdat
+            //CheckFileName
             this.bindingSourceCheckDat.DataSource = myDataSetItems;
             //this.bindingSource1.DataMember = "CheckDat";
             itemFound = this.bindingSourceCheckDat.Find("Title", myDataSetItems.CheckDat.Rows[0]["Title"]);
@@ -192,16 +192,16 @@ namespace NippoControlSystem.UI.Views
             myDataSetItems.CheckDat.Rows[0]["Volt"] = newVolt;
             DataRow dtCheckDatRow = myDataSetItems.CheckDat.Rows[itemFound];
 
-            int iDo_Length = (int)NippoDIO.IO_STAT.iTo - (int)NippoDIO.IO_STAT.iOP + 1;
+            int iDo_Length = (int)NippoDIO.IO_STATUS.iTo - (int)NippoDIO.IO_STATUS.iOP + 1;
             //12V 24V
             int mVoltIdx = (newVolt == "1" ? 2 : 0); //0:12V 2:24V
 
             string dtCheckDatFields = null;
             for (int i = 0; i < iDo_Length; i++)
             {
-                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
+                dtCheckDatFields = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + Default.CheckDatLMTFields[0];     //Hi
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx][i].ToString("F1");    //iOP-HiLMTÅ`iTo-HiLMT
-                dtCheckDatFields = ((NippoDIO.IO_STAT)((int)NippoDIO.IO_STAT.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
+                dtCheckDatFields = ((NippoDIO.IO_STATUS)((int)NippoDIO.IO_STATUS.iOP + i)).ToString() + Default.CheckDatLMTFields[1];     //Lo
                 dtCheckDatRow[dtCheckDatFields] = Default.CheckDatLMT[mVoltIdx + 1][i].ToString("F1");    //iOP-LoLMTÅ`iTo-LoLMT
             }
         }
@@ -288,13 +288,13 @@ namespace NippoControlSystem.UI.Views
             if (ColumnIndex == 1) return true;
             if (ColumnIndex == 2 && (val == "0" || val == "1" || val == "2")) return true;
 
-            if ((ColumnIndex >= 3 && ColumnIndex < (32 * 8 + 3)) && mc.dicDioStat.ContainsKey(val)) return true;
+            if ((ColumnIndex >= 3 && ColumnIndex < (32 * 8 + 3)) && mc.dicDioStatus.ContainsKey(val)) return true;
             //AO 2Col
             if ((ColumnIndex >= (32 * 8 + 3) && ColumnIndex < (32 * 8 + 3 + 2)) && AOinRange(val)) return true;
             //AI-L,AI-H*2=16
             if ((ColumnIndex >= (32 * 8 + 3 + 2) && ColumnIndex < (32 * 8 + 3 + 2 + 16)) && AIinRange(val)) return true;
             //AoSw 8Col
-            if ((ColumnIndex >= (32 * 8 + 3 + 2 + 16) && ColumnIndex < (32 * 8 + 3 + 2 + 16 + 8)) && (val == Default.AoSwichStat[0] || val == Default.AoSwichStat[1])) return true;
+            if ((ColumnIndex >= (32 * 8 + 3 + 2 + 16) && ColumnIndex < (32 * 8 + 3 + 2 + 16 + 8)) && (val == Default.AoSwitchStatus[0] || val == Default.AoSwitchStatus[1])) return true;
             return false;
         }
 
@@ -549,9 +549,9 @@ namespace NippoControlSystem.UI.Views
             //}
 
             DialogResult dr;
-            if (mc.checkChangedPortdatFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Portdat)
-                || mc.checkChangedInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Listdat)
-                || mc.checkChangedCheckdat(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Checkdat))
+            if (mc.checkChangedPortFileNameFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.PortFileName)
+                || mc.checkChangedInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.ListFileName)
+                || mc.checkChangedCheckFileName(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName))
             {
             }
             else
@@ -583,17 +583,17 @@ namespace NippoControlSystem.UI.Views
             //if (mc.DataSetInspectItem.GetChanges() != null)
             {
                 //loadInspectItem
-                mc.savePortdatFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Portdat);
+                mc.savePortFileNameFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.PortFileName);
             }
             //if (mc.DataSetInspectItem.GetChanges() != null)
             {
                 //loadInspectItem
-                mc.clearListdatLMT(myDataSetItems.ListDat);     //20180818
-                mc.saveInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Listdat);
+                mc.clearListFileNameLMT(myDataSetItems.ListDat);     //20180818
+                mc.saveInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.ListFileName);
             }
             //if (mc.DataSetTopMenu.CheckDat.GetChanges() != null)
             {
-                mc.saveCheckdat(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Checkdat);
+                mc.saveCheckFileName(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName);
             }
 
             this.DialogResult = DialogResult.OK;
@@ -640,9 +640,9 @@ namespace NippoControlSystem.UI.Views
                 myDataSetItems.CheckDat.Rows[0]["Volt"] = this.comboBox_Volt.SelectedIndex;
             }
 
-            if (mc.checkChangedPortdatFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Portdat)
-                || mc.checkChangedInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Listdat)
-                || mc.checkChangedCheckdat(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Checkdat))
+            if (mc.checkChangedPortFileNameFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.PortFileName)
+                || mc.checkChangedInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.ListFileName)
+                || mc.checkChangedCheckFileName(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName))
             {
                 DialogResult dr = System.Windows.Forms.MessageBox.Show("åüç∏íËã`Ç™ïœçXÇ≥ÇÍÇƒÇ¢Ç‹Ç∑ÅBï€ë∂ÇµÇ‹Ç∑Ç©ÅH", Default.ApplicationName, MessageBoxButtons.YesNo);
                 if (dr != System.Windows.Forms.DialogResult.Yes)
@@ -652,17 +652,17 @@ namespace NippoControlSystem.UI.Views
                 //if (mc.DataSetInspectItem.GetChanges() != null)
                 {
                     //loadInspectItem
-                    mc.savePortdatFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Portdat);
+                    mc.savePortFileNameFile(myDataSetItems.PortDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.PortFileName);
                 }
                 //if (mc.DataSetInspectItem.GetChanges() != null)
                 {
                     //loadInspectItem
-                    mc.clearListdatLMT(myDataSetItems.ListDat);     //20180818
-                    mc.saveInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Listdat);
+                    mc.clearListFileNameLMT(myDataSetItems.ListDat);     //20180818
+                    mc.saveInspectItem(myDataSetItems.ListDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.ListFileName);
                 }
                 //if (mc.DataSetTopMenu.CheckDat.GetChanges() != null)
                 {
-                    mc.saveCheckdat(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.Checkdat);
+                    mc.saveCheckFileName(myDataSetItems.CheckDat, Folder + System.IO.Path.DirectorySeparatorChar + Default.CheckFileName);
                 }
             }
             else
@@ -733,14 +733,14 @@ namespace NippoControlSystem.UI.Views
             {
                 string Value = e.Value.ToString();
                 string DoStat = Value;
-                if (mc.dicDioStat.ContainsKey(DoStat))
+                if (mc.dicDioStatus.ContainsKey(DoStat))
                 {
-                    NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStat]; //åªç›ÇÃê›íË
+                    NippoDIO.IO_STATUS statCurr = (NippoDIO.IO_STATUS)mc.dicDioStatus[DoStat]; //åªç›ÇÃê›íË
 
-                    int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STAT.oOP;
-                    if (CellStylesIdx >= (int)NippoDIO.IO_STAT.nOP)
+                    int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STATUS.oOP;
+                    if (CellStylesIdx >= (int)NippoDIO.IO_STATUS.nOP)
                     {
-                        CellStylesIdx -= ((int)NippoDIO.IO_STAT.nOP - 3);
+                        CellStylesIdx -= ((int)NippoDIO.IO_STATUS.nOP - 3);
                     }
                     //if (Default.CellStyles[CellStylesIdx].ForeColor != Color.Black)
                     //{

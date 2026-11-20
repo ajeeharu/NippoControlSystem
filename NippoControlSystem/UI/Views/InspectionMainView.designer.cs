@@ -1,11 +1,7 @@
 ﻿namespace NippoControlSystem.UI.Views
 {
-    partial class MainView
+    partial class InspectionMainView
     {
-        //　------　MVVMパターン用にリファクタリングしたコード　------
-
-        //　------　MVVM化のためにリファクタリングする前のコード　------
-
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -37,13 +33,13 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InspectionMainView));
             this.ToolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.button_Stop = new System.Windows.Forms.Button();
             this.button_Next = new System.Windows.Forms.Button();
             this.textBox_Zuban = new System.Windows.Forms.TextBox();
             this.bindingSourceCheckDat = new System.Windows.Forms.BindingSource(this.components);
-            this.dataSetItems = new NippoControlSystem.DataSetItems();
+            this.dataSetItems = new wChecker.DataSetItems();
             this.lblGoTitle = new System.Windows.Forms.Label();
             this.lblSerialTitle = new System.Windows.Forms.Label();
             this.mnuEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -1127,9 +1123,9 @@
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "配線チェッカー（検査画面）";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InspectionMainFormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.InspectionMainFormClosed);
+            this.Load += new System.EventHandler(this.Initialize_Load);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceCheckDat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataSetItems)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataSetItemsBindingSource)).EndInit();

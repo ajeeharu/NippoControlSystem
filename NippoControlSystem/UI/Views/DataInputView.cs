@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using System.ComponentModel;
 using System.Data;
@@ -243,8 +243,8 @@ namespace NippoControlSystem.UI.Views
 
             if (ColumnIndex == 0) return false;
             if (ColumnIndex == 1) return false;
-            //if (ColumnIndex == 2 && mc.dicDioStat.ContainsKey(val)) return true;
-            if (ColumnIndex == 2 && mc.dicDioStat.ContainsKey(val.IndexOf(":") == -1 ? val : (val.Split(':'))[0])) return true; //20180806 iDpºËßÍß‘Î‰ž
+            //if (ColumnIndex == 2 && mc.dicDioStatus.ContainsKey(val)) return true;
+            if (ColumnIndex == 2 && mc.dicDioStatus.ContainsKey(val.IndexOf(":") == -1 ? val : (val.Split(':'))[0])) return true; //20180806 iDpºËßÍß‘Î‰ž
             return false;
         }
 
@@ -364,7 +364,7 @@ namespace NippoControlSystem.UI.Views
             if (ColumnIndex == 0) return false;
             if (ColumnIndex == 1) return false;
             if (ColumnIndex == 2 && RowIndex < 2 && AOinRange(val)) return true;
-            if (ColumnIndex == 3 && (val == Default.AoSwichStat[0] || val == Default.AoSwichStat[1])) return true;
+            if (ColumnIndex == 3 && (val == Default.AoSwitchStatus[0] || val == Default.AoSwitchStatus[1])) return true;
             return false;
         }
 
@@ -514,7 +514,7 @@ namespace NippoControlSystem.UI.Views
             //dtView_AO
             {
                 DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwichNum); j++)    //32loop
+                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwitchNum); j++)    //32loop
                 {
                     int ii = j + 1;
                     string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);
@@ -565,7 +565,7 @@ namespace NippoControlSystem.UI.Views
             //}
             ////dtView_AO
             //{
-            //    for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwichNum); j++)    //32loop
+            //    for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwitchNum); j++)    //32loop
             //    {
             //        int ii = j + 1;
             //        this.dataGridView_AO.Rows[j].HeaderCell.Value = ii.ToString();
@@ -631,7 +631,7 @@ namespace NippoControlSystem.UI.Views
             }
             {
                 DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-                for (int i = 0; i < Default.AoSwichNum; i++)     // AO
+                for (int i = 0; i < Default.AoSwitchNum; i++)     // AO
                 {
                     int ii = i + 1;
                     string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);
@@ -642,7 +642,7 @@ namespace NippoControlSystem.UI.Views
                         //dtView_AO.Rows[i]["Value"] = dtListDatRow[iFeildName];
                         dataGridView1[ColumnIndexIOdataField, i].Value = dtListDatRow[iFeildName];
                     }
-                    iFeildName = string.Format("{0}-{1:0}", Default.AoSwichName, ii);
+                    iFeildName = string.Format("{0}-{1:0}", Default.AoSwitchName, ii);
                     //dtView_AO.Rows[i]["Enable"] = dtListDatRow[iFeildName];
                     dataGridView1[ColumnIndexAOswField, i].Value = dtListDatRow[iFeildName];
                 }
@@ -695,7 +695,7 @@ namespace NippoControlSystem.UI.Views
             }
             {
                 DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-                for (int i = 0; i < Default.AoSwichNum; i++)     // AO
+                for (int i = 0; i < Default.AoSwitchNum; i++)     // AO
                 {
                     int ii = i + 1;
                     string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);
@@ -705,7 +705,7 @@ namespace NippoControlSystem.UI.Views
                         //dtView_AO.Rows[i]["Value"] = dtListDatRow[iFeildName];
                         dtListDatRow[iFeildName] = dtView_AO.Rows[i]["Value"];
                     }
-                    iFeildName = string.Format("{0}-{1:0}", Default.AoSwichName, ii);
+                    iFeildName = string.Format("{0}-{1:0}", Default.AoSwitchName, ii);
                     //dtView_AO.Rows[i]["Enable"] = dtListDatRow[iFeildName];
                     dtListDatRow[iFeildName] = dtView_AO.Rows[i]["Enable"];
                 }
@@ -973,14 +973,14 @@ namespace NippoControlSystem.UI.Views
                     //    dataGridView1[e.ColumnIndex, e.RowIndex].Style.Font = fontRegularlstyle;
                     //}
                     string DoStat = Value;
-                    if (mc.dicDioStat.ContainsKey(DoStat))
+                    if (mc.dicDioStatus.ContainsKey(DoStat))
                     {
-                        NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStat]; //Œ»Ý‚ÌÝ’è
+                        NippoDIO.IO_STATUS statCurr = (NippoDIO.IO_STATUS)mc.dicDioStatus[DoStat]; //Œ»Ý‚ÌÝ’è
 
-                        int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STAT.oOP;
-                        if (CellStylesIdx >= (int)NippoDIO.IO_STAT.nOP)
+                        int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STATUS.oOP;
+                        if (CellStylesIdx >= (int)NippoDIO.IO_STATUS.nOP)
                         {
-                            CellStylesIdx -= ((int)NippoDIO.IO_STAT.nOP - 3);
+                            CellStylesIdx -= ((int)NippoDIO.IO_STATUS.nOP - 3);
                         }
                         //if (Default.CellStyles[CellStylesIdx].ForeColor != Color.Black)
                         //{

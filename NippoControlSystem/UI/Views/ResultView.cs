@@ -1,4 +1,4 @@
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.UI.Controls;
 using System.ComponentModel;
@@ -181,7 +181,7 @@ namespace NippoControlSystem.UI.Views
             //dtView_AO
             {
                 DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwichNum); j++)    //32loop
+                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwitchNum); j++)    //32loop
                 {
                     int ii = j + 1;
                     string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);
@@ -279,7 +279,7 @@ namespace NippoControlSystem.UI.Views
             }
             {
                 DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-                for (int i = 0; i < Default.AoSwichNum; i++)     // AO
+                for (int i = 0; i < Default.AoSwitchNum; i++)     // AO
                 {
                     int ii = i + 1;
                     string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);
@@ -288,7 +288,7 @@ namespace NippoControlSystem.UI.Views
                     {
                         dtView_AO.Rows[i]["Value"] = dtListDatRow[iFeildName];
                     }
-                    iFeildName = string.Format("{0}-{1:0}", Default.AoSwichName, ii);
+                    iFeildName = string.Format("{0}-{1:0}", Default.AoSwitchName, ii);
                     dtView_AO.Rows[i]["Enable"] = dtListDatRow[iFeildName];
                 }
                 dtView_AO.AcceptChanges();
@@ -361,7 +361,7 @@ namespace NippoControlSystem.UI.Views
             if (e.ColumnIndex == 2)
             {
                 string Value = e.Value.ToString();                      //"iDo"
-                DoStat = getDioStat(dataGridView1, e.RowIndex);         //nDo:2.6"
+                DoStat = getDioStatus(dataGridView1, e.RowIndex);         //nDo:2.6"
                 DoStatSplit = DoStat.Split(':');    //20180731
                 if (DoStatSplit.Length > 0) DoStat = DoStatSplit[0];    //20180731
 
@@ -371,14 +371,14 @@ namespace NippoControlSystem.UI.Views
                     {
                         //エラーでないので、通常の色に変更
                         string DoStatLocal = Value;
-                        if (mc.dicDioStat.ContainsKey(DoStatLocal))
+                        if (mc.dicDioStatus.ContainsKey(DoStatLocal))
                         {
-                            NippoDIO.IO_STAT statCurr = (NippoDIO.IO_STAT)mc.dicDioStat[DoStatLocal]; //現在の設定
+                            NippoDIO.IO_STATUS statCurr = (NippoDIO.IO_STATUS)mc.dicDioStatus[DoStatLocal]; //現在の設定
 
-                            int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STAT.oOP;
-                            if (CellStylesIdx >= (int)NippoDIO.IO_STAT.nOP)
+                            int CellStylesIdx = (int)statCurr - (int)NippoDIO.IO_STATUS.oOP;
+                            if (CellStylesIdx >= (int)NippoDIO.IO_STATUS.nOP)
                             {
-                                CellStylesIdx -= ((int)NippoDIO.IO_STAT.nOP - 3);
+                                CellStylesIdx -= ((int)NippoDIO.IO_STATUS.nOP - 3);
                             }
                             //if (Default.CellStyles[CellStylesIdx].ForeColor != Color.Black)
                             //{
@@ -475,7 +475,7 @@ namespace NippoControlSystem.UI.Views
         }
 
 
-        private string getDioStat(DataGridView dataGridView1, int RowIndex)
+        private string getDioStatus(DataGridView dataGridView1, int RowIndex)
         {
             string iFeildName;
             string DoStat = "";

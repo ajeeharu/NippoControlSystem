@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Runtime.Versioning;
 using NippoControlSystem.UI.Views;
 using NippoControlSystem.Infrastructure.Devices;
-using NippoControlSystem.Infrastructure.Configuration;
+using NippoControlSystem.Infrastructure.Configurations;
 using NippoControlSystem.UI.Controls;
 
 #pragma warning disable
@@ -236,7 +236,7 @@ namespace NippoControlSystem.UI.Views
             //dtView_AO
             {
                 DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwichNum); j++)    //32loop
+                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwitchNum); j++)    //32loop
                 {
                     int ii = j + 1;
                     string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);
@@ -279,7 +279,7 @@ namespace NippoControlSystem.UI.Views
             //}
             ////dtView_AO
             //{
-            //    for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwichNum); j++)    //32loop
+            //    for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwitchNum); j++)    //32loop
             //    {
             //        int ii = j + 1;
             //        this.dataGridView_AO.Rows[j].HeaderCell.Value = ii.ToString();
@@ -327,7 +327,7 @@ namespace NippoControlSystem.UI.Views
             //dtView_AO
             {
                 DataTable dtView_AO = myDataSetItems.Tables[string.Format("View_{0}", Default.AoName)];
-                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwichNum); j++)    //32loop
+                for (int j = 0; j < Math.Max(Default.AoNum, Default.AoSwitchNum); j++)    //32loop
                 {
                     int ii = j + 1;
                     string iFeildName = string.Format("{0}-{1:0}", Default.AoName, ii);

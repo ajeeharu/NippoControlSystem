@@ -1,146 +1,45 @@
-using NippoControlSystem.Domain.Interfaces.enums;
-using NippoControlSystem.Infrastructure.Configuration;
-using NippoControlSystem.Infrastructure.Devices;
-using NippoControlSystem.Infrastructure.Persistence;
-using NippoControlSystem.Infrastructure.Services;
-using NippoControlSystem.UI.Controls;
-using System.ComponentModel;
+using NippoControlSystem.ApplicationService.Configurations;
+using NippoControlSystem.ApplicationService.Interfaces;
+using NippoControlSystem.ApplicationService.Services;
+using NippoControlSystem.UI.ViewModels;
 using System.Data;
 using System.Runtime.Versioning;
 
-#pragma warning disable
-#nullable disable // C# 8.0以降のNull許容警告も消す場合
-
 namespace NippoControlSystem.UI.Views
 {
-    //　------　MVVMパターン用にリファクタリングしたコード　------
-
-    //　------　MVVM化のためにリファクタリングする前のコード　------
-
-    public partial class MainView : Form
+    [SupportedOSPlatform("windows")]
+    public partial class InspectionMainView : Form
     {
-        Settings Default = Settings.GetInstance();
-        Log.LogLevel Main_LogLevel = Log.LogLevel.LOG_INFO;
-        DigitalIO dio = DigitalIO.GetInstance();
-        private readonly AnalogIO _aio;
-        Ai2Di ai2di = Ai2Di.GetInstance();
-        NippoDIO nio = NippoDIO.GetInstance();
-        MeasureCondition mc = MeasureCondition.GetInstance();
-        Views mForms = Views.GetInstance();
-        System.Windows.Forms.PictureBox[] pictureBoxMeter;
+        private readonly InspectionViewModel _viewModel;
+        private readonly INavigationService _navigationService;
+        private readonly MessageBoxDialogService _messageBoxDialogService;
 
-        //Lamp
-        //const bool WorkingLampON = true;    //稼働時点灯
-        const bool WorkingLampON = false;    //稼働時点灯
-        const int SlLampOn = 1;
-        const int SlLampOff = 0;
-        const int OpSwLampOn = (WorkingLampON ? 0 : 1);
-        const int OpSwLampOff = (WorkingLampON ? 1 : 0);
-
-        //// PictureBoxと同サイズのBitmapオブジェクトを作成
-        //Bitmap[] pictureBoxBmp = null;
-
-        //Local 変数
-        int TNo = 0;
-        int TNoRetryNo = 0;
-        float[,] AiDataPop;
-        float[] AiDataAve;
-        float[] AiDataInput;
-        //bool nextButtonClick = false;
-        bool stopButtonClick = false;
-        string PowerVolt = "";
-        DataSetItems myDataSetItems;
-
-        public MainView(AnalogIO aio)
+        public InspectionMainView(
+            InspectionViewModel viewModel,
+            INavigationService navigationService,
+            GeneralSettings appInfoSettings,
+            MessageBoxDialogService messageBoxDialogService)
         {
-            _aio = aio;
             InitializeComponent();
+            _viewModel = viewModel;
+            _navigationService = navigationService;
+            _messageBoxDialogService = messageBoxDialogService;
+
         }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //プロパティ Serial
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string Serial
+        private async void Initialize_Load(object sender, EventArgs e)
         {
-            get { return this.textBox_Serial.Text; }
-            set
+            // ViewModel の初期化コマンドを実行
+            if (_viewModel.InitializeCommand.CanExecute(null))
             {
-                this.textBox_Serial.Text = value;
-                this.textBox_Serial.Refresh();
+                await _viewModel.InitializeCommand.ExecuteAsync(null);
             }
-        }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //プロパティ GoNo
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string GoNo
-        {
-            get { return this.textBox_GoNo.Text; }
-            set
-            {
-                this.textBox_GoNo.Text = value;
-                this.textBox_GoNo.Refresh();
-            }
-        }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //プロパティ MainTitle
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string MainTitle
-        {
-            get;
-            set;
-        }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //プロパティ SubTitle
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string SubTitle
-        {
-            get;
-            set;
-        }
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //プロパティ Folder
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string Folder
-        {
-            get;
-            set;
-        }
 
-        //--------1---------2---------3---------4---------5---------6---------7---------8
-        //プロパティ CurrentTNo
-        int m_CurrentTNo = 0;
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [SupportedOSPlatform("windows")]
-        public int CurrentTNo
-        {
-            get { return m_CurrentTNo; }
-            set
-            {
-                m_CurrentTNo = value;
-                System.Windows.Forms.DataGridView dv = dataGridView_Inspection;
-                // ArrangedElementCollection.Count は Windows でのみサポートされる API のため実行時ガードを追加
-                if (OperatingSystem.IsWindows())
-                {
-                    if (dv.Rows.Count > 0) dv.CurrentCell = dv[0, m_CurrentTNo];
-                }
-            }
-        }
-
-
-        private void frmMain_Load(object sender, EventArgs e)
-        {
             //Locationを設定、ConfigurationManagerは、System.Configuration.dll への参照設定が必要
             Console.WriteLine(System.Configuration.ConfigurationManager.AppSettings["loc_frmMain"]);
             Views.DesktopLocation((Form)this, System.Configuration.ConfigurationManager.AppSettings["loc_frmMain"]);
 
-            CioDeviceErrorCode idRet = 0;
-            CioDeviceErrorCode iaRet = 0;
+            int iRet = 0;
             //Form.Loadを一回だけ実行する記述、
             //http://d.hatena.ne.jp/Kazzz/20070913/p4
             //Form.Load イベント:フォームが初めて表示される直前に発生します。 
@@ -195,27 +94,27 @@ namespace NippoControlSystem.UI.Views
             textBox_Guide.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
 
             //IO
-            idRet = dio.Init();
+            iRet = dio.Init();
 #if !DEVICE_DEBUG
-            if (idRet != 0)
+            if (iRet != 0)
             {
                 this.textBox_Guide.DataBindings.Clear();        //20170112
                 this.textBox_Guide.Text = "DIOボードの初期化エラー";
             }
 #endif
-            iaRet = _aio.Init();
+            iRet = aio.Init();
 #if !DEVICE_DEBUG
-            if (iaRet != 0)
+            if (iRet != 0)
             {
                 this.textBox_Guide.DataBindings.Clear();
                 this.textBox_Guide.Text = "AIOボードの初期化エラー";
             }
 #endif
-            _aio.setInspctLamp(0);   //LED_OFF
-            _aio.setGreenLamp(0);
-            iaRet = ai2di.Init();    //20180801
+            aio.setInspctLamp(0);   //LED_OFF
+            aio.setGreenLamp(0);
+            iRet = ai2di.Init();    //20180801
 #if !DEVICE_DEBUG
-            if (iaRet != 0)
+            if (iRet != 0)
             {
                 this.textBox_Guide.DataBindings.Clear();
                 this.textBox_Guide.Text = "AIボードの初期化エラー";
@@ -227,11 +126,11 @@ namespace NippoControlSystem.UI.Views
             textBox_Volt.Text = string.Format("{0}V", PowerVolt == "1" ? 24 : 12);
             if (PowerVolt == "1")
             {
-                _aio.SetPower24V();
+                aio.SetPower24V();
             }
             else
             {
-                _aio.SetPower12V();
+                aio.SetPower12V();
             }
 
             //ここで検査内容のDataGredViewとDataSetを作成して、データをセットする
@@ -321,9 +220,9 @@ namespace NippoControlSystem.UI.Views
                 this.timerDrawing.Enabled = false;
                 this.timerReadSw.Enabled = false;
                 this.timerInspect.Enabled = false;
-                _aio.setInspctLamp(0);   //LED_OFF
+                aio.setInspctLamp(0);   //LED_OFF
                 //fmSerialを表示する。
-                SerialView fmSerial = mForms.fmSerial;
+                frmSerial fmSerial = mForms.fmSerial;
                 mc.SerialNo = this.textBox_Serial.Text;
                 mc.GoNo = this.textBox_GoNo.Text;
                 mc.Zuban = this.textBox_Zuban.Text;
@@ -362,20 +261,7 @@ namespace NippoControlSystem.UI.Views
             }
         }
 
-        private void button_Enable(bool enableStat)
-        {
-            //this.button_Next.Enabled = enableStat;
-            this.button_Stop.Enabled = !enableStat;
-            this.button_DataInput.Enabled = enableStat;
-            this.button_ResultView.Enabled = enableStat;
-            this.button_Debug.Enabled = enableStat;
-            this.button_Close.Enabled = enableStat;
-            //以下はメニューのボタン
-            this.mnuStart.Enabled = enableStat;
-            this.mnuStop.Enabled = !enableStat;
-            this.mnuEdit.Enabled = enableStat;
-            this.mnuView.Enabled = enableStat;
-        }
+
 
         private void button_Stop_Click(object sender, EventArgs e)
         {
@@ -396,7 +282,7 @@ namespace NippoControlSystem.UI.Views
             }
 
             //mForms.ShowDialog(this, mForms.fmDataInput);
-            SettingView fmSetting = mForms.fmSetting;
+            frmSetting fmSetting = mForms.fmSetting;
             fmSetting.MainTitle = this.MainTitle;
             fmSetting.SubTitle = this.SubTitle;
             fmSetting.Folder = this.Folder;
@@ -436,11 +322,11 @@ namespace NippoControlSystem.UI.Views
                 textBox_Volt.Text = string.Format("{0}V", PowerVolt == "1" ? 24 : 12);
                 if (PowerVolt == "1")
                 {
-                    _aio.SetPower24V();
+                    aio.SetPower24V();
                 }
                 else
                 {
-                    _aio.SetPower12V();
+                    aio.SetPower12V();
                 }
             }
             this.textBox_Guide.Text = null;
@@ -455,7 +341,7 @@ namespace NippoControlSystem.UI.Views
                 return;
             }
             this.timerReadSw.Enabled = false;
-            ResultView fmResultView = mForms.fmResultView;
+            frmResultView fmResultView = mForms.fmResultView;
             fmResultView.myDataSetItems = myDataSetItems;
             fmResultView.TNo = dv.CurrentCell.RowIndex;
             fmResultView.ShowDialog();
@@ -479,15 +365,15 @@ namespace NippoControlSystem.UI.Views
             }
 
             this.timerReadSw.Enabled = false;   //操作SWで先に進まないように、timerReadSwを止める
-            DebugView fmDebug = mForms.fmDebug;
+            frmDebug fmDebug = mForms.fmDebug;
             fmDebug.myDataSetItems = myDataSetItems;
             fmDebug.CurrentTNo = dv.CurrentCell.RowIndex;
             fmDebug.ShowDialog();
             this.timerReadSw.Enabled = true;    //timerReadSw再開
             if (fmDebug.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                CioDeviceErrorCode iRetDio = dio.Init();
-                CioDeviceErrorCode iRetAio = _aio.Init();
+                int iRetDio = dio.Init();
+                int iRetAio = aio.Init();
 
                 //if (iRetDio != 0 || iRetAio != 0)
                 //{
@@ -543,7 +429,7 @@ namespace NippoControlSystem.UI.Views
         {
             //float[] AiDataInput = new float[8];
             float work;
-            CioDeviceErrorCode ret = _aio.MultiAi(AiDataInput);
+            int ret = aio.MultiAi(AiDataInput);
             //AiDataAve = new float[10,8];
             for (int i = 0; i < (Default.AiAveTimes - 1); i++)
             {
@@ -580,26 +466,26 @@ namespace NippoControlSystem.UI.Views
             //検査中ランプ
             if (mc.InspecStat == MeasureCondition.enumInspectStat.Stat_NormalStart || mc.InspecStat == MeasureCondition.enumInspectStat.Stat_ForceToEnd || mc.InspecStat == MeasureCondition.enumInspectStat.Stat_MidStarted)
             {
-                _aio.setInspctLamp(1);
+                aio.setInspctLamp(1);
             }
             else
             {
-                _aio.setInspctLamp(0);   //LED_OFF
+                aio.setInspctLamp(0);   //LED_OFF
             }
         }
 
-        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        private void InspectionMainFormClosing(object sender, FormClosingEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("frmMain_FormClosing");
+            System.Diagnostics.Debug.WriteLine("InspectionMainFormClosing");
         }
 
-        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+        private void InspectionMainFormClosed(object sender, FormClosedEventArgs e)
         {
             //Lamp
             this.switchLabelGreenSwitch.LampValue = SlLampOff;
             this.switchLabelRedSwitch.LampValue = SlLampOff;
-            _aio.setGreenLamp(0);
-            _aio.setRedLamp(0);
+            aio.setGreenLamp(0);
+            aio.setRedLamp(0);
 
             //stat clear
             mc.InspecStat = MeasureCondition.enumInspectStat.Stat_STOP;
@@ -607,12 +493,12 @@ namespace NippoControlSystem.UI.Views
             this.timerDrawing.Enabled = false;
             this.timerReadSw.Enabled = false;
             this.timerInspect.Enabled = false;
-            _aio.setInspctLamp(0);   //LED_OFF
+            aio.setInspctLamp(0);   //LED_OFF
             StopSound();
             //Dio close
             allClear();
             dio.Exit();
-            _aio.Exit();
+            aio.Exit();
         }
 
         private bool GreenSwitchDown()
@@ -620,7 +506,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -629,7 +515,7 @@ namespace NippoControlSystem.UI.Views
             else
             {
                 //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -651,7 +537,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.RedSwitchStat != 0)
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
                 {
                     mc.RedSwitchStat = 0;
                 }
@@ -660,7 +546,7 @@ namespace NippoControlSystem.UI.Views
             else
             {
                 //switchLabelGreenSwitch.LampValueは、ON=1、aio.getGreenSw()はON=1
-                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
                 {
                     //両方OFFなら、falseで抜ける
                     return false;
@@ -728,7 +614,7 @@ namespace NippoControlSystem.UI.Views
             if (mc.GreenSwitchStat != 0)    //OFFしたら、GreenSwitchStat(ON中)をリセットする 20170126
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelGreenSwitch.LampValue == 0 && _aio.getGreenSw() == 0)
+                if (this.switchLabelGreenSwitch.LampValue == 0 && aio.getGreenSw() == 0)
                 {
                     mc.GreenSwitchStat = 0;
                 }
@@ -736,19 +622,19 @@ namespace NippoControlSystem.UI.Views
             if (mc.RedSwitchStat != 0)    //OFFしたら、RedSwitchStat(ON中)をリセットする 20170126
             {
                 //一度ONしたら、OFFするまで、無視する
-                if (this.switchLabelRedSwitch.LampValue == 0 && _aio.getRedSw() == 0)
+                if (this.switchLabelRedSwitch.LampValue == 0 && aio.getRedSw() == 0)
                 {
                     mc.RedSwitchStat = 0;
                 }
             }
 
-            _aio.setGreenLamp(_aio.getGreenSw());
-            _aio.setRedLamp(_aio.getRedSw());
+            aio.setGreenLamp(aio.getGreenSw());
+            aio.setRedLamp(aio.getRedSw());
         }
 
         private void mnuPrint_Click(object sender, EventArgs e)
         {
-            screenShot.GetInstance().PrintForm(this, true);
+            Cyc.Windows.Forms.screenShot.GetInstance().PrintForm(this, true);
         }
 
         private void mnuEnd_Click(object sender, EventArgs e)
@@ -811,13 +697,13 @@ namespace NippoControlSystem.UI.Views
 
         private void mnuAbout_Click(object sender, EventArgs e)
         {
-            VersionView fmVersion = new VersionView();
+            frmVersion fmVersion = new frmVersion();
             fmVersion.ShowDialog();
         }
 
         private void mnManual_Click(object sender, EventArgs e)
         {
-            //string filePath = @"D:\ogura\工番\P16010063_配線チェッカー\制御\Project\NippoControlSystem\Manual.pdf";
+            //string filePath = @"D:\ogura\工番\P16010063_配線チェッカー\制御\Project\wChecker\Manual.pdf";
             string filePath = Default.ApplicationFloder + Default.ManualPath;
             string option = "";
 
