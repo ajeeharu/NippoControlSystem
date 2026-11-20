@@ -6,9 +6,10 @@ namespace NippoControlSystem.Infrastructure.Persistence
 {
     public partial class MeasureCondition
     {
+        //CSVファイルに書き込むときに使うEncoding
         public System.Text.Encoding enc = System.Text.Encoding.GetEncoding("Shift_JIS");
         public string Part = ".part";
-
+        //loadListdatFileで、iDsが空欄のとき、これを使う
         string? CheckDatiDsLo = null;
         string? CheckDatiDsHi = null;
 
@@ -19,7 +20,7 @@ namespace NippoControlSystem.Infrastructure.Persistence
         // method saveResultCsv (ファイルIOを1回にまとめて高速化)
         public void saveResultCsv(DataSetItems myDataSetItems, string Folder)
         {
-            DateTime dt = this.TestEndDT;
+            DateTime dt = this.TestEndDateTime;
             string resultCsvPass = System.IO.Path.Combine(Folder, string.Format("{0:yyyy}-log.csv", dt));
             string resultListPass = System.IO.Path.Combine(Folder, string.Format("A{0:yyyyMMdd_HHmmss}.csv", dt));
 
@@ -36,7 +37,7 @@ namespace NippoControlSystem.Infrastructure.Persistence
                         EncloseDoubleQuotes(this.GoNo),
                         EncloseDoubleQuotes(this.Zuban),
                         EncloseDoubleQuotes(this.Edaban),
-                        EncloseDoubleQuotes(this.InspecStartStatString),
+                        EncloseDoubleQuotes(this.InspectionStartStatusString),
                         EncloseDoubleQuotes(passFail)
                     };
                     sr.WriteLine(string.Join(",", lineValues));
@@ -45,16 +46,16 @@ namespace NippoControlSystem.Infrastructure.Persistence
                 // 2. 詳細ログファイルの保存（メモリ上で組み上げて1回で書き込み）
                 this.saveInspectItemWithResult(myDataSetItems.ListDatResult, resultListPass);
 
-                // 3. 関連データファイル（Listdat, Portdat, Checkdat）を1つのストリームでまとめて追記
-                string CheckdatFile = System.IO.Path.Combine(Folder, Default.Checkdat);
-                string ListdatFile = System.IO.Path.Combine(Folder, Default.Listdat);
-                string PortdatFile = System.IO.Path.Combine(Folder, Default.Portdat);
+                // 3. 関連データファイル（ListFileName, PortFileName, CheckFileName）を1つのストリームでまとめて追記
+                string CheckFileNameFile = System.IO.Path.Combine(Folder, Default.CheckFileName);
+                string ListFileNameFile = System.IO.Path.Combine(Folder, Default.ListFileName);
+                string PortFileNameFile = System.IO.Path.Combine(Folder, Default.PortFileName);
 
                 using (var sr = new StreamWriter(resultListPass, true, enc))
                 {
-                    AppendFileContentIfExist(sr, ListdatFile);
-                    AppendFileContentIfExist(sr, PortdatFile);
-                    AppendFileContentIfExist(sr, CheckdatFile);
+                    AppendFileContentIfExist(sr, ListFileNameFile);
+                    AppendFileContentIfExist(sr, PortFileNameFile);
+                    AppendFileContentIfExist(sr, CheckFileNameFile);
                 }
             }
             catch (Exception ex)
@@ -120,11 +121,11 @@ namespace NippoControlSystem.Infrastructure.Persistence
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
         // method saveInspectItem (StringBuilder 導入とファイル処理整理)
-        public bool saveInspectItem(DataTable ListDat, string ListdatFile, bool withResult, bool checkChanged)
+        public bool saveInspectItem(DataTable ListDat, string ListFileNameFile, bool withResult, bool checkChanged)
         {
             bool returnValue = false;
             ListDat.AcceptChanges();
-            string tempPartFile = ListdatFile + Part;
+            string tempPartFile = ListFileNameFile + Part;
 
             try
             {
@@ -158,17 +159,17 @@ namespace NippoControlSystem.Infrastructure.Persistence
                     }
                 }
 
-                if (File.Exists(ListdatFile))
+                if (File.Exists(ListFileNameFile))
                 {
                     if (checkChanged)
                     {
-                        returnValue = !isFileSame(tempPartFile, ListdatFile);
+                        returnValue = !isFileSame(tempPartFile, ListFileNameFile);
                         File.Delete(tempPartFile);
                     }
                     else
                     {
-                        File.Delete(ListdatFile);
-                        File.Move(tempPartFile, ListdatFile);
+                        File.Delete(ListFileNameFile);
+                        File.Move(tempPartFile, ListFileNameFile);
                         returnValue = true;
                     }
                 }
@@ -181,7 +182,7 @@ namespace NippoControlSystem.Infrastructure.Persistence
                     }
                     else
                     {
-                        File.Move(tempPartFile, ListdatFile);
+                        File.Move(tempPartFile, ListFileNameFile);
                         returnValue = true;
                     }
                 }
@@ -194,15 +195,15 @@ namespace NippoControlSystem.Infrastructure.Persistence
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
-        // method savePortdatFile (StringBuilder 導入)
-        public bool savePortdatFile(DataTable dtPortDat, string PortdatFile, bool checkChanged)
+        // method savePortFileNameFile (StringBuilder 導入)
+        public bool savePortFileNameFile(DataTable dtPortDat, string PortFileNameFile, bool checkChanged)
         {
             bool returnValue = false;
             dtPortDat.AcceptChanges();
             if (dtPortDat.Rows.Count == 0) return false;
 
             DataRow dtItemRow = dtPortDat.Rows[0];
-            string tempPartFile = PortdatFile + Part;
+            string tempPartFile = PortFileNameFile + Part;
 
             try
             {
@@ -226,9 +227,9 @@ namespace NippoControlSystem.Infrastructure.Persistence
 
                     // AO
                     sb.Clear();
-                    for (int ii = 0; ii < Default.AoSwichNum; ii++)
+                    for (int ii = 0; ii < Default.AoSwitchNum; ii++)
                     {
-                        int jj = Default.AoSwichNum - ii;
+                        int jj = Default.AoSwitchNum - ii;
                         string iFieldName = string.Format("{0}-{1:0}", Default.AoName, jj);
                         if (ii != 0) sb.Append(",");
                         sb.Append(EncloseDoubleQuotes(dtItemRow[iFieldName].ToString()));
@@ -263,23 +264,23 @@ namespace NippoControlSystem.Infrastructure.Persistence
                     sr.WriteLine(sb.ToString());
                 }
 
-                if (File.Exists(PortdatFile))
+                if (File.Exists(PortFileNameFile))
                 {
                     if (checkChanged)
                     {
-                        returnValue = !isFileSame(tempPartFile, PortdatFile);
+                        returnValue = !isFileSame(tempPartFile, PortFileNameFile);
                         File.Delete(tempPartFile);
                     }
                     else
                     {
-                        File.Delete(PortdatFile);
-                        File.Move(tempPartFile, PortdatFile);
+                        File.Delete(PortFileNameFile);
+                        File.Move(tempPartFile, PortFileNameFile);
                         returnValue = true;
                     }
                 }
                 else
                 {
-                    File.Move(tempPartFile, PortdatFile);
+                    File.Move(tempPartFile, PortFileNameFile);
                     returnValue = true;
                 }
             }
@@ -291,12 +292,12 @@ namespace NippoControlSystem.Infrastructure.Persistence
         }
 
         //--------1---------2---------3---------4---------5---------6---------7---------8
-        // method saveCheckdat (StringBuilder 導入)
-        public bool saveCheckdat(DataTable dtCheckDat, string CheckdatFile, bool checkChanged)
+        // method saveCheckFileName (StringBuilder 導入)
+        public bool saveCheckFileName(DataTable dtCheckDat, string CheckFileNameFile, bool checkChanged)
         {
             bool returnValue = false;
             dtCheckDat.AcceptChanges();
-            string tempPartFile = CheckdatFile + Part;
+            string tempPartFile = CheckFileNameFile + Part;
 
             try
             {
@@ -325,17 +326,17 @@ namespace NippoControlSystem.Infrastructure.Persistence
                     }
                 }
 
-                if (File.Exists(CheckdatFile))
+                if (File.Exists(CheckFileNameFile))
                 {
                     if (checkChanged)
                     {
-                        returnValue = !isFileSame(tempPartFile, CheckdatFile);
+                        returnValue = !isFileSame(tempPartFile, CheckFileNameFile);
                         File.Delete(tempPartFile);
                     }
                     else
                     {
-                        File.Delete(CheckdatFile);
-                        File.Move(tempPartFile, CheckdatFile);
+                        File.Delete(CheckFileNameFile);
+                        File.Move(tempPartFile, CheckFileNameFile);
                         returnValue = true;
                     }
                 }
@@ -348,7 +349,7 @@ namespace NippoControlSystem.Infrastructure.Persistence
                     }
                     else
                     {
-                        File.Move(tempPartFile, CheckdatFile);
+                        File.Move(tempPartFile, CheckFileNameFile);
                         returnValue = true;
                     }
                 }
