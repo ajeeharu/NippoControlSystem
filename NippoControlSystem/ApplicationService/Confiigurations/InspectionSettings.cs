@@ -6,11 +6,10 @@
         public required string[] DioStatusGuide { get; set; }
         public required string[] DioStatus { get; set; }
         public required string[] DioStatusOld { get; set; }
-
-        public int InspectRetryMax { get; set; }
-        public required string[] inspection_TypeText { get; set; }
+        public int InspectionRetryMax { get; set; }
+        public required string[] InspectionTypeText { get; set; }
         public int AutoTimeOut { get; set; }
-        public required string[] CheckDatLMTFields { get; set; }
-        public required float[][] CheckDatLMT { get; set; }
+        public required string[] CheckDataLimitFields { get; set; }
+        public required float[][] CheckDataLimit { get; set; }
     }
 }

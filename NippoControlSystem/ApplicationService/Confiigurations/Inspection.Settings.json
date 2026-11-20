@@ -79,18 +79,18 @@
       "",
       ""
     ],
-    "InspectRetryMax": 10,
-    "inspection_TypeText": [
+    "InspectionRetryMax": 10,
+    "inspectionTypeText": [
       "通常検査",
       "一時停止",
       "繰り返し"
     ],
     "AutoTimeOut": 2,
-    "CheckDatLMTFields": [
+    "CheckDataLimitFields": [
       "-HiLMT",
       "-LoLMT"
     ],
-    "CheckDatLMT": [
+    "CheckDataLimit": [
       [ 8.0, 2.0, 15.0, 0.2, 60.0, 60.0, 8.0, 60.0, 60.0, 0.2 ],
       [ 4.0, 0.0, 10.0, 0.0, 0.3, 9.0, 6.0, 0.3, 0.3, 0.0 ],
       [ 20.0, 2.0, 30.0, 0.2, 60.0, 60.0, 10.1, 60.0, 60.0, 0.2 ],
