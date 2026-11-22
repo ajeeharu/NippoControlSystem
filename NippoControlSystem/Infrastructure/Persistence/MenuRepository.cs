@@ -1,5 +1,6 @@
 ﻿using NippoControlSystem.ApplicationService.Dtos;
 using NippoControlSystem.Infrastructure.Persistence.Xsd;
+using System.IO;
 
 namespace NippoControlSystem.Infrastructure.Persistence
 {
@@ -11,66 +12,89 @@ namespace NippoControlSystem.Infrastructure.Persistence
 
     public class MenuRepository : IMenuRepository
     {
-        private readonly string _filePath = "path_to_menu.xml"; // 読み書きするXMLのパス
+        private readonly string _filePath;
+
+        public MenuRepository(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                throw new ArgumentException("メニューファイルのパスが指定されていません。", nameof(filePath));
+            }
+
+            _filePath = filePath;
+        }
 
         public MainMenuList GetShareMenuInfo()
         {
             var dataSet = new DataSetTopMenu();
-            if (System.IO.File.Exists(_filePath))
+            if (File.Exists(_filePath))
             {
                 dataSet.ReadXml(_filePath);
             }
 
             var shareMenuInfo = new MainMenuList();
 
-            // DataSet -> 階層DTO (ShareMenuInfo) へのマッピング
             foreach (DataSetTopMenu.menuMainRow mainRow in dataSet.menuMain)
             {
+                string title = mainRow["Title"] is DBNull
+                    ? string.Empty
+                    : (mainRow.Title ?? string.Empty);
+
                 var mainItem = new MainMenuItem
                 {
                     MainID = mainRow.MainID,
-                    Title = mainRow.IsTitleNull() ? string.Empty : mainRow.Title
+                    Title = title
                 };
 
                 foreach (var subRow in mainRow.GetmenuSubRows())
                 {
+                    string subTitle = subRow["SubTitle"] is DBNull
+                        ? string.Empty
+                        : (subRow.SubTitle ?? string.Empty);
+
+                    string? folder = subRow["Folder"] is DBNull
+                        ? null
+                        : subRow.Folder;
+
                     mainItem.SubMenus.Add(new SubMenuItem
                     {
                         MainID = subRow.MainID,
                         SubID = subRow.SubID,
-                        SubTitle = subRow.SubTitle,
-                        Folder = subRow.IsFolderNull() ? null : subRow.Folder
+                        SubTitle = subTitle,
+                        Folder = folder
                     });
                 }
 
                 shareMenuInfo.MainMenus.Add(mainItem);
             }
+
             return shareMenuInfo;
         }
 
         public void SaveShareMenuInfo(MainMenuList menuInfo)
         {
+            ArgumentNullException.ThrowIfNull(menuInfo);
+
             var dataSet = new DataSetTopMenu();
 
-            // 階層DTO -> DataSet への逆マッピング（Update用）
             foreach (var mainItem in menuInfo.MainMenus)
             {
                 var mainRow = dataSet.menuMain.NewmenuMainRow();
                 mainRow.MainID = mainItem.MainID;
-                mainRow.Title = mainItem.Title;
+                mainRow.Title = mainItem.Title ?? string.Empty;
                 dataSet.menuMain.AddmenuMainRow(mainRow);
 
                 foreach (var subItem in mainItem.SubMenus)
                 {
                     var subRow = dataSet.menuSub.NewmenuSubRow();
-                    subRow.MainID = mainItem.MainID; // 親子の紐付け
+                    subRow.MainID = mainItem.MainID;
                     subRow.SubID = subItem.SubID;
-                    subRow.SubTitle = subItem.SubTitle;
+                    subRow.SubTitle = subItem.SubTitle ?? string.Empty;
                     subRow.Folder = subItem.Folder ?? string.Empty;
                     dataSet.menuSub.AddmenuSubRow(subRow);
                 }
             }
-            // XMLファイル等へ保存
+
             dataSet.WriteXml(_filePath);
         }
     }

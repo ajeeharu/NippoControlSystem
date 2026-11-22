@@ -44,7 +44,7 @@ public static class DependencyInjection
         services.AddSingleton<FileIoHelper>();
         services.AddSingleton<JsonFileRepository>();
         services.AddSingleton<CsvFileRepository>();
-
+        services.AddSingleton<CheckDatFileRepository>();
 
         // ----------------------------------------------------
         // 4. Application / Domain サービス
