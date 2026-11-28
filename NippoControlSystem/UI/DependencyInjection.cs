@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NippoControlSystem.ApplicationService.Interfaces;
 using NippoControlSystem.ApplicationService.Services;
-using NippoControlSystem.ApplicationServices.Services;
 using NippoControlSystem.Domain.Interfaces;
+using NippoControlSystem.Domain.Services;
 using NippoControlSystem.Infrastructure.Devices;
 using NippoControlSystem.Infrastructure.NativeLibs;
 using NippoControlSystem.Infrastructure.Persistence;
@@ -51,6 +51,8 @@ public static class DependencyInjection
         // ----------------------------------------------------
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<InspectionDataService>();
+        services.AddSingleton<MeasureConditionService>();
+        services.AddScoped<IItemTableProvider, ItemTableProvider>();
 
         // ----------------------------------------------------
         // 5. View / ViewModel 登録
